@@ -1,5 +1,6 @@
-#' @import data.table
-
+#' @importFrom data.table fread
+#' @importFrom data.table setnames
+#'
 readGTF4Exons <- function(fin) {
   indt <- fread(fin, header=F, sep="\t", colClasses=c('character', 'NULL',
                 'character', rep('integer', 2), 'NULL', 'character', 'NULL',
@@ -10,6 +11,10 @@ readGTF4Exons <- function(fin) {
   return(dt)
 }
 
+
+#' @importFrom data.table fread
+#' @importFrom data.table setnames
+#'
 readGTF <- function(fgtf, feature = 'exon',
                     infokeys = c('gene_id', 'transcript_id'), nskip=0) {
 
@@ -28,6 +33,7 @@ readGTF <- function(fgtf, feature = 'exon',
 }
 
 
+#' @importFrom data.table copy
 writeDataTable2GTF <- function(dt, fout, append=F,
                                         source='unknown', feature='exon',
                                         infokeys=c('gene_id', 'transcript_id')){
