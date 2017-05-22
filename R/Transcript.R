@@ -5,9 +5,12 @@ Transcript = setClass('Transcript',
         exon   = 'data.table', ## exons with trid and geneid
         jnc    = 'data.table', ## splic junctions with trid and geneid
         tr     = 'data.table'  ## transcript with trid and geneid
-    ),
+    )
+)
 
-    validity = function(object) {
+
+setValidity( 'Transcript',
+    function(object) {
         exon_required_cols = c('chrom', 'start', 'end', 'strand', 'trid')
         jnc_required_cols  = c(exon_required_cols, 'njnc', 'ijnc')
         tr_required_cols   = c(exon_required_cols, 'nexon')
@@ -39,7 +42,6 @@ Transcript = setClass('Transcript',
     }
 )
 
-
 setMethod('show', 'Transcript',
     function(object) {
         cat('source:', object@source, "\n")
@@ -58,6 +60,14 @@ setMethod('initialize', 'Transcript',
         return(.Object)
     }
 )
+
+#setGeneric('getExon', function(x) standardGeneric('getExon'))
+setGeneric('getJnc',  function(x) standardGeneric('getJnc'))
+setGeneric('getTr',   function(x) standardGeneric('getTr'))
+
+setMethod('getExon', 'Transcript', function(x) x@exon)
+setMethod('getJnc',  'Transcript', function(x) x@jnc)
+setMethod('getTr',   'Transcript', function(x) x@tr)
 
 
 #' obtain junction info from exon
