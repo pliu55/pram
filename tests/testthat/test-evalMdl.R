@@ -2,7 +2,11 @@ context('evalMdl')
 
 data(tgtexondt)
 data(mdlexondt)
-dt = evalMdl(mdlexondt, tgtexondt)
+
+tgttr = Transcript(tgtexondt)
+mdltr = Transcript(mdlexondt)
+dt = evalMdl(mdltr, tgttr)
+
 exon_nuc = subset(dt, feat == 'exon_nuc')
 indi_jnc = subset(dt, feat == 'indi_jnc')
 tr_jnc   = subset(dt, feat == 'tr_jnc')
