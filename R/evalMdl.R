@@ -3,24 +3,24 @@
 #' Evaluate trascript model's precision and recall on exon nucleotide,
 #' splice junctions, and transcript's splice pattern
 #'
-#' @param mdlexondt a data.table of model exons with columns: chrom, start,
-#'                  end, strand, and transcript ID.
-#
-#' @param tgtexondt a data.table of target exons with columns: chrom, start,
-#'                  end, strand, and transcript ID.
+#' @param mdltr a Transcript object for models
+#' @param tgttr a Transcript object for targets
 #'
 #' @return a data table of precision, recall, number of true positive,
 #'         false negative, false positive for all three evaluated features
 #'
 #' @export
 #'
-evalMdl <- function(mdlexondt, tgtexondt) {
-    exonnucdt  = evalMdlExonNuc(mdlexondt, tgtexondt)
+evalMdl <- function(mdltr, tgttr) {
+    mdlexondt = getExon(mdltr)
+    tgtexondt = getExon(tgttr)
+
+    exonnucdt = evalMdlExonNuc(mdlexondt, tgtexondt)
 
     mdl_ol_tgtdt = findMdlTrOLTgtTr(mdlexondt, tgtexondt)
 
-    mdljncdt = getTrJncFromExon(mdlexondt)
-    tgtjncdt = getTrJncFromExon(tgtexondt)
+    mdljncdt = getJnc(mdltr)
+    tgtjncdt = getJnc(tgttr)
 
     setnames(mdljncdt, 'trid', 'mdlid')
     mdljncdt[, mdljncid := .I]
