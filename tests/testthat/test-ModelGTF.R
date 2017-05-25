@@ -12,7 +12,7 @@ main <- function() {
 
 testSTMG <- function() {
     nlines = 17
-    fgtf = system.file('extdata/stmg_minus_chr18.gtf', package='pram')
+    fgtf = system.file('extdata/gtf/stmg_minus_chr18.gtf', package='pram')
     origin = 'StringTieMerge'
     in_infokeys = c('gene_id', 'transcript_id')
 
@@ -29,7 +29,7 @@ testSTMG <- function() {
 
 testSTPL <- function() {
     nlines = 18
-    fgtf = system.file('extdata/stpl_minus_chr18.gtf', package='pram')
+    fgtf = system.file('extdata/gtf/stpl_minus_chr18.gtf', package='pram')
     origin = 'StringTiePool'
     in_infokeys = c('gene_id', 'transcript_id')
 
@@ -46,7 +46,7 @@ testSTPL <- function() {
 
 testCFMG <- function() {
     nlines = 17
-    fgtf = system.file('extdata/cfmg_minus_chr18.gtf', package='pram')
+    fgtf = system.file('extdata/gtf/cfmg_minus_chr18.gtf', package='pram')
     origin = 'CufflinksMerge'
     in_infokeys = c('gene_id', 'transcript_id')
 
@@ -63,7 +63,7 @@ testCFMG <- function() {
 
 testCFPL <- function() {
     nlines = 19
-    fgtf = system.file('extdata/cfpl_minus_chr18.gtf', package='pram')
+    fgtf = system.file('extdata/gtf/cfpl_minus_chr18.gtf', package='pram')
     origin = 'CufflinksPool'
     model_method = 'cfpl'
     in_infokeys = c('gene_id', 'transcript_id')
@@ -81,7 +81,7 @@ testCFPL <- function() {
 
 testTACO <- function() {
     nlines = 19
-    fgtf = system.file('extdata/taco_minus_chr18.gtf', package='pram')
+    fgtf = system.file('extdata/gtf/taco_minus_chr18.gtf', package='pram')
     origin = 'TACO'
     model_method = 'taco'
     in_infokeys = c('gene_id', 'transcript_id')

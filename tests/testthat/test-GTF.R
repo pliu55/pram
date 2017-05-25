@@ -1,7 +1,7 @@
 context('GTF')
 
 nlines = 25
-in_fgtf = system.file('extdata/gnc_v24_minus_chr18.gtf', package='pram')
+in_fgtf = system.file('extdata/gtf/gnc_v24_minus_chr18.gtf', package='pram')
 in_origin = 'GENCODE'
 in_infokeys = c('gene_id', 'transcript_id')
 
