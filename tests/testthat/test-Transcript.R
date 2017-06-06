@@ -1,12 +1,12 @@
 main <- function() {
     context('Transcript')
 
-    data(tgtexondt)
-
-    tr = Transcript(tgtexondt)
+    ftgt = system.file('extdata/benchmark/tgt.tsv', package='pram')
+    tgtdt = fread(ftgt, header=T, sep="\t")
+    tgttr = Transcript(tgtdt)
 
     test_that('Transcript', {
-          expect_true(validObject(tr))
+          expect_true(validObject(tgttr))
     } )
 }
 
