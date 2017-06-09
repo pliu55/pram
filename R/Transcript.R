@@ -1,4 +1,3 @@
-#' @export
 Transcript = setClass('Transcript',
     slots = list(
         source = 'character',  ## where this tr is defined, e.g. GENCODE
@@ -50,6 +49,16 @@ setMethod('show', 'Transcript',
     }
 )
 
+#' Construct a Transcript Object
+#'
+#' Construct a transcript object from an exon data.table
+#'
+#' @param exon a data.table object of exon
+#'
+#' @return a Transcript object
+#'
+#' @export Transcript
+#'
 setMethod('initialize', 'Transcript',
     function(.Object, exon, ...) {
         .Object@exon = exon
