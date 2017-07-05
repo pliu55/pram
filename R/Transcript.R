@@ -74,8 +74,13 @@ setMethod('initialize', 'Transcript',
 setGeneric('getJnc',  function(x) standardGeneric('getJnc'))
 setGeneric('getTr',   function(x) standardGeneric('getTr'))
 
+#' @export
 setMethod('getExon', 'Transcript', function(x) x@exon)
+
+#' @export
 setMethod('getJnc',  'Transcript', function(x) x@jnc)
+
+#' @export
 setMethod('getTr',   'Transcript', function(x) x@tr)
 
 
