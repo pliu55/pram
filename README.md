@@ -2,6 +2,9 @@
 
 ## Input
 
+### Example: mouse chr12:20,000,000-40,000,000
+- use ENCODE MEL histone data
+
 ### Transcript model prediction
 - RNA-seq data
   - FASTQ files, or
