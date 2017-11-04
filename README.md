@@ -2,15 +2,15 @@
 
 ## Input
 
-### Example: mouse chr12:20,000,000-40,000,000
+### Example: mouse chr12::20,000,000-40,000,000:-
 - use ENCODE MEL histone data
 
 ### Transcript model prediction
 - RNA-seq data
-  - FASTQ files, or
-  - BAM files
+  - FASTQ files
 - A GTF file
   - list genomic ranges where model to be built
+- A genome seq file
 
 ### Transcript model screening
 - RNA-seq
