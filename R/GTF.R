@@ -7,15 +7,6 @@ GTF = setClass( 'GTF',
 )
 
 
-#setValidity( 'GTF',
-#   function(object) {
-#       if ( ! file.exists(fgtf(object)) ) {
-#           return('GTF:: input GTF file not exists')
-#       }
-#   }
-#)
-
-
 setGeneric('getFgtf',     function(x) standardGeneric('getFgtf'))
 setGeneric('getOrigin',   function(x) standardGeneric('getOrigin'))
 setGeneric('getInfokeys', function(x) standardGeneric('getInfokeys'))
@@ -76,6 +67,16 @@ setMethod('initialize', 'GTF',
 )
 
 
+#' @importFrom GenomicRanges as.data.frame
+#setMethod(
+#   'initFromGRanges',
+#   c('GTF', 'GRanges'),
+#   function(.Object, grs) {
+#       .Object@
+#   }
+#)
+
+
 #' @importFrom data.table copy
 setMethod('writeGTF', c('GTF', 'character', 'logical'),
     function(x, fout, to_append) {
@@ -101,45 +102,6 @@ setMethod('writeGTF', c('GTF', 'character', 'logical'),
 )
 
 
-#writeDataTable2GTF <- function(dt, fout, append=F,
-#                                       source='unknown', feature='exon',
-#                                       infokeys=c('gene_id', 'transcript_id')){
-# outdt <- copy(dt)
-# outdt[, `:=`( source  = source,
-#               feature = feature,
-#               score   = '.',
-#               frame   = '.'     ) ]
-
-# for ( infokey in infokeys ) {
-#   outdt[, eval(infokey) := paste0(infokey, ' "', get(infokey), '"')]
-# }
-# outdt[, irow := .I]
-# outdt[, attr:=paste0(paste0(.SD, collapse='; '), ';'),
-#         by=irow, .SDcols=infokeys]
-##outdt[, `:=`(gene_id = NULL, transcript_id = NULL, irow=NULL)]
-# outdt <- outdt[, list(chrom, source, feature, start, end, score, strand,
-#                       frame, attr)]
-##setcolorder(outdt, c('chrom', 'source', 'feature', 'start', 'end', 'score',
-##                     'strand', 'frame', 'attr'))
-# write.table(outdt, fout, quote=F, sep="\t", col.names=F, row.names=F,
-#             append=append)
-# cat('File written:', fout, "\n")
-#}
-
-
-#readGTF4ExonGeneIDTrID <- function(fin) {
-# indt <- fread(fin, header=F, sep="\t", colClasses=c('character', 'NULL',
-#               'character', rep('integer', 2), 'NULL', 'character', 'NULL',
-#               'character'))
-# setnames(indt, 1:6, c('chrom', 'feature', 'start', 'end', 'strand', 'info'))
-# dt <- subset(indt, feature == 'exon')
-# dt[, `:=`(geneid = gsub('.*gene_id "([^"]+)";.*', '\\1', info, perl=T),
-#           trid   = gsub('.*transcript_id "([^"]+)";.*', '\\1', info, perl=T)
-#          )]
-
-# dt[, `:=`(feature=NULL, info=NULL)]
-# return(dt)
-#}
 
 
 readGTF4Transcripts <- function(fin) {

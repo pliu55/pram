@@ -4,14 +4,12 @@
 \alias{evalMdl}
 \title{Evaluate transcript model}
 \usage{
-evalMdl(mdlexondt, tgtexondt)
+evalMdl(mdltr, tgttr)
 }
 \arguments{
-\item{mdlexondt}{a data.table of model exons with columns: chrom, start,
-end, strand, and transcript ID.}
+\item{mdltr}{a Transcript object for models}
 
-\item{tgtexondt}{a data.table of target exons with columns: chrom, start,
-end, strand, and transcript ID.}
+\item{tgttr}{a Transcript object for targets}
 }
 \value{
 a data table of precision, recall, number of true positive,
