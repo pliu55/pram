@@ -6,6 +6,8 @@
 #' @param mdltr a Transcript object for models
 #' @param tgttr a Transcript object for targets
 #'
+#' @import data.table
+#'
 #' @return a data table of precision, recall, number of true positive,
 #'         false negative, false positive for all three evaluated features
 #'
@@ -37,8 +39,6 @@ evalMdl <- function(mdltr, tgttr) {
 
 
 #' Evaluate transcript model's splice junction
-#'
-#' @inheritParams evalMdl
 #'
 #' @return a data table of precision, recall, number of true positive,
 #'         false negative, false positive at each junction and all junctions in
