@@ -10,18 +10,17 @@ gtf = GTF(in_fgtf, in_infokeys, origin=in_origin)
 out_fgtf = 'tmp.gtf'
 writeGTF(gtf, out_fgtf, F)
 new_gtf = GTF(out_fgtf, in_infokeys, origin=in_origin)
-new_exondt = getExon(new_gtf)
+new_exondt = getGrangedt(new_gtf)
 lines = readLines(out_fgtf)
 
 file.remove(out_fgtf)
 
-exondt = getExon(gtf)
+exondt = getGrangedt(gtf)
 
 test_that('GTF', {
-          expect_equal(nrow(exondt), nlines)
-          expect_equal(names(exondt),
-                       c('chrom', 'start', 'end', 'strand', in_infokeys))
-          expect_identical(new_exondt, exondt)
-          expect_equal(length(lines), nlines)
-          }
-)
+    expect_equal(nrow(exondt), nlines)
+    expect_equal(names(exondt),
+                 c('chrom', 'feature', 'start', 'end', 'strand', in_infokeys))
+    expect_identical(new_exondt, exondt)
+    expect_equal(length(lines), nlines)
+})

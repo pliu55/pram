@@ -1,3 +1,6 @@
+#' @import methods
+#' @import data.table
+#'
 Transcript = setClass('Transcript',
     slots = list(
         source = 'character',  ## where this tr is defined, e.g. GENCODE
@@ -70,7 +73,7 @@ setMethod('initialize', 'Transcript',
     }
 )
 
-#setGeneric('getExon', function(x) standardGeneric('getExon'))
+setGeneric('getExon', function(x) standardGeneric('getExon'))
 setGeneric('getJnc',  function(x) standardGeneric('getJnc'))
 setGeneric('getTr',   function(x) standardGeneric('getTr'))
 

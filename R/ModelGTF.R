@@ -4,7 +4,7 @@ ModelGTF = setClass( 'ModelGTF', contains = 'GTF' )
 setMethod('initialize', 'ModelGTF',
     function(.Object, fgtf, infokeys, origin, model_method) {
         .Object = callNextMethod(.Object, fgtf, infokeys, origin=origin)
-        renameGnTrID(.Object@exon, model_method)
+        renameGnTrID(.Object@grangedt, model_method)
         return(.Object)
     }
 )

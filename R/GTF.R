@@ -1,16 +1,20 @@
+#' @import methods
+#' @import data.table
+#'
 #' @export
+#'
 GTF = setClass( 'GTF',
                 slots = list( fgtf     = 'character',
                               origin   = 'character',
                               infokeys = 'vector',
-                              exon     = 'data.table' )
+                              grangedt = 'data.table' )
 )
 
 
 setGeneric('getFgtf',     function(x) standardGeneric('getFgtf'))
 setGeneric('getOrigin',   function(x) standardGeneric('getOrigin'))
 setGeneric('getInfokeys', function(x) standardGeneric('getInfokeys'))
-setGeneric('getExon',     function(x) standardGeneric('getExon'))
+setGeneric('getGrangedt', function(x) standardGeneric('getGrangedt'))
 setGeneric('writeGTF', function(x, fout, to_append) standardGeneric('writeGTF'))
 ## 2nd argument to be named as 'value'
 setGeneric('fgtf<-', function(x, value) standardGeneric('fgtf<-'))
@@ -18,17 +22,17 @@ setGeneric('fgtf<-', function(x, value) standardGeneric('fgtf<-'))
 setMethod('getFgtf',     'GTF', function(x) x@fgtf)
 setMethod('getOrigin',   'GTF', function(x) x@origin)
 setMethod('getInfokeys', 'GTF', function(x) x@infokeys)
-setMethod('getExon',     'GTF', function(x) x@exon)
+setMethod('getGrangedt', 'GTF', function(x) x@grangedt)
 setReplaceMethod('fgtf', 'GTF', function(x, value) {x@fgtf = value; x})
 
 
 setMethod('show', 'GTF',
     function(object) {
         cat('fgtf:',     getFgtf(object),     "\n")
-        cat('infokeys:', getInfokeys(object), "\n")
         cat('origin:',   getOrigin(object),   "\n")
-        cat("exon:\n")
-        print(getExon(object))
+        cat('infokeys:', getInfokeys(object), "\n")
+        cat("granges:\n")
+        print(getGrangedt(object))
     }
 )
 
@@ -43,25 +47,26 @@ setMethod('initialize', 'GTF',
 
         lines = readLines(fgtf)
         nskip = 0
-        for ( i in seq_along(lines) ) {
-            if ( ! grepl('^#', lines[i], perl=T) ) break
+        for ( line in lines ) {
+            if ( ! grepl('^#', line, perl=T) ) break
             nskip = nskip + 1
         }
 
-        indt = fread(fgtf, header=F, sep="\t", colClasses=c('character',
-                     'NULL', 'character', rep('integer', 2), 'NULL',
-                     'character', 'NULL', 'character'), skip=nskip)
-        setnames(indt, 1:6, c('chrom', 'ftr', 'start', 'end', 'strand', 'info'))
-        dt = subset(indt, ftr == 'exon')
+        dt = fread(fgtf, header=F, sep="\t", colClasses=c('character',
+                   'NULL', 'character', rep('integer', 2), 'NULL',
+                   'character', 'NULL', 'character'), skip=nskip)
+        setnames(dt, 1:6,
+                 c('chrom', 'feature', 'start', 'end', 'strand', 'info'))
+       #dt = subset(indt, ftr == 'exon')
 
         for ( infokey in infokeys ) {
             dt[, eval(infokey) := gsub(paste0('.*', infokey, ' ([^;]+);.*'),
                                        '\\1', info, perl=T) ]
             dt[, eval(infokey) := gsub('"', '', get(infokey), fixed=T)]
         }
-        dt[, `:=`( ftr=NULL, info=NULL )]
+        dt[, info := NULL ]
 
-        .Object@exon = dt
+        .Object@grangedt = dt
         return(.Object)
     }
 )
@@ -77,15 +82,13 @@ setMethod('initialize', 'GTF',
 #)
 
 
-#' @importFrom data.table copy
 setMethod('writeGTF', c('GTF', 'character', 'logical'),
     function(x, fout, to_append) {
-        outdt = copy(getExon(x))
+        outdt = copy(getGrangedt(x))
         ori_field = ifelse(length(getOrigin(x)) == 0, 'UNKNOWN', getOrigin(x))
-        outdt[, `:=`( source  = ori_field,
-                      feature = 'exon',
-                      score   = '.',
-                      frame   = '.'     ) ]
+        outdt[, `:=`( source = ori_field,
+                      score  = '.',
+                      frame  = '.'     ) ]
 
         info_keys = getInfokeys(x)
         for ( infokey in info_keys ) {
@@ -100,7 +103,6 @@ setMethod('writeGTF', c('GTF', 'character', 'logical'),
                     append=to_append)
     }
 )
-
 
 
 

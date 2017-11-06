@@ -17,7 +17,7 @@ testSTMG <- function() {
     in_infokeys = c('gene_id', 'transcript_id')
 
     gtf = ModelGTF(fgtf, in_infokeys, origin, 'stmg')
-    exondt = getExon(gtf)
+    exondt = getGrangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'StringTieMerge GTF', {
         expect_equal(getOrigin(gtf), origin)
@@ -34,7 +34,7 @@ testSTPL <- function() {
     in_infokeys = c('gene_id', 'transcript_id')
 
     gtf = ModelGTF(fgtf, in_infokeys, origin, 'stpl')
-    exondt = getExon(gtf)
+    exondt = getGrangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'StringTiePool GTF', {
         expect_equal(getOrigin(gtf), origin)
@@ -51,7 +51,7 @@ testCFMG <- function() {
     in_infokeys = c('gene_id', 'transcript_id')
 
     gtf = ModelGTF(fgtf, in_infokeys, origin=origin, 'cfmg')
-    exondt = getExon(gtf)
+    exondt = getGrangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'CufflinksMerge GTF', {
         expect_equal(getOrigin(gtf), origin)
@@ -69,7 +69,7 @@ testCFPL <- function() {
     in_infokeys = c('gene_id', 'transcript_id')
 
     gtf = ModelGTF(fgtf, in_infokeys, origin, model_method)
-    exondt = getExon(gtf)
+    exondt = getGrangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'CufflinksPool GTF', {
         expect_equal(getOrigin(gtf), origin)
@@ -87,7 +87,7 @@ testTACO <- function() {
     in_infokeys = c('gene_id', 'transcript_id')
 
     gtf = ModelGTF(fgtf, in_infokeys, origin, model_method)
-    exondt = getExon(gtf)
+    exondt = getGrangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'TACO GTF', {
         expect_equal(getOrigin(gtf), origin)
