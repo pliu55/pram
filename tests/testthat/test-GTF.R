@@ -5,11 +5,15 @@ in_fgtf = system.file('extdata/gtf/gnc_v24_minus_chr18.gtf', package='pram')
 in_origin = 'GENCODE'
 in_infokeys = c('gene_id', 'transcript_id')
 
-gtf = GTF(in_fgtf, in_infokeys, origin=in_origin)
+gtf = GTF()
+gtf = initFromGTFFile(gtf, in_fgtf, in_infokeys, origin=in_origin)
 
 out_fgtf = 'tmp.gtf'
 writeGTF(gtf, out_fgtf, F)
-new_gtf = GTF(out_fgtf, in_infokeys, origin=in_origin)
+
+new_gtf = GTF()
+new_gtf = initFromGTFFile(new_gtf, out_fgtf, in_infokeys, origin=in_origin)
+
 new_exondt = getGrangedt(new_gtf)
 lines = readLines(out_fgtf)
 

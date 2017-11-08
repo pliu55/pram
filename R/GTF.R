@@ -1,8 +1,6 @@
 #' @import methods
 #' @import data.table
 #'
-#' @export
-#'
 GTF = setClass( 'GTF',
                 slots = list( fgtf     = 'character',
                               origin   = 'character',
@@ -15,9 +13,15 @@ setGeneric('getFgtf',     function(x) standardGeneric('getFgtf'))
 setGeneric('getOrigin',   function(x) standardGeneric('getOrigin'))
 setGeneric('getInfokeys', function(x) standardGeneric('getInfokeys'))
 setGeneric('getGrangedt', function(x) standardGeneric('getGrangedt'))
-setGeneric('writeGTF', function(x, fout, to_append) standardGeneric('writeGTF'))
+setGeneric('writeGTF',
+           function(x, fout, to_append) standardGeneric('writeGTF'))
+setGeneric('initFromGTFFile',
+           function(obj, fgtf, infokeys, ...) standardGeneric('initFromGTFFile'))
+setGeneric('initFromGRanges', function(grs) standardGeneric('initFromGRanges'))
+
 ## 2nd argument to be named as 'value'
 setGeneric('fgtf<-', function(x, value) standardGeneric('fgtf<-'))
+
 
 setMethod('getFgtf',     'GTF', function(x) x@fgtf)
 setMethod('getOrigin',   'GTF', function(x) x@origin)
@@ -37,13 +41,30 @@ setMethod('show', 'GTF',
 )
 
 
-setMethod('initialize', 'GTF',
-    function(.Object, fgtf=fgtf, infokeys=infokeys, ...) {
-        .Object@fgtf     = fgtf
-        .Object@infokeys = infokeys
+setMethod(
+    'initialize',
+    signature('GTF'),
+    function(.Object) {
+        .Object@fgtf     = character()
+        .Object@origin   = character()
+        .Object@infokeys = vector()
+        .Object@grangedt = data.table()
+        return(.Object)
+    }
+)
+
+#' @export
+#'
+setMethod(
+    'initFromGTFFile',
+    signature('GTF', 'character', 'vector'),
+    function(obj, fgtf, infokeys, ...) {
+        obj = GTF()
+        obj@fgtf     = fgtf
+        obj@infokeys = infokeys
 
         ecl = list(...)
-        .Object@origin = ifelse(is.null(ecl$origin), 'UNKNOWN', ecl$origin)
+        obj@origin = ifelse(is.null(ecl$origin), 'UNKNOWN', ecl$origin)
 
         lines = readLines(fgtf)
         nskip = 0
@@ -66,20 +87,28 @@ setMethod('initialize', 'GTF',
         }
         dt[, info := NULL ]
 
-        .Object@grangedt = dt
-        return(.Object)
+        obj@grangedt = dt
+        return(obj)
     }
 )
 
 
+#' construct a GTF object from a GenomicRanges object
+#'
+#' @import data.table
 #' @importFrom GenomicRanges as.data.frame
-#setMethod(
-#   'initFromGRanges',
-#   c('GTF', 'GRanges'),
-#   function(.Object, grs) {
-#       .Object@
-#   }
-#)
+#'
+#' @export
+#'
+setMethod(
+    'initFromGRanges',
+    c('GTF', 'GRanges'),
+    function(obj, grs) {
+        obj = GTF()
+        obj@grangedt = data.table(as.data.frame(grs))
+        return(gtf)
+    }
+)
 
 
 setMethod('writeGTF', c('GTF', 'character', 'logical'),

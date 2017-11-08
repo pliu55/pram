@@ -2,11 +2,11 @@
 
 export(Transcript)
 export(evalMdl)
-exportClasses(GTF)
-exportClasses(ModelGTF)
 exportMethods(getExon)
 exportMethods(getJnc)
 exportMethods(getTr)
+exportMethods(initFromGRanges)
+exportMethods(initFromGTFFile)
 import(data.table)
 import(methods)
 importFrom(BiocGenerics,end)

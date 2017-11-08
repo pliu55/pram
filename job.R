@@ -9,5 +9,5 @@ document()
 install(quick=T, reload=F, threads=4)
 
 
-#test( filter = 'ModelGTF' )
+#test( filter = 'GTF' )
 test( )

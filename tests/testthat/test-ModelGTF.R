@@ -16,7 +16,10 @@ testSTMG <- function() {
     origin = 'StringTieMerge'
     in_infokeys = c('gene_id', 'transcript_id')
 
-    gtf = ModelGTF(fgtf, in_infokeys, origin, 'stmg')
+    gtf = ModelGTF()
+    ## need to specify origin=, and model_method= for '...' argument
+    gtf = initFromGTFFile(gtf, fgtf, in_infokeys, origin=origin,
+                          model_method='stmg')
     exondt = getGrangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'StringTieMerge GTF', {
@@ -33,7 +36,9 @@ testSTPL <- function() {
     origin = 'StringTiePool'
     in_infokeys = c('gene_id', 'transcript_id')
 
-    gtf = ModelGTF(fgtf, in_infokeys, origin, 'stpl')
+    gtf = ModelGTF()
+    gtf = initFromGTFFile(gtf, fgtf, in_infokeys, origin=origin,
+                          model_method='stpl')
     exondt = getGrangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'StringTiePool GTF', {
@@ -50,7 +55,9 @@ testCFMG <- function() {
     origin = 'CufflinksMerge'
     in_infokeys = c('gene_id', 'transcript_id')
 
-    gtf = ModelGTF(fgtf, in_infokeys, origin=origin, 'cfmg')
+    gtf = ModelGTF()
+    gtf = initFromGTFFile(gtf, fgtf, in_infokeys, origin=origin,
+                          model_method='cfmg')
     exondt = getGrangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'CufflinksMerge GTF', {
@@ -68,7 +75,9 @@ testCFPL <- function() {
     model_method = 'cfpl'
     in_infokeys = c('gene_id', 'transcript_id')
 
-    gtf = ModelGTF(fgtf, in_infokeys, origin, model_method)
+    gtf = ModelGTF()
+    gtf = initFromGTFFile(gtf, fgtf, in_infokeys, origin=origin,
+                          model_method=model_method)
     exondt = getGrangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'CufflinksPool GTF', {
@@ -86,7 +95,9 @@ testTACO <- function() {
     model_method = 'taco'
     in_infokeys = c('gene_id', 'transcript_id')
 
-    gtf = ModelGTF(fgtf, in_infokeys, origin, model_method)
+    gtf = ModelGTF()
+    gtf = initFromGTFFile(gtf, fgtf, in_infokeys, origin=origin,
+                          model_method=model_method)
     exondt = getGrangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'TACO GTF', {

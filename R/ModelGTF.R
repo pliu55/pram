@@ -1,11 +1,34 @@
-#' @export
-ModelGTF = setClass( 'ModelGTF', contains = 'GTF' )
+ModelGTF = setClass(
+    'ModelGTF',
+    slots = list( model_method = 'character' ),
+    contains = 'GTF'
+)
 
-setMethod('initialize', 'ModelGTF',
-    function(.Object, fgtf, infokeys, origin, model_method) {
-        .Object = callNextMethod(.Object, fgtf, infokeys, origin=origin)
-        renameGnTrID(.Object@grangedt, model_method)
+
+setMethod(
+    'initialize',
+    signature('ModelGTF'),
+    function(.Object) {
+        .Object = callNextMethod(.Object)
+        .Object@model_method = character()
         return(.Object)
+    }
+)
+
+
+#' @export
+#'
+setMethod(
+    'initFromGTFFile',
+    signature('ModelGTF', 'character', 'vector'),
+    function(obj, fgtf, infokeys, ...) {
+        obj = callNextMethod(obj, fgtf, infokeys, ...)
+        ecl = list(...)
+        if ( ! is.null(ecl$model_method) ) {
+            renameGnTrID(obj@grangedt, ecl$model_method)
+        }
+
+        return(obj)
     }
 )
 
