@@ -17,7 +17,8 @@ setGeneric('writeGTF',
            function(x, fout, to_append) standardGeneric('writeGTF'))
 setGeneric('initFromGTFFile',
            function(obj, fgtf, infokeys, ...) standardGeneric('initFromGTFFile'))
-setGeneric('initFromGRanges', function(grs) standardGeneric('initFromGRanges'))
+setGeneric('initFromGRanges',
+           function(obj, grs) standardGeneric('initFromGRanges'))
 
 ## 2nd argument to be named as 'value'
 setGeneric('fgtf<-', function(x, value) standardGeneric('fgtf<-'))
@@ -105,8 +106,12 @@ setMethod(
     c('GTF', 'GRanges'),
     function(obj, grs) {
         obj = GTF()
-        obj@grangedt = data.table(as.data.frame(grs))
-        return(gtf)
+        dt = data.table(as.data.frame(grs))
+        setnames(dt, 'seqnames', 'chrom')
+        dt[, width := NULL]
+        obj@grangedt = dt
+
+        return(obj)
     }
 )
 
