@@ -1,3 +1,5 @@
+#' @import methods
+#'
 ModelGTF = setClass(
     'ModelGTF',
     slots = list( model_method = 'character' ),

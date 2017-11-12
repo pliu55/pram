@@ -92,8 +92,6 @@ setMethod('getTr',   'Transcript', function(x) x@tr)
 #' @param exondt a data.table of exons with columns: chrom, start, end, strand,
 #'                and transcript ID
 #'
-#' @importFrom data.table data.table
-#' @importFrom data.table setcolorder
 #' @importFrom IRanges IRanges
 #' @importFrom IRanges gaps
 #' @importFrom S4Vectors split

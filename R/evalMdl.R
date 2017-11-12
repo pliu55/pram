@@ -58,7 +58,6 @@ evalMdlJnc <- function(tgtjnc_in_mdldt, mdljnc_in_tgtdt, mdl_ol_tgtdt,
 
 #' find if model's splice junction exists in a target transcript
 #'
-#' @importFrom data.table data.table
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom GenomicRanges findOverlaps
 #' @importFrom S4Vectors mcols
@@ -77,7 +76,6 @@ findModelJncInTarget <- function(mdljncdt, tgtjncdt) {
 }
 
 
-#' @importFrom data.table data.table
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom GenomicRanges findOverlaps
 #'
@@ -95,7 +93,6 @@ findTargetJncInModel <- function(tgtjncdt, mdljncdt) {
 }
 
 
-#' @importFrom data.table data.table
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom GenomicRanges findOverlaps
 #'
