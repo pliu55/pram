@@ -60,8 +60,6 @@ setMethod('show', 'Transcript',
 #'
 #' @return a Transcript object
 #'
-#' @export Transcript
-#'
 setMethod('initialize', 'Transcript',
     function(.Object, exon, ...) {
         .Object@exon = exon
