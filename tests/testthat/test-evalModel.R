@@ -1,7 +1,7 @@
 library(data.table)
 
 main <- function() {
-    context('evalMdl')
+    context('evalModel')
 
     testBenchmark()
 }
@@ -31,7 +31,7 @@ testBenchmarkMethod <- function(method, method2results, tgttr) {
                        package='pram')
     mdldt = fread(fmdl, header=T, sep="\t")
     mdltr = Transcript(mdldt)
-    evaldt = evalMdl(mdltr, tgttr)
+    evaldt = evalModel(mdltr, tgttr)
 
     indi_jnc_tp = method2results[[method]][1]
     indi_jnc_fn = method2results[[method]][2]
@@ -54,7 +54,7 @@ testBenchmarkMethod <- function(method, method2results, tgttr) {
     nuc_precision      = nuc_tp/(nuc_tp + nuc_fp)
     nuc_recall         = nuc_tp/(nuc_tp + nuc_fn)
 
-    test_that(paste0('evalMdl::testBenchmarkMethod::', method), {
+    test_that(paste0('evalModel::testBenchmarkMethod::', method), {
         expect_equal(indi_jnc_tp, evaldt[feat=='indi_jnc', ntp])
         expect_equal(indi_jnc_fn, evaldt[feat=='indi_jnc', nfn])
         expect_equal(indi_jnc_fp, evaldt[feat=='indi_jnc', nfp])
