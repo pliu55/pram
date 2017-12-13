@@ -15,8 +15,14 @@ Param = setClass('Param',
         RSEMBINREF   = 'character',
         RSEMBINEXPR  = 'character',
 
-        FR1STSTRAND2MATE2FLAG = 'list',
+        TEMPDIR = 'character',
+
         MAX_YIELD_SIZE = 'numeric',
+
+        MAX_UNI_N_DUP_ALN = 'numeric',
+        MAX_MUL_N_DUP_ALN = 'numeric',
+
+        FR1STSTRAND2MATE2FLAG = 'list',
 
         OS = 'character'
     ),
@@ -35,7 +41,12 @@ Param = setClass('Param',
         RSEMURL = 'https://github.com/deweylab/RSEM/archive/v1.3.0.tar.gz',
 
 
+        TEMPDIR = paste0(tempdir(), '/'),
+
         MAX_YIELD_SIZE = 200000000, ## overwrite filterBam's default 1M
+
+        MAX_UNI_N_DUP_ALN = 10, ## max # of duplicated alignments on uni-frags
+        MAX_MUL_N_DUP_ALN = 10, ## max # of duplicated alignments on mul-frags
 
         ## for fr-1ststrand
         FR1STSTRAND2MATE2FLAG = list(
@@ -69,13 +80,23 @@ Param = setClass('Param',
 )
 
 
-setGeneric('getSTARBIN', function(x) standardGeneric('getSTARBIN'))
-setGeneric('getMaxYieldSize', function(x) standardGeneric('getMaxYieldSize'))
-setGeneric('STARBIN<-', function(x, value) standardGeneric('STARBIN<-'))
+setGeneric('StarBin<-', function(x, value) standardGeneric('StarBin<-'))
+setGeneric('getStarBin',         function(x) standardGeneric('getStarBin'))
+setGeneric('getMaxYieldSize',    function(x) standardGeneric('getMaxYieldSize'))
+setGeneric('getTempDir',         function(x) standardGeneric('getTempDir'))
+setGeneric('getMaxUniNDupAln',  function(x) standardGeneric('getMaxUniNDupAln'))
+setGeneric('getMaxMulNDupAln',  function(x) standardGeneric('getMaxMulNDupAln'))
+setGeneric('getFR1stStrand2Mate2Flag',
+           function(x) standardGeneric('getFR1stStrand2Mate2Flag'))
 
-setMethod('getSTARBIN', 'Param', function(x) x@STARBIN)
-setMethod('getMaxYieldSize', 'Param', function(x) x@MAX_YIELD_SIZE)
-setReplaceMethod('STARBIN', 'Param', function(x, value) {x@STARBIN = value; x})
+setReplaceMethod('StarBin', 'Param', function(x, value) {x@STARBIN = value; x})
+setMethod('getStarBin',         'Param', function(x) x@STARBIN)
+setMethod('getMaxYieldSize',    'Param', function(x) x@MAX_YIELD_SIZE)
+setMethod('getTempDir',         'Param', function(x) x@TEMPDIR)
+setMethod('getMaxUniNDupAln',    'Param', function(x) x@MAX_UNI_N_DUP_ALN)
+setMethod('getMaxMulNDupAln',    'Param', function(x) x@MAX_MUL_N_DUP_ALN)
+setMethod('getFR1stStrand2Mate2Flag', 'Param',
+          function(x) x@FR1STSTRAND2MATE2FLAG)
 
 
 #' @importFrom Rsamtools scanBamFlag

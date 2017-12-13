@@ -20,3 +20,31 @@ getOS <- function() {
 
     return(os)
 }
+
+
+#' convert ori 2 strand
+#'
+convertOri2Strand <- function(ori) {
+    if ( length(setdiff(unique(ori), c( '+', '-' ))) > 0  ) {
+        msg = paste0("Ori must be one of '+' or '-'\n")
+        stop(msg)
+    }
+
+    strand = ifelse(ori == '+', 'plus', ifelse( ori == '-', 'minus', NA))
+
+    return(strand)
+}
+
+
+#' convert strand 2 ori
+#'
+convertStrand2Ori <- function(strand) {
+    if ( length(setdiff(unique(strand), c( 'plus', 'minus' ))) > 0 ) {
+        msg = paste0("Strand must be one of 'plus' or 'minus'\n")
+        stop(msg)
+    }
+
+    ori = ifelse(strand == 'plus', '+', ifelse(strand == 'minus', '-', NA))
+
+    return(ori)
+}
