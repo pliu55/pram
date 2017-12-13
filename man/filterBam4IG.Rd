@@ -4,7 +4,7 @@
 \alias{filterBam4IG}
 \title{filter bam files for a given intergenic regions}
 \usage{
-filterBam4IG(fbams, iggrs, nthr, tmpdir)
+filterBam4IG(fbams, iggrs, nthr, prm)
 }
 \value{
 a data.table contains input and filtered bam files by chromosome and
