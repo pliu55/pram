@@ -14,12 +14,12 @@ writeGTF(gtf, out_fgtf, F)
 new_gtf = GTF()
 new_gtf = initFromGTFFile(new_gtf, out_fgtf, in_infokeys, origin=in_origin)
 
-new_exondt = getGrangedt(new_gtf)
+new_exondt = grangedt(new_gtf)
 lines = readLines(out_fgtf)
 
 file.remove(out_fgtf)
 
-exondt = getGrangedt(gtf)
+exondt = grangedt(gtf)
 
 test_that('GTF', {
     expect_equal(nrow(exondt), nlines)

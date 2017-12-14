@@ -9,10 +9,10 @@ GTF = setClass( 'GTF',
 )
 
 
-setGeneric('getFgtf',     function(x) standardGeneric('getFgtf'))
-setGeneric('getOrigin',   function(x) standardGeneric('getOrigin'))
-setGeneric('getInfokeys', function(x) standardGeneric('getInfokeys'))
-setGeneric('getGrangedt', function(x) standardGeneric('getGrangedt'))
+setGeneric('fgtf',     function(x) standardGeneric('fgtf'))
+setGeneric('origin',   function(x) standardGeneric('origin'))
+setGeneric('infokeys', function(x) standardGeneric('infokeys'))
+setGeneric('grangedt', function(x) standardGeneric('grangedt'))
 setGeneric('writeGTF',
            function(x, fout, to_append) standardGeneric('writeGTF'))
 setGeneric('initFromGTFFile',
@@ -24,20 +24,20 @@ setGeneric('initFromGRanges',
 setGeneric('fgtf<-', function(x, value) standardGeneric('fgtf<-'))
 
 
-setMethod('getFgtf',     'GTF', function(x) x@fgtf)
-setMethod('getOrigin',   'GTF', function(x) x@origin)
-setMethod('getInfokeys', 'GTF', function(x) x@infokeys)
-setMethod('getGrangedt', 'GTF', function(x) x@grangedt)
+setMethod('fgtf',     'GTF', function(x) x@fgtf)
+setMethod('origin',   'GTF', function(x) x@origin)
+setMethod('infokeys', 'GTF', function(x) x@infokeys)
+setMethod('grangedt', 'GTF', function(x) x@grangedt)
 setReplaceMethod('fgtf', 'GTF', function(x, value) {x@fgtf = value; x})
 
 
 setMethod('show', 'GTF',
     function(object) {
-        cat('fgtf:',     getFgtf(object),     "\n")
-        cat('origin:',   getOrigin(object),   "\n")
-        cat('infokeys:', getInfokeys(object), "\n")
+        cat('fgtf:',     fgtf(object),     "\n")
+        cat('origin:',   origin(object),   "\n")
+        cat('infokeys:', infokeys(object), "\n")
         cat("granges:\n")
-        print(getGrangedt(object))
+        print(grangedt(object))
     }
 )
 
@@ -140,16 +140,16 @@ setMethod(
 setMethod('writeGTF',
     c('GTF', 'character', 'logical'),
     function(x, fout, to_append) {
-        outdt = copy(getGrangedt(x))
+        outdt = copy(grangedt(x))
         if ( ! ('feature' %in% names(outdt)) ) {
             outdt[, feature := 'unknown']
         }
-        ori_field = ifelse(length(getOrigin(x)) == 0, 'UNKNOWN', getOrigin(x))
+        ori_field = ifelse(length(origin(x)) == 0, 'UNKNOWN', origin(x))
         outdt[, `:=`( source = ori_field,
                       score  = '.',
                       frame  = '.'     ) ]
 
-        info_keys = getInfokeys(x)
+        info_keys = infokeys(x)
         for ( infokey in info_keys ) {
             outdt[, eval(infokey) := paste0(infokey, ' "', get(infokey), '"')]
         }

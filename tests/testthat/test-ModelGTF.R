@@ -20,10 +20,10 @@ testSTMG <- function() {
     ## need to specify origin=, and model_method= for '...' argument
     gtf = initFromGTFFile(gtf, fgtf, in_infokeys, origin=origin,
                           model_method='stmg')
-    exondt = getGrangedt(gtf)[ feature == 'exon' ]
+    exondt = grangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'StringTieMerge GTF', {
-        expect_equal(getOrigin(gtf), origin)
+        expect_equal(origin(gtf), origin)
         expect_equal(nrow(exondt), nlines)
         expect_true(all(grepl('^stmg_minus_chr18', exondt[, gene_id], perl=T)))
     })
@@ -39,10 +39,10 @@ testSTPL <- function() {
     gtf = ModelGTF()
     gtf = initFromGTFFile(gtf, fgtf, in_infokeys, origin=origin,
                           model_method='stpl')
-    exondt = getGrangedt(gtf)[ feature == 'exon' ]
+    exondt = grangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'StringTiePool GTF', {
-        expect_equal(getOrigin(gtf), origin)
+        expect_equal(origin(gtf), origin)
         expect_equal(nrow(exondt), nlines)
         expect_true(all(grepl('^stpl_minus_chr18', exondt[, gene_id], perl=T)))
     })
@@ -58,10 +58,10 @@ testCFMG <- function() {
     gtf = ModelGTF()
     gtf = initFromGTFFile(gtf, fgtf, in_infokeys, origin=origin,
                           model_method='cfmg')
-    exondt = getGrangedt(gtf)[ feature == 'exon' ]
+    exondt = grangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'CufflinksMerge GTF', {
-        expect_equal(getOrigin(gtf), origin)
+        expect_equal(origin(gtf), origin)
         expect_equal(nrow(exondt), nlines)
         expect_true(all(grepl('^cfmg_minus_chr18', exondt[, gene_id], perl=T)))
     })
@@ -78,10 +78,10 @@ testCFPL <- function() {
     gtf = ModelGTF()
     gtf = initFromGTFFile(gtf, fgtf, in_infokeys, origin=origin,
                           model_method=model_method)
-    exondt = getGrangedt(gtf)[ feature == 'exon' ]
+    exondt = grangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'CufflinksPool GTF', {
-        expect_equal(getOrigin(gtf), origin)
+        expect_equal(origin(gtf), origin)
         expect_equal(nrow(exondt), nlines)
         expect_true(all(grepl('^cfpl_minus_chr18', exondt[, gene_id], perl=T)))
     })
@@ -98,10 +98,10 @@ testTACO <- function() {
     gtf = ModelGTF()
     gtf = initFromGTFFile(gtf, fgtf, in_infokeys, origin=origin,
                           model_method=model_method)
-    exondt = getGrangedt(gtf)[ feature == 'exon' ]
+    exondt = grangedt(gtf)[ feature == 'exon' ]
 
     test_that( 'TACO GTF', {
-        expect_equal(getOrigin(gtf), origin)
+        expect_equal(origin(gtf), origin)
         expect_equal(nrow(exondt), nlines)
         expect_true(all(grepl('^taco_minus_chr18', exondt[, gene_id], perl=T)))
     })
