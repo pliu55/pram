@@ -6,7 +6,8 @@
 #'                'fr-firststrand' by Cufflinks's definition
 #' @param  iggrs  a GenomicRanges object defining intergenic regions
 #' @param  outdir  a character string defining the full name of a directory for
-#'                 saving output files
+#'                 saving output files. PRAM will a folder named 'pram_tmp/'
+#                  under this directory to save temporary files.
 #' @param  method  a character string defining PRAM's model building method.
 #'                 Must be one of 'pooling+cufflinks', 'pooling+stringtie',
 #'                 'cufflinks+cuffmerge', 'stringtie+merging', or
@@ -14,20 +15,22 @@
 #' @param  nthr  an integer defining the number of threads to-be-used.
 #'               Default: 1
 #'
+#' @param  cufflinks  Cufflinks binary with full path. Default: ''
+#'
+#' @param  stringtie  StringTie binary with full path. Default: ''
+#'
 #' @return  NULL
 #'
 #' @export
 #'
 buildModel <- function(fbams, iggrs, outdir, method='pooling+cufflinks',
-                       nthr=1) {
+                       nthr=1, cufflinks='', stringtie='') {
 
-    prm = new('Param')
-    method2func = list( 'pooling+cufflinks'   = poolCufflinks,
-                        'pooling+stringtie'   = poolStringTie,
-                        'cufflinks+cuffmerge' = cufflinksCuffmerge,
-                        'stringtie+merging'   = stringtieMerge,
-                        'cufflinks+taco'      = cufflinksTACO )
-
+    method2func = list( 'pooling+cufflinks'   = modelByPoolingCufflinks,
+                        'pooling+stringtie'   = modelByPoolingStringTie,
+                        'cufflinks+cuffmerge' = modelByCufflinksCuffmerge,
+                        'stringtie+merging'   = modelByStringtieMerge,
+                        'cufflinks+taco'      = modelByCufflinksTACO )
 
     lo_method = tolower(method)
     if ( ! lo_method %in% names(method2func) ){
@@ -36,21 +39,102 @@ buildModel <- function(fbams, iggrs, outdir, method='pooling+cufflinks',
         stop(msg)
     }
 
+    tmp_dir = paste0(outdir, '/pram_tmp/')
+    if ( ! file.exists(tmp_dir) ) dir.create(tmp_dir, recursive=T)
+
+    prm = new('Param')
+    outdir(prm) = paste0(outdir, '/')
+    tmpdir(prm) = tmp_dir
+    nthreads(prm) = nthr
+    cufflinks(prm) = cufflinks
+    stringtie(prm) = stringtie
+
 
     func = method2func[[lo_method]]
-    func(fbams, iggrs, outdir, nthr, prm)
+    func(fbams, iggrs, prm)
 }
 
 
-poolCufflinks <- function(fbams, iggrs, outdir, nthr, prm) {
-    bamdt = filterBam4IG(fbams, iggrs, nthr, prm)
+#' @importFrom  parallel  mcmapply
+#'
+modelByPoolingCufflinks <- function(fbams, iggrs, prm) {
+    indidt = filterBam4IG(fbams, iggrs, prm)
+
+    indidt[, `:=`( fplbam = paste0(tmpdir(prm),
+                                   'plcf.', chrom, '.', strand, '.bam'),
+                   outdir = paste0(tmpdir(prm),
+                                   'plcf_', chrom, '_', strand, '/') )]
+
+    pldt = unique(indidt[, .(chrom, ori, strand, fplbam, outdir)],
+                  by=c('chrom', 'ori'))
+
+    nthr = nthreads(prm)
+    if ( nthr == 1 ) {
+        mapply(poolBamByChromOri, pldt$chrom, pldt$ori,
+               MoreArgs=list(indidt=indidt))
+        mapply(buildCufflinksModelByChromOri, pldt$chrom, pldt$ori,
+               MoreArgs=list(pldt=pldt, prm=prm))
+    } else {
+        mcmapply(poolBamByChromOri, pldt$chrom, pldt$ori,
+                 MoreArgs=list(indidt=indidt), mc.cores=nthr)
+    }
+
+    return(indidt)
 }
 
 
-poolStringTie <- function(bamdt, prm) {}
-cufflinksCuffmerge <- function(bamdt, prm) {}
-stringtieMerge <- function(bamdt, prm) {}
-cufflinksTACO <- function(bamdt, prm) {}
+modelByPoolingStringTie <- function(bamdt, prm) {}
+modelByCufflinksCuffmerge <- function(bamdt, prm) {}
+modelByStringtieMerge <- function(bamdt, prm) {}
+modelByCufflinksTACO <- function(bamdt, prm) {}
+
+
+buildCufflinksModelByChromOri <- function(in_chrom, in_ori, pldt, prm) {
+    seldt = pldt[chrom == in_chrom & ori == in_ori]
+    fplbam = seldt$fplbam
+    strand = seldt$strand
+    outdir = seldt$outdir
+
+    label = paste0('plcf.', strand, '.', in_chrom)
+
+    modelByCufflinks(outdir, label, fplbam, prm)
+}
+
+
+modelByCufflinks <- function(outdir, label, finbam, prm) {
+    if ( ! file.exists(outdir) ) dir.create(outdir, recursive=T)
+    setwd(outdir)
+
+    fout = paste0(outdir, 'run.out')
+    ferr = paste0(outdir, 'run.err')
+
+    ## not use '--frag-bias-correct' or '--multi-read-correct'
+    args = c( cufflinks(prm),
+              '-o', outdir,
+              '-p 1',
+              '--library-type', libtype(prm),
+              '--min-isoform-fraction',    minisoformfraction(prm),
+              '--max-multiread-fraction',  maxmultireadfraction(prm),
+              '--min-frags-per-transfrag', minfragspertransfrag(prm),
+              '--label', label,
+              '--quiet',
+              '--no-update-check', finbam)
+
+    cat('nohup', args, "\n")
+    system2('nohup', args=args, stdout=fout, stderr=ferr)
+}
+
+
+#' @importFrom  Rsamtools  mergeBam indexBam
+#'
+poolBamByChromOri <- function(in_chrom, in_ori, indidt) {
+    seldt = indidt[ chrom == in_chrom & ori == in_ori]
+    figbams = seldt$figbam
+    fplbam  = unique(seldt$fplbam)
+
+    mergeBam(figbams, fplbam, overwrite=T)
+    indexBam(fplbam)
+}
 
 
 #' filter bam files for a given intergenic regions
@@ -64,7 +148,7 @@ cufflinksTACO <- function(bamdt, prm) {}
 #' @return a data.table contains input and filtered bam files by chromosome and
 #'         strand of a given intergenic genomic ranges
 #'
-filterBam4IG <- function(fbams, iggrs, nthr, prm) {
+filterBam4IG <- function(fbams, iggrs, prm) {
     dt = data.table( chrom = as.character(seqnames(iggrs)),
                      ori   = as.character(strand(iggrs)) )
     setkey(dt, NULL)
@@ -72,12 +156,19 @@ filterBam4IG <- function(fbams, iggrs, nthr, prm) {
     cmbdt = rbindlist(lapply(fbams, function(x) copy(dt)[, finbam := x]))
     cmbdt[, strand := convertOri2Strand(ori)]
 
-    cmbdt[, figbam := paste0(getTempDir(prm),
+    cmbdt[, figbam := paste0(tmpdir(prm),
                              file_path_sans_ext(basename(finbam)),
                              '.', chrom, '.', strand, '.bam')]
 
-    mcmapply(filterBam4IGByChrOri, cmbdt$finbam, cmbdt$chrom, cmbdt$ori,
-             MoreArgs=list(cmbdt=cmbdt, in_iggrs=iggrs, prm=prm), mc.cores=nthr)
+    nthr = nthreads(prm)
+    if ( nthr == 1 ) {
+        mapply(filterBam4IGByChrOri, cmbdt$finbam, cmbdt$chrom, cmbdt$ori,
+               MoreArgs=list(cmbdt=cmbdt, in_iggrs=iggrs, prm=prm))
+    } else {
+        mcmapply(filterBam4IGByChrOri, cmbdt$finbam, cmbdt$chrom, cmbdt$ori,
+                 MoreArgs=list(cmbdt=cmbdt, in_iggrs=iggrs, prm=prm),
+                 mc.cores=nthr)
+    }
 
     return(cmbdt)
 }
@@ -101,7 +192,7 @@ filterBam4IGByChrOri <- function(in_finbam, in_chrom, in_ori, cmbdt, in_iggrs,
     finbam_index = paste0(in_finbam, '.bai')
     if ( ! file.exists(finbam_index) ) indexBam(in_finbam)
 
-    strand2mate2flag = getFR1stStrand2Mate2Flag(prm)
+    strand2mate2flag = fr1ststrand2mate2flag(prm)
     flag_1stmate = strand2mate2flag[[strand]][['1stmate']]
     flag_2ndmate = strand2mate2flag[[strand]][['2ndmate']]
 
@@ -109,8 +200,8 @@ filterBam4IGByChrOri <- function(in_finbam, in_chrom, in_ori, cmbdt, in_iggrs,
     alns_2nd = selAlnInGRanges(iggrs, in_finbam, flag_2ndmate)
     alns = c(alns_1st, alns_2nd)
 
-    max_uni_ndup = getMaxUniNDupAln(prm)
-    max_mul_ndup = getMaxMulNDupAln(prm)
+    max_uni_ndup = maxunindupaln(prm)
+    max_mul_ndup = maxmulndupaln(prm)
 
     sel_alndt = selAlnByMateMaxNDup(alns, max_uni_ndup, max_mul_ndup)
 
@@ -126,7 +217,7 @@ filterBam4IGByChrOri <- function(in_finbam, in_chrom, in_ori, cmbdt, in_iggrs,
 
     filter_rules = FilterRules(list(tmp=filter_func))
 
-    max_yield_size = getMaxYieldSize(prm)
+    max_yield_size = maxyieldsize(prm)
     inbam = BamFile(in_finbam, yieldSize=max_yield_size)
 
     filterBam(inbam, figbam, filter=filter_rules,

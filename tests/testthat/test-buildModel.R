@@ -4,25 +4,46 @@ suppressMessages(library(GenomicAlignments))
 main <- function() {
     context('buildModel')
 
-    testFilterBam4IG()
-}
-
-
-testFilterBam4IG <- function() {
-    frawbam1 = system.file('extdata/bam/CMPRep1.sortedByCoord.raw.bam',
-                           package='pram')
-    frawbam2 = system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam',
-                           package='pram')
+    fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.raw.bam',
+                           package='pram'),
+               system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam',
+                           package='pram') )
 
     seqinfo = Seqinfo( c('chr10', 'chr12') )
     iggrs = c( GRanges( 'chr10:77236000-77247000:+', seqinfo = seqinfo ),
                GRanges( 'chr12:32095000-32125000:-', seqinfo = seqinfo ) )
-    outdir = tempdir()
-    nthr = 2
+
+    nthr = 1
+
+    ## to-be-changed later
+    outdir = '/tier2/deweylab/scratch/pliu/repe/pram/'
+    cufflinks = '/ua/pliu/local/cufflinks-2.2.1/cufflinks'
+    stringtie = '/ua/pliu/local/stringtie-1.3.3/stringtie'
+
+    testFilterBam4IG(fbams, iggrs, outdir, nthr)
+
+    testBuildModel(fbams, iggrs, outdir, 'pooling+cufflinks', nthr,
+                   cufflinks=cufflinks, stringtie='')
+}
+
+
+testBuildModel <- function(fbams, iggrs, outdir, method, nthr, cufflinks,
+                           stringtie) {
+    outdt = buildModel(fbams, iggrs, outdir, method, nthr, cufflinks, stringtie)
+    browser()
+}
+
+
+testFilterBam4IG <- function(frawbams, iggrs, outdir, nthr) {
+    tmpdir = paste0(outdir, 'pram_tmp/')
+    if ( ! file.exists(tmpdir) ) dir.create(tmpdir, recursive=T)
 
     prm = new('Param')
-    frawbams = c(frawbam1, frawbam2)
-    bamdt = filterBam4IG(frawbams, iggrs, nthr, prm)
+    outdir(prm) = outdir
+    tmpdir(prm) = tmpdir
+    nthreads(prm) = nthr
+
+    bamdt = filterBam4IG(frawbams, iggrs, prm)
     bamdt[, rnaseqid := tstrsplit(basename(finbam), '.', fixed=T)[[1]]]
 
     cleandt = data.table( rbind(

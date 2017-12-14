@@ -4,7 +4,8 @@
 \alias{buildModel}
 \title{Build transcript models from aligned RNA-seq data}
 \usage{
-buildModel(fbams, iggrs, outdir, method = "pooling+cufflinks", nthr = 1)
+buildModel(fbams, iggrs, outdir, method = "pooling+cufflinks", nthr = 1,
+  cufflinks = "", stringtie = "")
 }
 \arguments{
 \item{fbams}{character vector of a list of RNA-seq BAM files.  Currently,
@@ -15,7 +16,7 @@ first mate on the right-most of transcript coordinate, i.e.,
 \item{iggrs}{a GenomicRanges object defining intergenic regions}
 
 \item{outdir}{a character string defining the full name of a directory for
-saving output files}
+saving output files. PRAM will a folder named 'pram_tmp/'}
 
 \item{method}{a character string defining PRAM's model building method.
 Must be one of 'pooling+cufflinks', 'pooling+stringtie',
@@ -24,6 +25,10 @@ Must be one of 'pooling+cufflinks', 'pooling+stringtie',
 
 \item{nthr}{an integer defining the number of threads to-be-used.
 Default: 1}
+
+\item{cufflinks}{Cufflinks binary with full path. Default: ''}
+
+\item{stringtie}{StringTie binary with full path. Default: ''}
 }
 \description{
 Build transcript models from aligned RNA-seq data

@@ -9,5 +9,5 @@ document()
 install(quick=T, reload=F, threads=4)
 
 
-#test( filter = 'buildModel' )
-test( )
+test( filter = 'buildModel' )
+#test( )
