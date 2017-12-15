@@ -32,8 +32,14 @@ buildModel <- function(fbams, iggrs, outdir, method='pooling+cufflinks',
                         'stringtie+merging'   = modelByStringtieMerge,
                         'cufflinks+taco'      = modelByCufflinksTACO )
 
+    method2label = list( 'pooling+cufflinks'   = 'plcf',
+                         'pooling+stringtie'   = 'plst',
+                         'cufflinks+cuffmerge' = 'cfmg',
+                         'stringtie+merging'   = 'stmg',
+                         'cufflinks+taco'      = 'cftc' )
+
     lo_method = tolower(method)
-    if ( ! lo_method %in% names(method2func) ){
+    if ( ! lo_method %in% names(method2func) ) {
         msg = paste0('method= ', method, ' is not implemented. Must be one of ',
                      modeling_methods, "\n")
         stop(msg)
@@ -50,34 +56,59 @@ buildModel <- function(fbams, iggrs, outdir, method='pooling+cufflinks',
     stringtie(prm) = stringtie
 
 
-    func = method2func[[lo_method]]
-    func(fbams, iggrs, prm)
+    func  = method2func[[lo_method]]
+    label = method2label[[lo_method]]
+    func(fbams, iggrs, label, prm)
 }
 
 
-#' @importFrom  parallel  mcmapply
+#' @importFrom  parallel       mcmapply
+#' @importFrom  GenomicRanges  GRanges
 #'
-modelByPoolingCufflinks <- function(fbams, iggrs, prm) {
+modelByPoolingCufflinks <- function(fbams, iggrs, label, prm) {
+    origin = label
+    info_keys = c('gene_id', 'transcript_id')
+
     indidt = filterBam4IG(fbams, iggrs, prm)
 
     indidt[, `:=`( fplbam = paste0(tmpdir(prm),
-                                   'plcf.', chrom, '.', strand, '.bam'),
+                                   origin, '.', chrom, '.', strand, '.bam'),
                    outdir = paste0(tmpdir(prm),
-                                   'plcf_', chrom, '_', strand, '/') )]
+                                   origin, '_', chrom, '_', strand, '/') )]
 
     pldt = unique(indidt[, .(chrom, ori, strand, fplbam, outdir)],
                   by=c('chrom', 'ori'))
 
     nthr = nthreads(prm)
+    gtfs = NULL
     if ( nthr == 1 ) {
         mapply(poolBamByChromOri, pldt$chrom, pldt$ori,
                MoreArgs=list(indidt=indidt))
-        mapply(buildCufflinksModelByChromOri, pldt$chrom, pldt$ori,
-               MoreArgs=list(pldt=pldt, prm=prm))
+
+        gtfs = mapply(buildCufflinksModelByChromOri, pldt$chrom, pldt$ori,
+                      SIMPLIFY=F,  MoreArgs=list(pldt=pldt, origin=origin,
+                      info_keys=info_keys, prm=prm))
     } else {
         mcmapply(poolBamByChromOri, pldt$chrom, pldt$ori,
                  MoreArgs=list(indidt=indidt), mc.cores=nthr)
+
+        gtfs = mcmapply(buildCufflinksModelByChromOri, pldt$chrom, pldt$ori,
+                        SIMPLIFY=F, MoreArgs=list(pldt=pldt, origin=origin,
+                        info_keys=info_keys, prm=prm), mc.cores=nthr)
     }
+
+    gtf = new('GTF')
+    fgtf(gtf)     = paste0(outdir(prm), origin, '.gtf')
+    origin(gtf)   = origin
+    infokeys(gtf) = info_keys
+    grangedt(gtf) = rbindlist(lapply(gtfs, function(x) grangedt(x)))
+    writeGTF(gtf, fgtf(gtf), to_append=F)
+    cat('File writtne:', fgtf(gtf), "\n")
+
+    fout_grs = paste0(outdir(prm), origin, '.rda')
+    grs = makeGRangesFromDataFrame(grangedt(gtf), keep.extra.columns=T)
+    save(grs, file=fout_grs)
+    cat('R obj saved:', fout_grs, "\n")
 
     return(indidt)
 }
@@ -89,15 +120,22 @@ modelByStringtieMerge <- function(bamdt, prm) {}
 modelByCufflinksTACO <- function(bamdt, prm) {}
 
 
-buildCufflinksModelByChromOri <- function(in_chrom, in_ori, pldt, prm) {
+buildCufflinksModelByChromOri <- function(in_chrom, in_ori, pldt, origin,
+                                          info_keys, prm) {
     seldt = pldt[chrom == in_chrom & ori == in_ori]
     fplbam = seldt$fplbam
     strand = seldt$strand
     outdir = seldt$outdir
 
-    label = paste0('plcf.', strand, '.', in_chrom)
+    label = paste0(origin, '.', strand, '.', in_chrom)
 
     modelByCufflinks(outdir, label, fplbam, prm)
+
+    fgtf = paste0(outdir, 'transcripts.gtf')
+    gtf = new('GTF')
+    gtf = initFromGTFFile(gtf, fgtf, info_keys, origin=origin)
+
+    return(gtf)
 }
 
 

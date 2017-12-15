@@ -30,7 +30,6 @@ main <- function() {
 testBuildModel <- function(fbams, iggrs, outdir, method, nthr, cufflinks,
                            stringtie) {
     outdt = buildModel(fbams, iggrs, outdir, method, nthr, cufflinks, stringtie)
-    browser()
 }
 
 

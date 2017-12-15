@@ -21,14 +21,21 @@ setGeneric('initFromGRanges',
            function(obj, grs) standardGeneric('initFromGRanges'))
 
 ## 2nd argument to be named as 'value'
-setGeneric('fgtf<-', function(x, value) standardGeneric('fgtf<-'))
+setGeneric('fgtf<-',     function(x, value) standardGeneric('fgtf<-'))
+setGeneric('origin<-',   function(x, value) standardGeneric('origin<-'))
+setGeneric('infokeys<-', function(x, value) standardGeneric('infokeys<-'))
+setGeneric('grangedt<-', function(x, value) standardGeneric('grangedt<-'))
 
 
 setMethod('fgtf',     'GTF', function(x) x@fgtf)
 setMethod('origin',   'GTF', function(x) x@origin)
 setMethod('infokeys', 'GTF', function(x) x@infokeys)
 setMethod('grangedt', 'GTF', function(x) x@grangedt)
-setReplaceMethod('fgtf', 'GTF', function(x, value) {x@fgtf = value; x})
+
+setReplaceMethod('fgtf',     'GTF', function(x, value) {x@fgtf = value; x})
+setReplaceMethod('origin',   'GTF', function(x, value) {x@origin = value; x})
+setReplaceMethod('infokeys', 'GTF', function(x, value) {x@infokeys = value; x})
+setReplaceMethod('grangedt', 'GTF', function(x, value) {x@grangedt = value; x})
 
 
 setMethod('show', 'GTF',
@@ -36,7 +43,7 @@ setMethod('show', 'GTF',
         cat('fgtf:',     fgtf(object),     "\n")
         cat('origin:',   origin(object),   "\n")
         cat('infokeys:', infokeys(object), "\n")
-        cat("granges:\n")
+        cat("grangedt:\n")
         print(grangedt(object))
     }
 )
