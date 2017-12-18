@@ -5,7 +5,7 @@
 \title{Build transcript models from aligned RNA-seq data}
 \usage{
 buildModel(fbams, iggrs, outdir, method = "pooling+cufflinks", nthr = 1,
-  cufflinks = "", stringtie = "")
+  cufflinks = "", cuffmerge = "", stringtie = "", taco = "")
 }
 \arguments{
 \item{fbams}{character vector of a list of RNA-seq BAM files.  Currently,
@@ -26,9 +26,17 @@ Must be one of 'pooling+cufflinks', 'pooling+stringtie',
 \item{nthr}{an integer defining the number of threads to-be-used.
 Default: 1}
 
-\item{cufflinks}{Cufflinks binary with full path. Default: ''}
+\item{cufflinks}{Cufflinks executable file. Required by method
+'pooling+cufflinks' and 'cufflinks+cuffmerge'. Default: ''}
 
-\item{stringtie}{StringTie binary with full path. Default: ''}
+\item{cuffmerge}{Cuffmerge executable file. Required by method
+'cufflinks+cuffmerge'. Default: ''}
+
+\item{stringtie}{StringTie executable file. Required by method
+'pooling+stringtie' and 'stringtie+merging'. Default: ''}
+
+\item{taco}{TACO executable file. Required by method
+'cufflinks+taco'. Default: ''}
 }
 \description{
 Build transcript models from aligned RNA-seq data

@@ -2,18 +2,15 @@
 #'
 Param = setClass('Param',
     slots = list(
-        STAR_URL            = 'character',
-        CUFFLINKS_LINUX_URL = 'character',
-        CUFFLINKS_OSX_URL   = 'character',
-        STRINGTIE_LINUX_URL = 'character',
-        STRINGTIE_OSX_URL   = 'character',
-        RSEM_URL            = 'character',
+        OS2CUFFLINKS_URL = 'list',
+        OS2STRINGTIE_URL = 'list',
+        OS2TACO_URL      = 'list',
 
         STAR_BIN      = 'character',
         CUFFLINKS_BIN = 'character',
+        CUFFMERGE_BIN = 'character',
         STRINGTIE_BIN = 'character',
-        RSEM_BIN_REF  = 'character',
-        RSEM_BIN_EXPR = 'character',
+        TACO_BIN      = 'character',
 
         OUT_DIR  = 'character',
         TMP_DIR = 'character',
@@ -39,17 +36,24 @@ Param = setClass('Param',
     ),
 
     prototype = list(
-        STAR_URL = 'https://github.com/alexdobin/STAR/archive/STAR_2.4.2a.tar.gz',
+       #STAR_URL = 'https://github.com/alexdobin/STAR/archive/STAR_2.4.2a.tar.gz',
 
-        CUFFLINKS_LINUX_URL = 'http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz',
+       #RSEM_URL = 'https://github.com/deweylab/RSEM/archive/v1.3.0.tar.gz',
 
-        CUFFLINKS_OSX_URL = 'http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.OSX_x86_64.tar.gz',
+        OS2CUFFLINKS_URL = list(
+            'LINUX' = 'http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz',
 
-        STRINGTIE_LINUX_URL = 'http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.Linux_x86_64.tar.gz',
+            'OSX' = 'http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.OSX_x86_64.tar.gz' ),
 
-        STRINGTIE_OSX_URL = 'http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.OSX_x86_64.tar.gz',
+        OS2STRINGTIE_URL = list(
+            'LINUX' = 'http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.Linux_x86_64.tar.gz',
 
-        RSEM_URL = 'https://github.com/deweylab/RSEM/archive/v1.3.0.tar.gz',
+            'OSX' = 'http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.OSX_x86_64.tar.gz' ),
+
+        OS2TACO_URL = list(
+            'LINUX' = 'https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz',
+
+            'OSX' = 'https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz' ),
 
 
         NTHREADS = 1,
@@ -105,15 +109,17 @@ Param = setClass('Param',
 
 
 ## need to be 'value', other names won't work
-setGeneric('starbin<-',  function(x, value) standardGeneric('starbin<-'))
-setGeneric('nthreads<-', function(x, value) standardGeneric('nthreads<-'))
-setGeneric('outdir<-',   function(x, value) standardGeneric('outdir<-'))
-setGeneric('tmpdir<-',   function(x, value) standardGeneric('tmpdir<-'))
+setGeneric('nthreads<-',    function(x, value) standardGeneric('nthreads<-'))
+setGeneric('outdir<-',      function(x, value) standardGeneric('outdir<-'))
+setGeneric('tmpdir<-',      function(x, value) standardGeneric('tmpdir<-'))
 setGeneric('cufflinks<-',   function(x, value) standardGeneric('cufflinks<-'))
+setGeneric('cuffmerge<-',   function(x, value) standardGeneric('cuffmerge<-'))
 setGeneric('stringtie<-',   function(x, value) standardGeneric('stringtie<-'))
-setGeneric('starbin',       function(x) standardGeneric('starbin'))
+setGeneric('taco<-',        function(x, value) standardGeneric('taco<-'))
 setGeneric('cufflinks',     function(x) standardGeneric('cufflinks'))
+setGeneric('cuffmerge',     function(x) standardGeneric('cuffmerge'))
 setGeneric('stringtie',     function(x) standardGeneric('stringtie'))
+setGeneric('taco',          function(x) standardGeneric('taco'))
 setGeneric('maxyieldsize',  function(x) standardGeneric('maxyieldsize'))
 setGeneric('outdir',        function(x) standardGeneric('outdir'))
 setGeneric('tmpdir',        function(x) standardGeneric('tmpdir'))
@@ -133,9 +139,19 @@ setGeneric('mintrfpkmtoinclude',
            function(x) standardGeneric('mintrfpkmtoinclude'))
 setGeneric('mintrtpmtoinclude',
            function(x) standardGeneric('mintrtpmtoinclude'))
+setGeneric('checkCufflinksBin',
+           function(cufflinks_bin, prm) standardGeneric('checkCufflinksBin'))
+setGeneric('checkStringTieBin',
+           function(stringtie_bin, prm) standardGeneric('checkStringTieBin'))
+setGeneric('checkCuffmergeBin',
+           function(cuffmerge_bin, prm) standardGeneric('checkCuffmergeBin'))
+setGeneric('checkTacoBin',
+           function(taco_bin, prm) standardGeneric('checkTacoBin'))
+setGeneric('os2cufflinks_url', function(x) standardGeneric('os2cufflinks_url'))
+setGeneric('os2stringtie_url', function(x) standardGeneric('os2stringtie_url'))
+setGeneric('os2taco_url', function(x) standardGeneric('os2taco_url'))
 
 
-setReplaceMethod('starbin',  'Param', function(x, value) {x@STAR_BIN=value; x})
 setReplaceMethod('nthreads', 'Param', function(x, value) {x@NTHREADS=value; x})
 setReplaceMethod('outdir',   'Param', function(x, value) {x@OUT_DIR=value; x})
 setReplaceMethod('tmpdir',   'Param', function(x, value) {x@TMP_DIR=value; x})
@@ -143,7 +159,6 @@ setReplaceMethod('cufflinks', 'Param',
                  function(x, value) {x@CUFFLINKS_BIN=value; x})
 setReplaceMethod('stringtie', 'Param',
                  function(x, value) {x@STRINGTIE_BIN=value; x})
-setMethod('starbin',       'Param', function(x) x@STAR_BIN)
 setMethod('cufflinks',     'Param', function(x) x@CUFFLINKS_BIN)
 setMethod('maxyieldsize',  'Param', function(x) x@MAX_YIELD_SIZE)
 setMethod('outdir',        'Param', function(x) x@OUT_DIR)
@@ -162,6 +177,9 @@ setMethod('minfragspertransfrag', 'Param',
 setMethod('mintrfpkmtoinclude', 'Param',
           function(x) x@MIN_TR_FPKM_TO_INCLUDE)
 setMethod('mintrtpmtoinclude', 'Param', function(x) x@MIN_TR_TPM_TO_INCLUDE)
+setMethod('os2cufflinks_url',  'Param', function(x) x@OS2CUFFLINKS_URL)
+setMethod('os2stringtie_url',  'Param', function(x) x@OS2STRINGTIE_URL)
+setMethod('os2taco_url',       'Param', function(x) x@OS2TACO_URL)
 
 
 #' @importFrom Rsamtools scanBamFlag
@@ -170,5 +188,65 @@ setMethod('initialize',
     'Param',
     function(.Object) {
         return(.Object)
+    }
+)
+
+
+setMethod('checkCufflinksBin',
+    c('character', 'Param'),
+    function(cufflinks_bin, prm) {
+        if ( ! file.exists(cufflinks_bin) ) {
+            url = os2cufflinks_url(prm)[[getOS()]]
+            msg = paste0('Cufflinks not found: ', cufflinks_bin, "\n",
+                         'It can be downloaded at ', url, "\n")
+            stop(msg)
+        } else {
+            cufflinks(prm) = cufflinks_bin
+        }
+    }
+)
+
+
+setMethod('checkCuffmergeBin',
+    c('character', 'Param'),
+    function(cuffmerge_bin, prm) {
+        if ( ! file.exists(cuffmerge_bin) ) {
+            url = os2cufflinks_url(prm)[[getOS()]]
+            msg = paste0('Cuffmerge not found: ', cuffmerge_bin, "\n",
+                         'It can be downloaded at ', url, "\n")
+            stop(msg)
+        } else {
+            cuffmerge(prm) = cuffmerge_bin
+        }
+    }
+)
+
+
+setMethod('checkStringTieBin',
+    c('character', 'Param'),
+    function(stringtie_bin, prm) {
+        if ( ! file.exists(stringtie_bin) ) {
+            url = os2stringtie_url(prm)[[getOS()]]
+            msg = paste0('StringTie not found: ', stringtie_bin, "\n",
+                         'It can be downloaded at ', url, "\n")
+            stop(msg)
+        } else {
+            stringtie(prm) = stringtie_bin
+        }
+    }
+)
+
+
+setMethod('checkTacoBin',
+    c('character', 'Param'),
+    function(taco_bin, prm) {
+        if ( ! file.exists(taco_bin) ) {
+            url = os2taco_url(prm)[[getOS()]]
+            msg = paste0('TACO not found: ', taco_bin, "\n",
+                         'It can be downloaded at ', url, "\n")
+            stop(msg)
+        } else {
+            taco(prm) = taco_bin
+        }
     }
 )

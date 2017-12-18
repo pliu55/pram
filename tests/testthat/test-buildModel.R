@@ -15,21 +15,60 @@ main <- function() {
 
     nthr = 1
 
-    ## to-be-changed later
-    outdir = '/tier2/deweylab/scratch/pliu/repe/pram/'
-    cufflinks = '/ua/pliu/local/cufflinks-2.2.1/cufflinks'
-    stringtie = '/ua/pliu/local/stringtie-1.3.3/stringtie'
+    outdir = tempdir()
 
     testFilterBam4IG(fbams, iggrs, outdir, nthr)
 
-    testBuildModel(fbams, iggrs, outdir, 'pooling+cufflinks', nthr,
-                   cufflinks=cufflinks, stringtie='')
+    prm = new('Param')
+    os = getOS()
+    testBinPLCF(fbams, iggrs, outdir, 'pooling+cufflinks',   nthr, prm, os)
+    testBinPLST(fbams, iggrs, outdir, 'pooling+stringtie',   nthr, prm, os)
+    testBinCFMG(fbams, iggrs, outdir, 'cufflinks+cuffmerge', nthr, prm, os)
+    testBinCFTC(fbams, iggrs, outdir, 'cufflinks+taco',      nthr, prm, os)
 }
 
 
-testBuildModel <- function(fbams, iggrs, outdir, method, nthr, cufflinks,
-                           stringtie) {
-    outdt = buildModel(fbams, iggrs, outdir, method, nthr, cufflinks, stringtie)
+testBinPLCF <- function(fbams, iggrs, outdir, method, nthr, prm, os) {
+    url = os2cufflinks_url(prm)[[os]]
+    test_that('buildModel::testBinPLCF',
+              expect_error(
+                  buildModel(fbams, iggrs, outdir, method, nthr),
+                  regexp=paste0('Cufflinks not found: \n',
+                                'It can be downloaded at ', url, "\n"),
+                  ignore.case=T))
+}
+
+
+testBinPLST <- function(fbams, iggrs, outdir, method, nthr, prm, os) {
+    url = os2stringtie_url(prm)[[os]]
+    test_that('buildModel::testBinPLST',
+              expect_error(
+                  buildModel(fbams, iggrs, outdir, method, nthr),
+                  regexp=paste0('StringTie not found: \n',
+                                'It can be downloaded at ', url, "\n"),
+                  ignore.case=T))
+}
+
+
+testBinCFMG <- function(fbams, iggrs, outdir, method, nthr, prm, os) {
+    url = os2cufflinks_url(prm)[[os]]
+    test_that('buildModel::testBinCFMG',
+              expect_error(
+                  buildModel(fbams, iggrs, outdir, method, nthr),
+                  regexp=paste0('Cuffmerge not found: \n',
+                                'It can be downloaded at ', url, "\n"),
+                  ignore.case=T))
+}
+
+
+testBinCFTC <- function(fbams, iggrs, outdir, method, nthr, prm, os) {
+    url = os2taco_url(prm)[[os]]
+    test_that('buildModel::testBinCFTC',
+              expect_error(
+                  buildModel(fbams, iggrs, outdir, method, nthr),
+                  regexp=paste0('TACO not found: \n',
+                                'It can be downloaded at ', url, "\n"),
+                  ignore.case=T))
 }
 
 
