@@ -6,9 +6,15 @@ Description: Pooling aligned RNA-seq fragments to asemble transcript models.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Depends:
-    R (>= 3.3.1)
-Imports: 
-    methods, data.table (>= 1.10.4), GenomicAlignments (>= 1.8.4)
+Depends: R (>= 3.3.1)
+Imports: methods, data.table (>= 1.10.4)
 RoxygenNote: 6.0.1
 Suggests: testthat
+Collate: Util.R
+         Param.R
+         GTF.R
+         ModelGTF.R
+         Transcript.R
+         Bam.R
+         buildModel.R
+         evalModel.R
