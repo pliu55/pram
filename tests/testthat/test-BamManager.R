@@ -2,7 +2,7 @@ library(data.table)
 suppressMessages(library(GenomicAlignments))
 
 main <- function() {
-    context('Bam')
+    context('BamManager')
 
     fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.raw.bam',
                            package='pram'),
@@ -17,6 +17,7 @@ main <- function() {
     outdir(prm)   = paste0(tempdir(), '/')
     tmpdir(prm)   = paste0(outdir(prm), 'pram_tmp/')
     nthreads(prm) = 1
+    chromoridt(prm) = getUniChromOriDt(iggrs)
 
     if ( ! file.exists(tmpdir(prm)) ) dir.create(tmpdir(prm), recursive=T)
 
@@ -26,9 +27,9 @@ main <- function() {
 
 testFilterParentBamByGRanges <- function(fparentbams, iggrs, prm) {
 
-    bams = initBam(fparentbams, iggrs, prm)
+    bams = initBy1ParentChromOri(fparentbams, iggrs, prm)
 
-    lapply(bams, filterParentBamByGRanges)
+    lapply(bams, filterParentBamByGRanges, prm)
 
     lapply(bams, testFilterParentBamByGRangesByFile, iggrs)
 }
@@ -45,8 +46,8 @@ testFilterParentBamByGRangesByFile <- function(bam, iggrs) {
    ig_alns    = readGAlignments(foutbam,   use.names=F, param=bamprm)
    clean_alns = readGAlignments(fcleanbam, use.names=F, param=bamprm)
 
-   test_that( paste0('buildModel::testFilterBam4IGByFile::', foutbam, ' vs ',
-                     fcleanbam),
+   test_that( paste0('BamManager::testFilterParentBamByGRangesByFile::',
+                     foutbam, ' vs ', fcleanbam),
               expect_identical(ig_alns, clean_alns) )
 }
 

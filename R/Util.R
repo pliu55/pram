@@ -48,3 +48,18 @@ convertStrand2Ori <- function(strand) {
 
     return(ori)
 }
+
+
+#' Get a data.table of unique combinations of chrom and ori from input GRanges
+#'
+#' @importFrom  GenomeInfoDb  seqnames
+#' @importFrom  BiocGenerics  strand
+#'
+getUniChromOriDt <- function(grs) {
+    dt = data.table( chrom = as.character(seqnames(grs)),
+                     ori   = as.character(strand(grs)) )
+    setkey(dt, NULL)
+    unidt = unique(dt, by=c('chrom', 'ori'))
+
+    return(unidt)
+}

@@ -15,9 +15,15 @@ Param = setClass('Param',
         OUT_DIR  = 'character',
         TMP_DIR = 'character',
 
+        CHROM_ORI_DT = 'data.table',
+
+        GTF_INFO_KEYS = 'vector',
+
         NTHREADS = 'numeric',
 
-        LIB_TYPE = 'character',
+        CUFFLINKS_LIB_TYPE = 'character',
+        STRINGTIE_LIB_TYPE = 'character',
+
         MIN_ISOFORM_FRACTION    = 'numeric',
         MAX_MULTIREAD_FRACTION  = 'numeric',
         MIN_FRAGS_PER_TRANSFRAG = 'numeric',
@@ -31,6 +37,7 @@ Param = setClass('Param',
         MAX_MUL_N_DUP_ALN = 'numeric',
 
         FR1STSTRAND2MATE2FLAG = 'list',
+
 
         OS = 'character'
     ),
@@ -56,13 +63,18 @@ Param = setClass('Param',
             'OSX' = 'https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz' ),
 
 
+        GTF_INFO_KEYS = c('gene_id', 'transcript_id'),
+
         NTHREADS = 1,
 
 
         ### for model building
-        LIB_TYPE = 'fr-firststrand', ## paired-end, ENCODE RNA-seq
+        CUFFLINKS_LIB_TYPE = 'fr-firststrand', ## paired-end, ENCODE RNA-seq
                                     ## fr read1 -> <- read2
                                     ## ff read1 -> -> read2
+        STRINGTIE_LIB_TYPE = '--rf',
+
+
         MIN_ISOFORM_FRACTION    = 0.1, # abundance cutoff to suppress Tr
         MAX_MULTIREAD_FRACTION  = 1.0, # max frac of allowed multiread per tr
         MIN_FRAGS_PER_TRANSFRAG = 1,   # min # of fragment to report a transfrag
@@ -112,6 +124,7 @@ Param = setClass('Param',
 setGeneric('nthreads<-',    function(x, value) standardGeneric('nthreads<-'))
 setGeneric('outdir<-',      function(x, value) standardGeneric('outdir<-'))
 setGeneric('tmpdir<-',      function(x, value) standardGeneric('tmpdir<-'))
+setGeneric('chromoridt<-',  function(x, value) standardGeneric('chromoridt<-'))
 setGeneric('cufflinks<-',   function(x, value) standardGeneric('cufflinks<-'))
 setGeneric('cuffmerge<-',   function(x, value) standardGeneric('cuffmerge<-'))
 setGeneric('stringtie<-',   function(x, value) standardGeneric('stringtie<-'))
@@ -123,12 +136,15 @@ setGeneric('taco',          function(x) standardGeneric('taco'))
 setGeneric('maxyieldsize',  function(x) standardGeneric('maxyieldsize'))
 setGeneric('outdir',        function(x) standardGeneric('outdir'))
 setGeneric('tmpdir',        function(x) standardGeneric('tmpdir'))
+setGeneric('chromoridt',    function(x) standardGeneric('chromoridt'))
+setGeneric('gtfinfokeys',   function(x) standardGeneric('gtfinfokeys'))
 setGeneric('nthreads',      function(x) standardGeneric('nthreads'))
 setGeneric('maxunindupaln', function(x) standardGeneric('maxunindupaln'))
 setGeneric('maxmulndupaln', function(x) standardGeneric('maxmulndupaln'))
 setGeneric('fr1ststrand2mate2flag',
            function(x) standardGeneric('fr1ststrand2mate2flag'))
-setGeneric('libtype', function(x) standardGeneric('libtype'))
+setGeneric('cufflinkslibtype', function(x) standardGeneric('cufflinkslibtype'))
+setGeneric('stringtielibtype', function(x) standardGeneric('stringtielibtype'))
 setGeneric('minisoformfraction',
            function(x) standardGeneric('minisoformfraction'))
 setGeneric('maxmultireadfraction',
@@ -139,14 +155,6 @@ setGeneric('mintrfpkmtoinclude',
            function(x) standardGeneric('mintrfpkmtoinclude'))
 setGeneric('mintrtpmtoinclude',
            function(x) standardGeneric('mintrtpmtoinclude'))
-setGeneric('checkCufflinksBin',
-           function(cufflinks_bin, prm) standardGeneric('checkCufflinksBin'))
-setGeneric('checkStringTieBin',
-           function(stringtie_bin, prm) standardGeneric('checkStringTieBin'))
-setGeneric('checkCuffmergeBin',
-           function(cuffmerge_bin, prm) standardGeneric('checkCuffmergeBin'))
-setGeneric('checkTacoBin',
-           function(taco_bin, prm) standardGeneric('checkTacoBin'))
 setGeneric('os2cufflinks_url', function(x) standardGeneric('os2cufflinks_url'))
 setGeneric('os2stringtie_url', function(x) standardGeneric('os2stringtie_url'))
 setGeneric('os2taco_url', function(x) standardGeneric('os2taco_url'))
@@ -155,6 +163,8 @@ setGeneric('os2taco_url', function(x) standardGeneric('os2taco_url'))
 setReplaceMethod('nthreads', 'Param', function(x, value) {x@NTHREADS=value; x})
 setReplaceMethod('outdir',   'Param', function(x, value) {x@OUT_DIR=value; x})
 setReplaceMethod('tmpdir',   'Param', function(x, value) {x@TMP_DIR=value; x})
+setReplaceMethod('chromoridt', 'Param',
+                 function(x, value) {x@CHROM_ORI_DT=value; x})
 setReplaceMethod('cufflinks', 'Param',
                  function(x, value) {x@CUFFLINKS_BIN=value; x})
 setReplaceMethod('stringtie', 'Param',
@@ -163,13 +173,16 @@ setMethod('cufflinks',     'Param', function(x) x@CUFFLINKS_BIN)
 setMethod('maxyieldsize',  'Param', function(x) x@MAX_YIELD_SIZE)
 setMethod('outdir',        'Param', function(x) x@OUT_DIR)
 setMethod('tmpdir',        'Param', function(x) x@TMP_DIR)
+setMethod('chromoridt',    'Param', function(x) x@CHROM_ORI_DT)
+setMethod('gtfinfokeys',   'Param', function(x) x@GTF_INFO_KEYS)
 setMethod('nthreads',      'Param', function(x) x@NTHREADS)
 setMethod('maxunindupaln', 'Param', function(x) x@MAX_UNI_N_DUP_ALN)
 setMethod('maxmulndupaln', 'Param', function(x) x@MAX_MUL_N_DUP_ALN)
 setMethod('fr1ststrand2mate2flag', 'Param',
           function(x) x@FR1STSTRAND2MATE2FLAG)
-setMethod('libtype', 'Param', function(x) x@LIB_TYPE)
-setMethod('minisoformfraction', 'Param', function(x) x@MIN_ISOFORM_FRACTION)
+setMethod('cufflinkslibtype', 'Param', function(x) x@CUFFLINKS_LIB_TYPE)
+setMethod('stringtielibtype', 'Param', function(x) x@STRINGTIE_LIB_TYPE)
+setMethod('minisoformfraction',   'Param', function(x) x@MIN_ISOFORM_FRACTION)
 setMethod('maxmultireadfraction', 'Param',
           function(x) x@MAX_MULTIREAD_FRACTION)
 setMethod('minfragspertransfrag', 'Param',
@@ -192,6 +205,9 @@ setMethod('initialize',
 )
 
 
+setGeneric('checkCufflinksBin',
+           function(cufflinks_bin, prm) standardGeneric('checkCufflinksBin'))
+
 setMethod('checkCufflinksBin',
     c('character', 'Param'),
     function(cufflinks_bin, prm) {
@@ -206,6 +222,9 @@ setMethod('checkCufflinksBin',
     }
 )
 
+
+setGeneric('checkCuffmergeBin',
+           function(cuffmerge_bin, prm) standardGeneric('checkCuffmergeBin'))
 
 setMethod('checkCuffmergeBin',
     c('character', 'Param'),
@@ -222,6 +241,9 @@ setMethod('checkCuffmergeBin',
 )
 
 
+setGeneric('checkStringTieBin',
+           function(stringtie_bin, prm) standardGeneric('checkStringTieBin'))
+
 setMethod('checkStringTieBin',
     c('character', 'Param'),
     function(stringtie_bin, prm) {
@@ -236,6 +258,9 @@ setMethod('checkStringTieBin',
     }
 )
 
+
+setGeneric('checkTacoBin',
+           function(taco_bin, prm) standardGeneric('checkTacoBin'))
 
 setMethod('checkTacoBin',
     c('character', 'Param'),

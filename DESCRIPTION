@@ -15,6 +15,6 @@ Collate: Util.R
          GTF.R
          ModelGTF.R
          Transcript.R
-         Bam.R
+         BamManager.R
          buildModel.R
          evalModel.R
