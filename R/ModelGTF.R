@@ -1,5 +1,7 @@
 #' @import methods
 #'
+#' @include GTF.R
+#'
 ModelGTF = setClass(
     'ModelGTF',
     slots = list( model_method = 'character' ),
@@ -18,8 +20,6 @@ setMethod(
 )
 
 
-#' @export
-#'
 setMethod(
     'initFromGTFFile',
     signature('ModelGTF', 'character', 'vector'),
