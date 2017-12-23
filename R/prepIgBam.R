@@ -49,7 +49,7 @@ defManager <- function(fuserbams, outdir, prm) {
 
 #' @importFrom  data.table  setkey data.table
 #' @importFrom  Rsamtools   indexBam filterBam BamFile ScanBamParam
-#' @importFrom  IRanges     filterRules
+#' @importFrom  S4Vectors   filterRules
 #'
 prepIgBamByFile <- function(finbam, iggrs, managerdt, prm) {
     foutbam = managerdt[ fuserbam == finbam ]$foutbam
