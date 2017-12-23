@@ -4,8 +4,8 @@
 \alias{buildModel}
 \title{Build transcript models from aligned RNA-seq data}
 \usage{
-buildModel(fbams, iggrs, outdir, method = "pooling+cufflinks", nthr = 1,
-  cufflinks = "", cuffmerge = "", stringtie = "", taco = "")
+buildModel(fbams, iggrs, outdir, mode = "pooling+cufflinks", nthreads = 1,
+  cufflinks = "", stringtie = "", taco = "")
 }
 \arguments{
 \item{fbams}{character vector of a list of RNA-seq BAM files.  Currently,
@@ -18,25 +18,26 @@ first mate on the right-most of transcript coordinate, i.e.,
 \item{outdir}{a character string defining the full name of a directory for
 saving output files. PRAM will a folder named 'pram_tmp/'}
 
-\item{method}{a character string defining PRAM's model building method.
+\item{mode}{a character string defining PRAM's model building mode.
 Must be one of 'pooling+cufflinks', 'pooling+stringtie',
 'cufflinks+cuffmerge', 'stringtie+merging', or
 'cufflinks+taco'.  Default: 'pooling+cufflinks'}
 
-\item{nthr}{an integer defining the number of threads to-be-used.
-Default: 1}
+\item{cufflinks}{Cufflinks executable file. Required by mode
+'pooling+cufflinks' and 'cufflinks+cuffmerge'.
+For mode 'cufflinks+cuffmerge',  executable files of
+Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
+suite will be assumed in the same folder as Cufflinks.
+Default: ''}
 
-\item{cufflinks}{Cufflinks executable file. Required by method
-'pooling+cufflinks' and 'cufflinks+cuffmerge'. Default: ''}
-
-\item{cuffmerge}{Cuffmerge executable file. Required by method
-'cufflinks+cuffmerge'. Default: ''}
-
-\item{stringtie}{StringTie executable file. Required by method
+\item{stringtie}{StringTie executable file. Required by mode
 'pooling+stringtie' and 'stringtie+merging'. Default: ''}
 
-\item{taco}{TACO executable file. Required by method
+\item{taco}{TACO executable file. Required by mode
 'cufflinks+taco'. Default: ''}
+
+\item{nthr}{an integer defining the number of threads to-be-used.
+Default: 1}
 }
 \description{
 Build transcript models from aligned RNA-seq data
