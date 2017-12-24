@@ -89,21 +89,25 @@ setMethod(
             nskip = nskip + 1
         }
 
-        dt = fread(fgtf, header=F, sep="\t", colClasses=c('character',
-                   'NULL', 'character', rep('integer', 2), 'NULL',
-                   'character', 'NULL', 'character'), skip=nskip)
-        setnames(dt, 1:6,
-                 c('chrom', 'feature', 'start', 'end', 'strand', 'info'))
-       #dt = subset(indt, ftr == 'exon')
+        dt = data.table()
+        if ( (length(lines) > 0) & (nskip < length(lines)) ) {
+            dt = fread(fgtf, header=F, sep="\t", colClasses=c('character',
+                       'NULL', 'character', rep('integer', 2), 'NULL',
+                       'character', 'NULL', 'character'), skip=nskip)
+            setnames(dt, 1:6,
+                     c('chrom', 'feature', 'start', 'end', 'strand', 'info'))
 
-        if ( length(infokeys) > 0 ) {
-            for ( infokey in infokeys ) {
-                dt[, eval(infokey) := gsub(paste0('.*', infokey, ' ([^;]+);.*'),
-                                           '\\1', info, perl=T) ]
-                dt[, eval(infokey) := gsub('"', '', get(infokey), fixed=T)]
+            if ( length(infokeys) > 0 ) {
+                for ( infokey in infokeys ) {
+                    dt[, eval(infokey) :=
+                        gsub(paste0('.*', infokey, ' ([^;]+);.*'),
+                             '\\1', info, perl=T) ]
+                    dt[, eval(infokey) := gsub('"', '', get(infokey), fixed=T)]
+                }
             }
+            dt[, info := NULL ]
         }
-        dt[, info := NULL ]
+
 
         obj@grangedt = dt
         return(obj)
@@ -147,24 +151,31 @@ setMethod(
 setMethod('writeGTF',
     c('GTF', 'character', 'logical'),
     function(x, fout, to_append) {
-        outdt = copy(grangedt(x))
-        if ( ! ('feature' %in% names(outdt)) ) {
-            outdt[, feature := 'unknown']
-        }
-        ori_field = ifelse(length(origin(x)) == 0, 'UNKNOWN', origin(x))
-        outdt[, `:=`( source = ori_field,
-                      score  = '.',
-                      frame  = '.'     ) ]
+        grdt = grangedt(x)
+        outdt = data.table()
+        if ( nrow(grdt) > 0 ) {
+            outdt = copy(grdt)
+            if ( ! ('feature' %in% names(outdt)) ) {
+                outdt[, feature := 'unknown']
+            }
+            ori_field = ifelse(length(origin(x)) == 0, 'UNKNOWN', origin(x))
+            outdt[, `:=`( source = ori_field,
+                          score  = '.',
+                          frame  = '.'     ) ]
 
-        info_keys = infokeys(x)
-        for ( infokey in info_keys ) {
-            outdt[, eval(infokey) := paste0(infokey, ' "', get(infokey), '"')]
+            info_keys = infokeys(x)
+            for ( infokey in info_keys ) {
+                outdt[, eval(infokey) := paste0(infokey, ' "', get(infokey),
+                                                '"')]
+            }
+            outdt[, irow := .I]
+            outdt[, attr := paste0(paste0(.SD, collapse='; '), ';'),
+                  by=irow, .SDcols=info_keys]
+            outdt = outdt[, list(chrom, source, feature, start, end, score,
+                                 strand, frame, attr)]
+        } else {
+            warning(paste0('emptry GRange in ', fgtf(x), "\n"))
         }
-        outdt[, irow := .I]
-        outdt[, attr := paste0(paste0(.SD, collapse='; '), ';'),
-              by=irow, .SDcols=info_keys]
-        outdt = outdt[, list(chrom, source, feature, start, end, score, strand,
-                             frame, attr)]
         write.table(outdt, fout, quote=F, sep="\t", col.names=F, row.names=F,
                     append=to_append)
     }
