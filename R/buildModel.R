@@ -11,8 +11,8 @@
 #'               Must be one of 'pooling+cufflinks', 'pooling+stringtie',
 #'               'cufflinks+cuffmerge', 'stringtie+merging', or
 #'               'cufflinks+taco'.  Default: 'pooling+cufflinks'
-#' @param  nthr  an integer defining the number of threads to-be-used.
-#'               Default: 1
+#' @param  nthreads  an integer defining the number of threads to-be-used.
+#'                   Default: 1
 #'
 #' @param  cufflinks  Cufflinks executable file. Required by mode
 #'                    'pooling+cufflinks' and 'cufflinks+cuffmerge'.
