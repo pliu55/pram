@@ -3,6 +3,7 @@
 export(buildModel)
 export(evalModel)
 export(prepIgBam)
+export(trainModelFilter)
 exportMethods(getExon)
 exportMethods(getJnc)
 exportMethods(getTr)

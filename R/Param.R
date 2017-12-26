@@ -37,13 +37,18 @@ Param = setClass('Param',
         MIN_TR_FPKM_TO_INCLUDE  = 'numeric',
         MIN_TR_TPM_TO_INCLUDE   = 'numeric',
 
-
         MAX_YIELD_SIZE = 'numeric',
 
         MAX_UNI_N_DUP_ALN = 'numeric',
         MAX_MUL_N_DUP_ALN = 'numeric',
 
         FR1STSTRAND2MATE2FLAG = 'list',
+
+
+        EXPR_MIN_TPM      = 'numeric', ## 1
+        CHIPSEQ_MAX_N_ALN = 'numeric', ## 5
+        TSS_TES_EXT_WIDTH = 'numeric', ## 1000
+        CV_N_FOLDS        = 'numeric', ## 10
 
 
         OS = 'character'
@@ -130,16 +135,18 @@ Param = setClass('Param',
                                                     hasUnmappedMate  = F,
                                                     isMinusStrand    = T,
                                                     isFirstMateRead  = F,
-                                                    isSecondMateRead = T  ) ) )
+                                                    isSecondMateRead = T  ) ) ),
+
+        EXPR_MIN_TPM      = 1.0,
+        CHIPSEQ_MAX_N_ALN = 5,
+        TSS_TES_EXT_WIDTH = 1000,
+        CV_N_FOLDS        = 10
     )
 )
 
 
 ## need to be 'value', other names won't work
 setGeneric('cufflinks<-',   function(x, value) standardGeneric('cufflinks<-'))
-#setGeneric('cufflinksdir<-',
-#           function(x, value) standardGeneric('cufflinksdir<-'))
-#setGeneric('cuffmerge<-',   function(x, value) standardGeneric('cuffmerge<-'))
 setGeneric('stringtie<-',   function(x, value) standardGeneric('stringtie<-'))
 setGeneric('taco<-',        function(x, value) standardGeneric('taco<-'))
 setGeneric('nthreads<-',    function(x, value) standardGeneric('nthreads<-'))
@@ -150,10 +157,9 @@ setGeneric('outdir<-',      function(x, value) standardGeneric('outdir<-'))
 setGeneric('tmpdir<-',      function(x, value) standardGeneric('tmpdir<-'))
 setGeneric('managerdt<-',   function(x, value) standardGeneric('managerdt<-'))
 setGeneric('chromoridt<-',  function(x, value) standardGeneric('chromoridt<-'))
+setGeneric('exprmintpm<-',  function(x, value) standardGeneric('exprmintpm<-'))
 
 setGeneric('cufflinks',     function(x) standardGeneric('cufflinks'))
-#setGeneric('cufflinksdir',  function(x) standardGeneric('cufflinksdir'))
-#setGeneric('cuffmerge',     function(x) standardGeneric('cuffmerge'))
 setGeneric('stringtie',     function(x) standardGeneric('stringtie'))
 setGeneric('taco',          function(x) standardGeneric('taco'))
 setGeneric('maxyieldsize',  function(x) standardGeneric('maxyieldsize'))
@@ -186,33 +192,32 @@ setGeneric('mintrtpmtoinclude',
            function(x) standardGeneric('mintrtpmtoinclude'))
 setGeneric('os2cufflinks_url', function(x) standardGeneric('os2cufflinks_url'))
 setGeneric('os2stringtie_url', function(x) standardGeneric('os2stringtie_url'))
-setGeneric('os2taco_url', function(x) standardGeneric('os2taco_url'))
+setGeneric('os2taco_url',      function(x) standardGeneric('os2taco_url'))
+setGeneric('exprmintpm',       function(x) standardGeneric('exprmintpm'))
+setGeneric('chipseqmaxnaln',   function(x) standardGeneric('chipseqmaxnaln'))
+setGeneric('tsstesextwidth',   function(x) standardGeneric('tsstesextwidth'))
+setGeneric('cvnfolds',         function(x) standardGeneric('cvnfolds'))
 
-
-setReplaceMethod('nthreads', 'Param', function(x, value) {x@NTHREADS=value; x})
+setReplaceMethod('nthreads',  'Param', function(x, value) {x@NTHREADS=value; x})
 setReplaceMethod('fuserbams', 'Param', function(x, value) {x@FUSERBAMS=value;x})
-setReplaceMethod('iggrs',    'Param', function(x, value) {x@IGGRS=value; x})
-setReplaceMethod('mode',     'Param', function(x, value) {x@MODE=value; x})
-setReplaceMethod('outdir',   'Param', function(x, value) {x@OUT_DIR=value; x})
-setReplaceMethod('tmpdir',   'Param', function(x, value) {x@TMP_DIR=value; x})
+setReplaceMethod('iggrs',     'Param', function(x, value) {x@IGGRS=value; x})
+setReplaceMethod('mode',      'Param', function(x, value) {x@MODE=value; x})
+setReplaceMethod('outdir',    'Param', function(x, value) {x@OUT_DIR=value; x})
+setReplaceMethod('tmpdir',    'Param', function(x, value) {x@TMP_DIR=value; x})
 setReplaceMethod('managerdt', 'Param',
                  function(x, value) {x@MANAGER_DT=value; x})
 setReplaceMethod('chromoridt', 'Param',
                  function(x, value) {x@CHROM_ORI_DT=value; x})
 setReplaceMethod('cufflinks', 'Param',
                  function(x, value) {x@CUFFLINKS_BIN=value; x})
-#setReplaceMethod('cufflinksdir', 'Param',
-#                 function(x, value) {x@CUFFLINKS_DIR=value; x})
-#setReplaceMethod('cuffmerge', 'Param',
-#                 function(x, value) {x@CUFFMERGE_BIN=value; x})
 setReplaceMethod('stringtie', 'Param',
                  function(x, value) {x@STRINGTIE_BIN=value; x})
-setReplaceMethod('taco', 'Param',
+setReplaceMethod('taco',       'Param',
                  function(x, value) {x@TACO_BIN=value; x})
+setReplaceMethod('exprmintpm', 'Param',
+                 function(x, value) {x@EXPR_MIN_TPM=value; x})
 
 setMethod('cufflinks',     'Param', function(x) x@CUFFLINKS_BIN)
-#setMethod('cufflinksdir',  'Param', function(x) x@CUFFLINKS_DIR)
-#setMethod('cuffmerge',     'Param', function(x) x@CUFFMERGE_BIN)
 setMethod('stringtie',     'Param', function(x) x@STRINGTIE_BIN)
 setMethod('taco',          'Param', function(x) x@TACO_BIN)
 setMethod('maxyieldsize',  'Param', function(x) x@MAX_YIELD_SIZE)
@@ -244,6 +249,10 @@ setMethod('mintrtpmtoinclude', 'Param', function(x) x@MIN_TR_TPM_TO_INCLUDE)
 setMethod('os2cufflinks_url',  'Param', function(x) x@OS2CUFFLINKS_URL)
 setMethod('os2stringtie_url',  'Param', function(x) x@OS2STRINGTIE_URL)
 setMethod('os2taco_url',       'Param', function(x) x@OS2TACO_URL)
+setMethod('exprmintpm',        'Param', function(x) x@EXPR_MIN_TPM)
+setMethod('chipseqmaxnaln',    'Param', function(x) x@CHIPSEQ_MAX_N_ALN)
+setMethod('tsstesextwidth',    'Param', function(x) x@TSS_TES_EXT_WIDTH)
+setMethod('cvnfolds',          'Param', function(x) x@CV_N_FOLDS)
 
 
 #' @importFrom Rsamtools scanBamFlag
