@@ -31,7 +31,6 @@
 #'
 #' @importFrom  GenomeInfoDb  seqnames
 #' @importFrom  BiocGenerics  strand
-#' @importFrom  tools         file_path_sans_ext
 #' @importFrom  data.table    rbindlist data.table
 #'
 #' @export

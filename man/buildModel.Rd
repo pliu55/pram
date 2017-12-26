@@ -21,6 +21,9 @@ Must be one of 'pooling+cufflinks', 'pooling+stringtie',
 'cufflinks+cuffmerge', 'stringtie+merging', or
 'cufflinks+taco'.  Default: 'pooling+cufflinks'}
 
+\item{nthreads}{an integer defining the number of threads to-be-used.
+Default: 1}
+
 \item{cufflinks}{Cufflinks executable file. Required by mode
 'pooling+cufflinks' and 'cufflinks+cuffmerge'.
 For mode 'cufflinks+cuffmerge',  executable files of
@@ -33,9 +36,6 @@ Default: ''}
 
 \item{taco}{TACO executable file. Required by mode
 'cufflinks+taco'. Default: ''}
-
-\item{nthr}{an integer defining the number of threads to-be-used.
-Default: 1}
 }
 \description{
 Build transcript models from aligned RNA-seq data
