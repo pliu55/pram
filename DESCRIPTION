@@ -7,7 +7,11 @@ License: What license is it under?
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.4.1)
-Imports: methods, data.table (>= 1.10.4), Rsamtools (>= 1.28.0), GenomicAlignments (>= 1.12.2)
+Imports: methods, 
+         parallel, 
+         data.table (>= 1.10.4), 
+         Rsamtools (>= 1.28.0), 
+         GenomicAlignments (>= 1.12.2)
 RoxygenNote: 6.0.1
 Suggests: testthat
 Collate: 
