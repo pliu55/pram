@@ -8,18 +8,25 @@ Param = setClass('Param',
 
         STAR_BIN      = 'character',
         CUFFLINKS_BIN = 'character',
-        CUFFMERGE_BIN = 'character',
+       #CUFFLINKS_DIR = 'character',
+       #CUFFMERGE_BIN = 'character',
         STRINGTIE_BIN = 'character',
         TACO_BIN      = 'character',
 
-        OUT_DIR  = 'character',
-        TMP_DIR = 'character',
+        FUSERBAMS = 'vector',
+        IGGRS     = 'GRanges',
+        MODE      = 'character',
+        OUT_DIR   = 'character',
+        NTHREADS  = 'numeric',
 
+        TMP_DIR    = 'character',
+
+        MANAGER_DT   = 'data.table',
         CHROM_ORI_DT = 'data.table',
 
         GTF_INFO_KEYS = 'vector',
+        MODE2LABEL    = 'list',
 
-        NTHREADS = 'numeric',
 
         CUFFLINKS_LIB_TYPE = 'character',
         STRINGTIE_LIB_TYPE = 'character',
@@ -65,6 +72,12 @@ Param = setClass('Param',
 
         GTF_INFO_KEYS = c('gene_id', 'transcript_id'),
 
+        MODE2LABEL = list( 'pooling+cufflinks'   = 'plcf',
+                           'pooling+stringtie'   = 'plst',
+                           'cufflinks+cuffmerge' = 'cfmg',
+                           'stringtie+merging'   = 'stmg',
+                           'cufflinks+taco'      = 'cftc' ),
+
         NTHREADS = 1,
 
 
@@ -82,7 +95,9 @@ Param = setClass('Param',
         MIN_TR_TPM_TO_INCLUDE   = 0.0,  ## StringTie-merge, TACO
 
 
-        MAX_YIELD_SIZE = 200000000, ## overwrite filterBam's default 1M
+        MAX_YIELD_SIZE = 600000000, ## overwrite filterBam's default 1M
+        MAX_CHROM_LEN = 536870912,  ## max allowed by scanBam, can be applied
+                                    ## to hg38, hg19, mm10
 
         ### for extracting alignments
         MAX_UNI_N_DUP_ALN = 10, ## max # of duplicated alignments on uni-frags
@@ -121,23 +136,37 @@ Param = setClass('Param',
 
 
 ## need to be 'value', other names won't work
-setGeneric('nthreads<-',    function(x, value) standardGeneric('nthreads<-'))
-setGeneric('outdir<-',      function(x, value) standardGeneric('outdir<-'))
-setGeneric('tmpdir<-',      function(x, value) standardGeneric('tmpdir<-'))
-setGeneric('chromoridt<-',  function(x, value) standardGeneric('chromoridt<-'))
 setGeneric('cufflinks<-',   function(x, value) standardGeneric('cufflinks<-'))
-setGeneric('cuffmerge<-',   function(x, value) standardGeneric('cuffmerge<-'))
+#setGeneric('cufflinksdir<-',
+#           function(x, value) standardGeneric('cufflinksdir<-'))
+#setGeneric('cuffmerge<-',   function(x, value) standardGeneric('cuffmerge<-'))
 setGeneric('stringtie<-',   function(x, value) standardGeneric('stringtie<-'))
 setGeneric('taco<-',        function(x, value) standardGeneric('taco<-'))
+setGeneric('nthreads<-',    function(x, value) standardGeneric('nthreads<-'))
+setGeneric('fuserbams<-',   function(x, value) standardGeneric('fuserbams<-'))
+setGeneric('iggrs<-',       function(x, value) standardGeneric('iggrs<-'))
+setGeneric('mode<-',        function(x, value) standardGeneric('mode<-'))
+setGeneric('outdir<-',      function(x, value) standardGeneric('outdir<-'))
+setGeneric('tmpdir<-',      function(x, value) standardGeneric('tmpdir<-'))
+setGeneric('managerdt<-',   function(x, value) standardGeneric('managerdt<-'))
+setGeneric('chromoridt<-',  function(x, value) standardGeneric('chromoridt<-'))
+
 setGeneric('cufflinks',     function(x) standardGeneric('cufflinks'))
-setGeneric('cuffmerge',     function(x) standardGeneric('cuffmerge'))
+#setGeneric('cufflinksdir',  function(x) standardGeneric('cufflinksdir'))
+#setGeneric('cuffmerge',     function(x) standardGeneric('cuffmerge'))
 setGeneric('stringtie',     function(x) standardGeneric('stringtie'))
 setGeneric('taco',          function(x) standardGeneric('taco'))
 setGeneric('maxyieldsize',  function(x) standardGeneric('maxyieldsize'))
+setGeneric('maxchromlen',   function(x) standardGeneric('maxchromlen'))
+setGeneric('fuserbams',     function(x) standardGeneric('fuserbams'))
+setGeneric('iggrs',         function(x) standardGeneric('iggrs'))
+setGeneric('mode',          function(x) standardGeneric('mode'))
 setGeneric('outdir',        function(x) standardGeneric('outdir'))
 setGeneric('tmpdir',        function(x) standardGeneric('tmpdir'))
+setGeneric('managerdt',     function(x) standardGeneric('managerdt'))
 setGeneric('chromoridt',    function(x) standardGeneric('chromoridt'))
 setGeneric('gtfinfokeys',   function(x) standardGeneric('gtfinfokeys'))
+setGeneric('mode2label',    function(x) standardGeneric('mode2label'))
 setGeneric('nthreads',      function(x) standardGeneric('nthreads'))
 setGeneric('maxunindupaln', function(x) standardGeneric('maxunindupaln'))
 setGeneric('maxmulndupaln', function(x) standardGeneric('maxmulndupaln'))
@@ -161,33 +190,55 @@ setGeneric('os2taco_url', function(x) standardGeneric('os2taco_url'))
 
 
 setReplaceMethod('nthreads', 'Param', function(x, value) {x@NTHREADS=value; x})
+setReplaceMethod('fuserbams', 'Param', function(x, value) {x@FUSERBAMS=value;x})
+setReplaceMethod('iggrs',    'Param', function(x, value) {x@IGGRS=value; x})
+setReplaceMethod('mode',     'Param', function(x, value) {x@MODE=value; x})
 setReplaceMethod('outdir',   'Param', function(x, value) {x@OUT_DIR=value; x})
 setReplaceMethod('tmpdir',   'Param', function(x, value) {x@TMP_DIR=value; x})
+setReplaceMethod('managerdt', 'Param',
+                 function(x, value) {x@MANAGER_DT=value; x})
 setReplaceMethod('chromoridt', 'Param',
                  function(x, value) {x@CHROM_ORI_DT=value; x})
 setReplaceMethod('cufflinks', 'Param',
                  function(x, value) {x@CUFFLINKS_BIN=value; x})
+#setReplaceMethod('cufflinksdir', 'Param',
+#                 function(x, value) {x@CUFFLINKS_DIR=value; x})
+#setReplaceMethod('cuffmerge', 'Param',
+#                 function(x, value) {x@CUFFMERGE_BIN=value; x})
 setReplaceMethod('stringtie', 'Param',
                  function(x, value) {x@STRINGTIE_BIN=value; x})
+setReplaceMethod('taco', 'Param',
+                 function(x, value) {x@TACO_BIN=value; x})
+
 setMethod('cufflinks',     'Param', function(x) x@CUFFLINKS_BIN)
+#setMethod('cufflinksdir',  'Param', function(x) x@CUFFLINKS_DIR)
+#setMethod('cuffmerge',     'Param', function(x) x@CUFFMERGE_BIN)
+setMethod('stringtie',     'Param', function(x) x@STRINGTIE_BIN)
+setMethod('taco',          'Param', function(x) x@TACO_BIN)
 setMethod('maxyieldsize',  'Param', function(x) x@MAX_YIELD_SIZE)
+setMethod('maxchromlen',   'Param', function(x) x@MAX_CHROM_LEN)
+setMethod('fuserbams',     'Param', function(x) x@FUSERBAMS)
+setMethod('iggrs',         'Param', function(x) x@IGGRS)
+setMethod('mode',          'Param', function(x) x@MODE)
 setMethod('outdir',        'Param', function(x) x@OUT_DIR)
 setMethod('tmpdir',        'Param', function(x) x@TMP_DIR)
+setMethod('managerdt',     'Param', function(x) x@MANAGER_DT)
 setMethod('chromoridt',    'Param', function(x) x@CHROM_ORI_DT)
 setMethod('gtfinfokeys',   'Param', function(x) x@GTF_INFO_KEYS)
+setMethod('mode2label',    'Param', function(x) x@MODE2LABEL)
 setMethod('nthreads',      'Param', function(x) x@NTHREADS)
 setMethod('maxunindupaln', 'Param', function(x) x@MAX_UNI_N_DUP_ALN)
 setMethod('maxmulndupaln', 'Param', function(x) x@MAX_MUL_N_DUP_ALN)
 setMethod('fr1ststrand2mate2flag', 'Param',
           function(x) x@FR1STSTRAND2MATE2FLAG)
-setMethod('cufflinkslibtype', 'Param', function(x) x@CUFFLINKS_LIB_TYPE)
-setMethod('stringtielibtype', 'Param', function(x) x@STRINGTIE_LIB_TYPE)
+setMethod('cufflinkslibtype',     'Param', function(x) x@CUFFLINKS_LIB_TYPE)
+setMethod('stringtielibtype',     'Param', function(x) x@STRINGTIE_LIB_TYPE)
 setMethod('minisoformfraction',   'Param', function(x) x@MIN_ISOFORM_FRACTION)
 setMethod('maxmultireadfraction', 'Param',
           function(x) x@MAX_MULTIREAD_FRACTION)
 setMethod('minfragspertransfrag', 'Param',
           function(x) x@MIN_FRAGS_PER_TRANSFRAG)
-setMethod('mintrfpkmtoinclude', 'Param',
+setMethod('mintrfpkmtoinclude',   'Param',
           function(x) x@MIN_TR_FPKM_TO_INCLUDE)
 setMethod('mintrtpmtoinclude', 'Param', function(x) x@MIN_TR_TPM_TO_INCLUDE)
 setMethod('os2cufflinks_url',  'Param', function(x) x@OS2CUFFLINKS_URL)
@@ -206,72 +257,78 @@ setMethod('initialize',
 
 
 setGeneric('checkCufflinksBin',
-           function(cufflinks_bin, prm) standardGeneric('checkCufflinksBin'))
+           function(prm) standardGeneric('checkCufflinksBin'))
 
-setMethod('checkCufflinksBin',
-    c('character', 'Param'),
-    function(cufflinks_bin, prm) {
+setMethod('checkCufflinksBin', 'Param',
+    function(prm) {
+        cufflinks_bin = cufflinks(prm)
         if ( ! file.exists(cufflinks_bin) ) {
             url = os2cufflinks_url(prm)[[getOS()]]
-            msg = paste0('Cufflinks not found: ', cufflinks_bin, "\n",
+            msg = paste0('cufflinks not found: ', cufflinks_bin, "\n",
                          'It can be downloaded at ', url, "\n")
             stop(msg)
-        } else {
-            cufflinks(prm) = cufflinks_bin
         }
     }
 )
 
 
-setGeneric('checkCuffmergeBin',
-           function(cuffmerge_bin, prm) standardGeneric('checkCuffmergeBin'))
+setGeneric('checkCuffmergeRequiredBins',
+           function(prm) standardGeneric('checkCuffmergeRequiredBins'))
 
-setMethod('checkCuffmergeBin',
-    c('character', 'Param'),
-    function(cuffmerge_bin, prm) {
+setMethod('checkCuffmergeRequiredBins', 'Param',
+    function(prm) {
+        cufflinksdir = paste0(dirname(cufflinks(prm)), '/')
+        cufflinks_bin   = paste0(cufflinksdir, 'cuffmerge')
+        cuffmerge_bin   = paste0(cufflinksdir, 'cuffmerge')
+        cuffcompare_bin = paste0(cufflinksdir, 'cuffcompare')
+        gtftosam_bin    = paste0(cufflinksdir, 'gtf_to_sam')
+        url = os2cufflinks_url(prm)[[getOS()]]
+        urlmsg = paste0('Cufflinks suite can be downloaded at ', url, "\n")
+
+        if ( ! file.exists(cufflinks_bin) ) {
+            stop( paste0('cufflinks not found: ', cufflinks_bin, "\n", urlmsg) )
+        }
         if ( ! file.exists(cuffmerge_bin) ) {
-            url = os2cufflinks_url(prm)[[getOS()]]
-            msg = paste0('Cuffmerge not found: ', cuffmerge_bin, "\n",
-                         'It can be downloaded at ', url, "\n")
-            stop(msg)
-        } else {
-            cuffmerge(prm) = cuffmerge_bin
+            stop( paste0('cuffmerge not found: ', cuffmerge_bin, "\n", urlmsg) )
+        }
+        if ( ! file.exists(cuffcompare_bin) ) {
+            stop(paste0('cuffcompare not found: ', cuffcompare_bin, "\n",
+                        urlmsg))
+        }
+        if ( ! file.exists(gtftosam_bin) ) {
+            stop(paste0('gtf_to_sam not found: ', gtftosam_bin, "\n", urlmsg))
         }
     }
 )
 
 
 setGeneric('checkStringTieBin',
-           function(stringtie_bin, prm) standardGeneric('checkStringTieBin'))
+           function(prm) standardGeneric('checkStringTieBin'))
 
-setMethod('checkStringTieBin',
-    c('character', 'Param'),
-    function(stringtie_bin, prm) {
+setMethod('checkStringTieBin', 'Param',
+    function(prm) {
+        stringtie_bin = stringtie(prm)
         if ( ! file.exists(stringtie_bin) ) {
             url = os2stringtie_url(prm)[[getOS()]]
             msg = paste0('StringTie not found: ', stringtie_bin, "\n",
                          'It can be downloaded at ', url, "\n")
             stop(msg)
-        } else {
-            stringtie(prm) = stringtie_bin
         }
     }
 )
 
 
 setGeneric('checkTacoBin',
-           function(taco_bin, prm) standardGeneric('checkTacoBin'))
+           function(prm) standardGeneric('checkTacoBin'))
 
-setMethod('checkTacoBin',
-    c('character', 'Param'),
-    function(taco_bin, prm) {
+setMethod('checkTacoBin', 'Param',
+    function(prm) {
+        taco_bin = taco(prm)
         if ( ! file.exists(taco_bin) ) {
             url = os2taco_url(prm)[[getOS()]]
             msg = paste0('TACO not found: ', taco_bin, "\n",
                          'It can be downloaded at ', url, "\n")
             stop(msg)
-        } else {
-            taco(prm) = taco_bin
         }
     }
 )

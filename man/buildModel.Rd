@@ -4,16 +4,14 @@
 \alias{buildModel}
 \title{Build transcript models from aligned RNA-seq data}
 \usage{
-buildModel(fbams, iggrs, outdir, mode = "pooling+cufflinks", nthreads = 1,
+buildModel(fbams, outdir, mode = "pooling+cufflinks", nthreads = 1,
   cufflinks = "", stringtie = "", taco = "")
 }
 \arguments{
-\item{fbams}{character vector of a list of RNA-seq BAM files.  Currently,
+\item{fbams}{a character vector of input RNA-seq BAM files.  Currently,
 PRAM only supports strand-specific paired-end data with the
 first mate on the right-most of transcript coordinate, i.e.,
 'fr-firststrand' by Cufflinks's definition}
-
-\item{iggrs}{a GenomicRanges object defining intergenic regions}
 
 \item{outdir}{a character string defining the full name of a directory for
 saving output files. PRAM will a folder named 'pram_tmp/'}

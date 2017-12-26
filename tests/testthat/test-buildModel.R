@@ -4,74 +4,162 @@ suppressMessages(library(GenomicAlignments))
 main <- function() {
     context('buildModel')
 
-    fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.raw.bam',
+    prm = new('Param')
+
+    testFilterBamByChromOri('chr10', 'plus',  prm)
+    testFilterBamByChromOri('chr12', 'minus', prm)
+
+
+    fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam',
                            package='pram'),
-               system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam',
+               system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam',
                            package='pram') )
 
-    seqinfo = Seqinfo( c('chr10', 'chr12') )
-    iggrs = c( GRanges( 'chr10:77236000-77247000:+', seqinfo = seqinfo ),
-               GRanges( 'chr12:32095000-32125000:-', seqinfo = seqinfo ) )
+    testBin(fbams, prm)
 
-    nthr = 1
 
-    outdir = tempdir()
-
-    prm = new('Param')
-    os = getOS()
+    nthr = 4
+    outdir = paste0(tempdir(), '/')
 
     cufflinks = '/ua/pliu/local/cufflinks-2.2.1/cufflinks'
+    stringtie = '/ua/pliu/local/stringtie-1.3.3/stringtie'
+    taco      = '/ua/pliu/local/taco-0.7.0/taco_run'
+    if ( file.exists(cufflinks) ) {
+        testBuildByPLCF(fbams, outdir, nthr, cufflinks)
+        testBuildByCFMG(fbams, outdir, nthr, cufflinks)
 
-    buildModel(fbams, iggrs, outdir, method='pooling+cufflinks',
-               cufflinks=cufflinks)
-    browser()
+        if ( file.exists(taco) ) {
+            testBuildByCFTC(fbams, outdir, nthr, cufflinks, taco)
+        }
+    }
 
-
-    testBinPLCF(fbams, iggrs, outdir, 'pooling+cufflinks',   nthr, prm, os)
-    testBinPLST(fbams, iggrs, outdir, 'pooling+stringtie',   nthr, prm, os)
-    testBinCFMG(fbams, iggrs, outdir, 'cufflinks+cuffmerge', nthr, prm, os)
-    testBinCFTC(fbams, iggrs, outdir, 'cufflinks+taco',      nthr, prm, os)
+    if ( file.exists(stringtie) ) {
+        testBuildByPLST(fbams, outdir, nthr, stringtie)
+        testBuildBySTMG(fbams, outdir, nthr, stringtie)
+    }
 }
 
 
-testBinPLCF <- function(fbams, iggrs, outdir, method, nthr, prm, os) {
+testBin <- function(fbams,prm) {
+    os = getOS()
+    nthr = 1
+    testBinPLCF(fbams, 'pooling+cufflinks',   nthr, prm, os)
+    testBinPLST(fbams, 'pooling+stringtie',   nthr, prm, os)
+    testBinCFMG(fbams, 'cufflinks+cuffmerge', nthr, prm, os)
+    testBinCFTC(fbams, 'cufflinks+taco',      nthr, prm, os)
+}
+
+
+testFilterBamByChromOri <- function(chrom, strand, prm) {
+    outdir = paste0(tempdir(), '/')
+    fin = system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam',
+                      package='pram')
+
+    fcmp = system.file( paste0('extdata/bam/CMPRep1.sortedByCoord.clean.',
+                               chrom, '.', strand, '.bam'), package='pram')
+
+    fout = paste0(outdir, chrom, '.', strand, '.bam')
+
+    filterBamByChromOri(fin, fout, chrom, strand, prm)
+
+    grs = GRanges(paste0(chrom, ':1-', maxchromlen(prm)))
+    bamprm = ScanBamParam(what=c('flag', 'qname'), which=grs)
+
+    cmp_alns = readGAlignments(fcmp, use.names=F, param=bamprm)
+    out_alns = readGAlignments(fout, use.names=F, param=bamprm)
+
+    test_that( paste0('buildModel::testFilterBamByChromOri: ', chrom, strand),
+               expect_identical(cmp_alns, out_alns) )
+}
+
+
+testBuildByCFTC <- function(fbams, outdir, nthr, cufflinks, taco) {
+    buildModel(fbams, outdir, mode='cufflinks+taco', nthreads=nthr,
+               cufflinks=cufflinks, taco=taco)
+    foutgtf = paste0(outdir, 'cftc.gtf')
+    test_that(paste0('buildModel::testBuildByCFTC: ', foutgtf),
+              expect_true( file.exists(foutgtf) ))
+}
+
+
+testBuildBySTMG <- function(fbams, outdir, nthr, stringtie) {
+    buildModel(fbams, outdir, mode='stringtie+merging', nthreads=nthr,
+               stringtie=stringtie)
+    foutgtf = paste0(outdir, 'stmg.gtf')
+    test_that(paste0('buildModel::testBuildBySTMG: ', foutgtf),
+              expect_true( file.exists(foutgtf) ))
+}
+
+
+testBuildByCFMG <- function(fbams, outdir, nthr, cufflinks) {
+    buildModel(fbams, outdir, mode='cufflinks+cuffmerge', nthreads=nthr,
+               cufflinks=cufflinks)
+    foutgtf = paste0(outdir, 'cfmg.gtf')
+    test_that(paste0('buildModel::testBuildByCFMG: ', foutgtf),
+              expect_true( file.exists(foutgtf) ))
+}
+
+
+testBuildByPLCF <- function(fbams, outdir, nthr, cufflinks) {
+    buildModel(fbams, outdir, mode='pooling+cufflinks', nthreads=nthr,
+               cufflinks=cufflinks)
+    foutgtf = paste0(outdir, 'plcf.gtf')
+    test_that(paste0('buildModel::testBuildByPLCF: ', foutgtf),
+              expect_true( file.exists(foutgtf) ))
+}
+
+
+testBuildByPLST <- function(fbams, outdir, nthr, stringtie) {
+    buildModel(fbams, outdir, mode='pooling+stringtie', nthreads=nthr,
+               stringtie=stringtie)
+    foutgtf = paste0(outdir, 'plst.gtf')
+    test_that(paste0('buildModel::testBuildByPLST: ', foutgtf),
+              expect_true( file.exists(foutgtf) ))
+}
+
+
+testBinPLCF <- function(fbams, mode, nthr, prm, os) {
+    outdir = paste0(tempdir(), '/')
     url = os2cufflinks_url(prm)[[os]]
     test_that('buildModel::testBinPLCF',
               expect_error(
-                  buildModel(fbams, iggrs, outdir, method, nthr),
-                  regexp=paste0('Cufflinks not found: \n',
+                  buildModel(fbams, outdir, mode, nthr),
+                  regexp=paste0('cufflinks not found: \n',
                                 'It can be downloaded at ', url, "\n"),
                   ignore.case=T))
 }
 
 
-testBinPLST <- function(fbams, iggrs, outdir, method, nthr, prm, os) {
+testBinPLST <- function(fbams, mode, nthr, prm, os) {
+    outdir = paste0(tempdir(), '/')
     url = os2stringtie_url(prm)[[os]]
     test_that('buildModel::testBinPLST',
               expect_error(
-                  buildModel(fbams, iggrs, outdir, method, nthr),
+                  buildModel(fbams, outdir, mode, nthr),
                   regexp=paste0('StringTie not found: \n',
                                 'It can be downloaded at ', url, "\n"),
                   ignore.case=T))
 }
 
 
-testBinCFMG <- function(fbams, iggrs, outdir, method, nthr, prm, os) {
+testBinCFMG <- function(fbams, mode, nthr, prm, os) {
+    outdir = paste0(tempdir(), '/')
     url = os2cufflinks_url(prm)[[os]]
     test_that('buildModel::testBinCFMG',
               expect_error(
-                  buildModel(fbams, iggrs, outdir, method, nthr),
-                  regexp=paste0('Cuffmerge not found: \n',
-                                'It can be downloaded at ', url, "\n"),
+                  buildModel(fbams, outdir, mode, nthr),
+                  regexp=paste0('Cufflinks suite can be downloaded at ', url,
+                                "\n"),
                   ignore.case=T))
 }
 
 
-testBinCFTC <- function(fbams, iggrs, outdir, method, nthr, prm, os) {
+testBinCFTC <- function(fbams, mode, nthr, prm, os) {
+    outdir = paste0(tempdir(), '/')
     url = os2taco_url(prm)[[os]]
     test_that('buildModel::testBinCFTC',
               expect_error(
-                  buildModel(fbams, iggrs, outdir, method, nthr),
+                  buildModel(fbams, outdir, mode, nthr),
                   regexp=paste0('TACO not found: \n',
                                 'It can be downloaded at ', url, "\n"),
                   ignore.case=T))
