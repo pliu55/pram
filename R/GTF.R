@@ -140,6 +140,24 @@ setMethod(
 )
 
 
+#' @export
+#'
+setGeneric('initFromDataTable', function(obj, dt, infokeys, ...)
+                                    standardGeneric('initFromDataTable'))
+setMethod('initFromDataTable', c('GTF', 'data.table', 'vector'),
+    function(obj, dt, infokeys, ...) {
+        obj = GTF()
+        obj@grangedt = dt
+        infokeys(obj) = infokeys
+
+        ecl = list(...)
+        obj@origin  = ifelse(is.null(ecl$origin), 'UNKNOWN', ecl$origin)
+
+        return(obj)
+    }
+)
+
+
 #' write a GTF object to a GTF file
 #'
 #' @param x a GTF object
