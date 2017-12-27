@@ -45,10 +45,10 @@ Param = setClass('Param',
         FR1STSTRAND2MATE2FLAG = 'list',
 
 
-        EXPR_MIN_TPM      = 'numeric', ## 1
-        CHIPSEQ_MAX_N_ALN = 'numeric', ## 5
-        TSS_TES_EXT_WIDTH = 'numeric', ## 1000
-        CV_N_FOLDS        = 'numeric', ## 10
+        EXPR_MIN_TPM          = 'numeric', ## 1
+        CHIPSEQ_MAX_N_DUP_ALN = 'numeric', ## 5
+        TSS_TES_EXT_WIDTH     = 'numeric', ## 1000
+        CV_N_FOLDS            = 'numeric', ## 10
 
 
         OS = 'character'
@@ -137,10 +137,10 @@ Param = setClass('Param',
                                                     isFirstMateRead  = F,
                                                     isSecondMateRead = T  ) ) ),
 
-        EXPR_MIN_TPM      = 1.0,
-        CHIPSEQ_MAX_N_ALN = 5,
-        TSS_TES_EXT_WIDTH = 1000,
-        CV_N_FOLDS        = 10
+        EXPR_MIN_TPM          = 1.0,
+        CHIPSEQ_MAX_N_DUP_ALN = 5,
+        TSS_TES_EXT_WIDTH     = 1000,
+        CV_N_FOLDS            = 10
     )
 )
 
@@ -158,6 +158,7 @@ setGeneric('tmpdir<-',      function(x, value) standardGeneric('tmpdir<-'))
 setGeneric('managerdt<-',   function(x, value) standardGeneric('managerdt<-'))
 setGeneric('chromoridt<-',  function(x, value) standardGeneric('chromoridt<-'))
 setGeneric('exprmintpm<-',  function(x, value) standardGeneric('exprmintpm<-'))
+setGeneric('cvnfolds<-',    function(x, value) standardGeneric('cvnfolds<-'))
 
 setGeneric('cufflinks',     function(x) standardGeneric('cufflinks'))
 setGeneric('stringtie',     function(x) standardGeneric('stringtie'))
@@ -194,7 +195,8 @@ setGeneric('os2cufflinks_url', function(x) standardGeneric('os2cufflinks_url'))
 setGeneric('os2stringtie_url', function(x) standardGeneric('os2stringtie_url'))
 setGeneric('os2taco_url',      function(x) standardGeneric('os2taco_url'))
 setGeneric('exprmintpm',       function(x) standardGeneric('exprmintpm'))
-setGeneric('chipseqmaxnaln',   function(x) standardGeneric('chipseqmaxnaln'))
+setGeneric('chipseqmaxndupaln',
+           function(x) standardGeneric('chipseqmaxndupaln'))
 setGeneric('tsstesextwidth',   function(x) standardGeneric('tsstesextwidth'))
 setGeneric('cvnfolds',         function(x) standardGeneric('cvnfolds'))
 
@@ -216,6 +218,8 @@ setReplaceMethod('taco',       'Param',
                  function(x, value) {x@TACO_BIN=value; x})
 setReplaceMethod('exprmintpm', 'Param',
                  function(x, value) {x@EXPR_MIN_TPM=value; x})
+setReplaceMethod('cvnfolds', 'Param',
+                 function(x, value) {x@CV_N_FOLDS=value; x})
 
 setMethod('cufflinks',     'Param', function(x) x@CUFFLINKS_BIN)
 setMethod('stringtie',     'Param', function(x) x@STRINGTIE_BIN)
@@ -250,7 +254,7 @@ setMethod('os2cufflinks_url',  'Param', function(x) x@OS2CUFFLINKS_URL)
 setMethod('os2stringtie_url',  'Param', function(x) x@OS2STRINGTIE_URL)
 setMethod('os2taco_url',       'Param', function(x) x@OS2TACO_URL)
 setMethod('exprmintpm',        'Param', function(x) x@EXPR_MIN_TPM)
-setMethod('chipseqmaxnaln',    'Param', function(x) x@CHIPSEQ_MAX_N_ALN)
+setMethod('chipseqmaxndupaln', 'Param', function(x) x@CHIPSEQ_MAX_N_DUP_ALN)
 setMethod('tsstesextwidth',    'Param', function(x) x@TSS_TES_EXT_WIDTH)
 setMethod('cvnfolds',          'Param', function(x) x@CV_N_FOLDS)
 
