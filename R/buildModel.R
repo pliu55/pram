@@ -246,7 +246,7 @@ outputModel <- function(gtfl, prm) {
     origin(gtf)   = label
     infokeys(gtf) = gtfinfokeys(prm)
     grangedt(gtf) = rbindlist(lapply(gtfl, function(x) grangedt(x)))
-    writeGTF(gtf, foutgtf, to_append=F)
+    writeGTF(gtf, foutgtf, append=F)
    #cat('File writtne:', foutgtf, "\n")
 
    #grs = makeGRangesFromDataFrame(grangedt(gtf), keep.extra.columns=T)

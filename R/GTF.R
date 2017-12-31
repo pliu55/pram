@@ -14,7 +14,7 @@ setGeneric('origin',   function(x) standardGeneric('origin'))
 setGeneric('infokeys', function(x) standardGeneric('infokeys'))
 setGeneric('grangedt', function(x) standardGeneric('grangedt'))
 setGeneric('writeGTF',
-           function(x, fout, to_append) standardGeneric('writeGTF'))
+           function(x, fout, append) standardGeneric('writeGTF'))
 setGeneric('initFromGTFFile',
            function(obj, fgtf, infokeys, ...) standardGeneric('initFromGTFFile'))
 setGeneric('initFromGRanges',
@@ -162,13 +162,13 @@ setMethod('initFromDataTable', c('GTF', 'data.table', 'vector'),
 #'
 #' @param x a GTF object
 #' @param fout a character object of GTF file name
-#' @param to_append a boolean to inidicate if to append to a GTF file or not
+#' @param append a boolean to inidicate if to append to a GTF file or not
 #'
 #' @export
 #'
 setMethod('writeGTF',
     c('GTF', 'character', 'logical'),
-    function(x, fout, to_append) {
+    function(x, fout, append) {
         grdt = grangedt(x)
         outdt = data.table()
         if ( nrow(grdt) > 0 ) {
@@ -195,7 +195,7 @@ setMethod('writeGTF',
             warning(paste0('emptry GRange in ', fgtf(x), "\n"))
         }
         write.table(outdt, fout, quote=F, sep="\t", col.names=F, row.names=F,
-                    append=to_append)
+                    append=append)
     }
 )
 
