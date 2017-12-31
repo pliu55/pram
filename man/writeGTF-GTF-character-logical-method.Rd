@@ -5,14 +5,14 @@
 \alias{writeGTF,GTF,character,logical-method}
 \title{write a GTF object to a GTF file}
 \usage{
-\S4method{writeGTF}{GTF,character,logical}(x, fout, to_append)
+\S4method{writeGTF}{GTF,character,logical}(x, fout, append)
 }
 \arguments{
 \item{x}{a GTF object}
 
 \item{fout}{a character object of GTF file name}
 
-\item{to_append}{a boolean to inidicate if to append to a GTF file or not}
+\item{append}{a boolean to inidicate if to append to a GTF file or not}
 }
 \description{
 write a GTF object to a GTF file
