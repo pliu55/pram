@@ -8,10 +8,10 @@ Param = setClass('Param',
 
         STAR_BIN      = 'character',
         CUFFLINKS_BIN = 'character',
-       #CUFFLINKS_DIR = 'character',
-       #CUFFMERGE_BIN = 'character',
         STRINGTIE_BIN = 'character',
         TACO_BIN      = 'character',
+
+        RANDOM_SEED = 'numeric',
 
         FUSERBAMS = 'vector',
         IGGRS     = 'GRanges',
@@ -74,6 +74,8 @@ Param = setClass('Param',
 
             'OSX' = 'https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz' ),
 
+
+        RANDOM_SEED = 88888888,
 
         GTF_INFO_KEYS = c('gene_id', 'transcript_id'),
 
@@ -163,6 +165,7 @@ setGeneric('cvnfolds<-',    function(x, value) standardGeneric('cvnfolds<-'))
 setGeneric('cufflinks',     function(x) standardGeneric('cufflinks'))
 setGeneric('stringtie',     function(x) standardGeneric('stringtie'))
 setGeneric('taco',          function(x) standardGeneric('taco'))
+setGeneric('randomseed',    function(x) standardGeneric('randomseed'))
 setGeneric('maxyieldsize',  function(x) standardGeneric('maxyieldsize'))
 setGeneric('maxchromlen',   function(x) standardGeneric('maxchromlen'))
 setGeneric('fuserbams',     function(x) standardGeneric('fuserbams'))
@@ -224,6 +227,7 @@ setReplaceMethod('cvnfolds', 'Param',
 setMethod('cufflinks',     'Param', function(x) x@CUFFLINKS_BIN)
 setMethod('stringtie',     'Param', function(x) x@STRINGTIE_BIN)
 setMethod('taco',          'Param', function(x) x@TACO_BIN)
+setMethod('randomseed',    'Param', function(x) x@RANDOM_SEED)
 setMethod('maxyieldsize',  'Param', function(x) x@MAX_YIELD_SIZE)
 setMethod('maxchromlen',   'Param', function(x) x@MAX_CHROM_LEN)
 setMethod('fuserbams',     'Param', function(x) x@FUSERBAMS)
