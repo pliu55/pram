@@ -9,7 +9,7 @@ document()
 install(quick=T, reload=F, threads=4)
 
 
- test( filter = 'screenModel' )
+# test( filter = 'screenModel' )
 # test( filter = 'prepIgBam' )
 # test( filter = 'buildModel' )
-# test()
+test()
