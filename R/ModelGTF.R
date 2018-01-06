@@ -11,7 +11,7 @@ ModelGTF = setClass(
 
 setMethod(
     'initialize',
-    signature('ModelGTF'),
+    'ModelGTF',
     function(.Object) {
         .Object = callNextMethod(.Object)
         .Object@model_method = character()
@@ -22,7 +22,7 @@ setMethod(
 
 setMethod(
     'initFromGTFFile',
-    signature('ModelGTF', 'character', 'vector'),
+    c('ModelGTF', 'character', 'vector'),
     function(obj, fgtf, infokeys, ...) {
         obj = callNextMethod(obj, fgtf, infokeys, ...)
         ecl = list(...)

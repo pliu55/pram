@@ -51,7 +51,7 @@ setMethod('show', 'GTF',
 
 setMethod(
     'initialize',
-    signature('GTF'),
+    'GTF',
     function(.Object) {
         .Object@fgtf     = character()
         .Object@origin   = character()
@@ -73,7 +73,7 @@ setMethod(
 #'
 setMethod(
     'initFromGTFFile',
-    signature('GTF', 'character', 'vector'),
+    c('GTF', 'character', 'vector'),
     function(obj, fgtf, infokeys, ...) {
         obj = GTF()
         obj@fgtf     = fgtf
