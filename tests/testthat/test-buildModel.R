@@ -20,11 +20,15 @@ main <- function() {
 
     nthr = 4
     outdir = paste0(tempdir(), '/')
+    fout_cf_gtfs = paste0(outdir, 'CMPRep', 1:2, '.sortedByCoord.clean_cf.gtf')
+    fout_st_gtfs = paste0(outdir, 'CMPRep', 1:2, '.sortedByCoord.clean_st.gtf')
 
     cufflinks = '/ua/pliu/local/cufflinks-2.2.1/cufflinks'
     stringtie = '/ua/pliu/local/stringtie-1.3.3/stringtie'
     taco      = '/ua/pliu/local/taco-0.7.0/taco_run'
     if ( file.exists(cufflinks) ) {
+        testBuildByCF(fbams, outdir, nthr, cufflinks, fout_cf_gtfs)
+
         testBuildByPLCF(fbams, outdir, nthr, cufflinks)
         testBuildByCFMG(fbams, outdir, nthr, cufflinks)
 
@@ -34,6 +38,8 @@ main <- function() {
     }
 
     if ( file.exists(stringtie) ) {
+        testBuildByST(fbams, outdir, nthr, stringtie, fout_st_gtfs)
+
         testBuildByPLST(fbams, outdir, nthr, stringtie)
         testBuildBySTMG(fbams, outdir, nthr, stringtie)
     }
@@ -97,6 +103,30 @@ testBuildByCFMG <- function(fbams, outdir, nthr, cufflinks) {
     foutgtf = paste0(outdir, 'cfmg.gtf')
     test_that(paste0('buildModel::testBuildByCFMG: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
+}
+
+
+testBuildByCF <- function(fbams, outdir, nthr, cufflinks, foutgtfs) {
+    buildModel(fbams, outdir, mode='cufflinks', nthreads=nthr,
+               cufflinks=cufflinks)
+
+    lapply(foutgtfs,
+           function(foutgtf) {
+               test_that(paste0('buildModel::testBuildByCF: ', foutgtf),
+                         expect_true( file.exists(foutgtf) ))
+           })
+}
+
+
+testBuildByST <- function(fbams, outdir, nthr, stringtie, foutgtfs) {
+    buildModel(fbams, outdir, mode='stringtie', nthreads=nthr,
+               stringtie=stringtie)
+
+    lapply(foutgtfs,
+           function(foutgtf) {
+               test_that(paste0('buildModel::testBuildByST: ', foutgtf),
+                         expect_true( file.exists(foutgtf) ))
+           })
 }
 
 
