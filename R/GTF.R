@@ -200,25 +200,33 @@ setMethod('writeGTF',
 )
 
 
+getGRangeDT <- function(fgtf, info_keys=c(), label='') {
+    gtf = new('GTF')
+    gtf = initFromGTFFile(gtf, fgtf, info_keys, origin=label)
+    grdt = grangedt(gtf)
 
-readGTF4Transcripts <- function(fin) {
-  dt <- readGTF4ExonGeneIDTrID(fin)
-  trdt <- dt[, list( chrom  = last(chrom),
-                     start  = min(start),
-                     end    = max(end),
-                     strand = last(strand),
-                     geneid = last(geneid) ), by=trid ]
-  return(trdt)
+    return(grdt)
 }
 
 
-readGTF4Genes <- function(fin) {
-  dt <- readGTF4ExonGeneIDTrID(fin)
-  genedt <- dt[, list( chrom  = last(chrom),
-                       start  = min(start),
-                       end    = max(end),
-                       strand = last(strand),
-                       trids  = paste0(unique(trid), collapse=',')
-                     ), by=geneid]
-  return(genedt)
-}
+#readGTF4Transcripts <- function(fin) {
+# dt <- readGTF4ExonGeneIDTrID(fin)
+# trdt <- dt[, list( chrom  = last(chrom),
+#                    start  = min(start),
+#                    end    = max(end),
+#                    strand = last(strand),
+#                    geneid = last(geneid) ), by=trid ]
+# return(trdt)
+#}
+
+
+#readGTF4Genes <- function(fin) {
+# dt <- readGTF4ExonGeneIDTrID(fin)
+# genedt <- dt[, list( chrom  = last(chrom),
+#                      start  = min(start),
+#                      end    = max(end),
+#                      strand = last(strand),
+#                      trids  = paste0(unique(trid), collapse=',')
+#                    ), by=geneid]
+# return(genedt)
+#}
