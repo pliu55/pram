@@ -1,37 +1,36 @@
 #' Build transcript models from aligned RNA-seq data
 #'
-#' @param  fbams  a character vector of input RNA-seq BAM files.  Currently,
+#' @param  fbams  A character vector of input RNA-seq BAM file(s).  Currently,
 #'                PRAM only supports strand-specific paired-end data with the
 #'                first mate on the right-most of transcript coordinate, i.e.,
 #'                'fr-firststrand' by Cufflinks's definition
-#' @param  outdir  a character string defining the full name of a directory for
+#'
+#' @param  outdir  A character string defining the full name of a directory for
 #'                 saving output files. PRAM will a folder named 'pram_tmp/'
-#                  under this directory to save temporary files.
-#' @param  mode  a character string defining PRAM's model building mode.
+#'                 under this directory to save temporary files.
+#'
+#' @param  mode  A character string defining PRAM's model building mode.
 #'               Must be one of 'pooling+cufflinks', 'pooling+stringtie',
-#'               'cufflinks+cuffmerge', 'stringtie+merging', or
-#'               'cufflinks+taco'.  Default: 'pooling+cufflinks'
-#' @param  nthreads  an integer defining the number of threads to-be-used.
+#'               'cufflinks+cuffmerge', 'stringtie+merging', 'cufflinks+taco',
+#'               'cufflinks', or 'stringtie'. Default: 'pooling+cufflinks'
+#'
+#' @param  nthreads  An integer defining the number of threads to-be-used.
 #'                   Default: 1
 #'
-#' @param  cufflinks  Cufflinks executable file. Required by mode
+#' @param  cufflinks  Cufflinks executable file.  Required by mode 'cufflinks',
 #'                    'pooling+cufflinks' and 'cufflinks+cuffmerge'.
 #'                    For mode 'cufflinks+cuffmerge',  executable files of
 #'                    Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
-#'                    suite will be assumed in the same folder as Cufflinks.
-#'                    Default: ''
+#'                    suite are assumed to be under the same folder as
+#'                    Cufflinks.  Default: ''
 #'
-#' @param  stringtie  StringTie executable file. Required by mode
+#' @param  stringtie  StringTie executable file.  Required by mode 'stringtie',
 #'                    'pooling+stringtie' and 'stringtie+merging'. Default: ''
 #'
 #' @param  taco       TACO executable file. Required by mode
 #'                    'cufflinks+taco'. Default: ''
 #'
 #' @return  NULL
-#'
-#' @importFrom  GenomeInfoDb  seqnames
-#' @importFrom  BiocGenerics  strand
-#' @importFrom  data.table    rbindlist data.table
 #'
 #' @export
 #'
@@ -59,6 +58,8 @@ buildModel <- function(fbams, outdir, mode='pooling+cufflinks', nthreads=1,
     } else if ( mode %in% c('cufflinks+cuffmerge', 'stringtie+merging',
                             'cufflinks+taco') ) {
         prm = def2StepManager(prm)
+    } else if ( mode %in% c( 'cufflinks', 'stringtie' ) ) {
+        prm = defCSManager(prm)
     }
 
     splitUserBams(prm)
@@ -67,12 +68,14 @@ buildModel <- function(fbams, outdir, mode='pooling+cufflinks', nthreads=1,
                       'pooling+stringtie'   = modelByPoolingStringTie,
                       'cufflinks+cuffmerge' = modelByCufflinksCuffmerge,
                       'stringtie+merging'   = modelByStringtieMerge,
-                      'cufflinks+taco'      = modelByCufflinksTACO )
+                      'cufflinks+taco'      = modelByCufflinksTACO,
+                      'cufflinks'           = modelByCufflinks,
+                      'stringtie'           = modelByStringTie )
 
     func = mode2func[[mode(prm)]]
-    gtfl = func(prm)
+    func(prm)
 
-    outputModel(gtfl, prm)
+    outputModel(prm)
 }
 
 
@@ -159,6 +162,38 @@ genBamChromOri <- function(fbam)  {
 
 #' @importFrom  tools  file_path_sans_ext
 #'
+defCSManager <- function(prm) {
+    fuserbams = fuserbams(prm)
+    nthr = nthreads(prm)
+
+    dt = data.table()
+    if ( nthr == 1 ) {
+        dt = rbindlist(lapply(fuserbams, genBamChromOri))
+    } else if ( nthr > 1 ) {
+        dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
+    }
+
+    dt[, `:=`( label = mode2label(prm)[[mode(prm)]],
+               bamid = file_path_sans_ext(basename(fuserbam)) )]
+
+    dt[, tag := paste0(bamid, '_', chrom, '_', strand) ]
+
+    dt[, `:=`( fchromoribam = paste0(tmpdir(prm), tag, '.bam'),
+               fmdlbam      = paste0(tmpdir(prm), tag, '.bam'),
+               mdldir       = paste0(tmpdir(prm), tag, '/'),
+               fmdlgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
+               foutgtf      = paste0(outdir(prm), bamid, '_', label, '.gtf') )]
+
+    all_chromoridt = dt[, .(chrom, ori)]
+    chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
+    managerdt(prm) = dt
+
+    return(prm)
+}
+
+
+#' @importFrom  tools  file_path_sans_ext
+#'
 def1StepManager <- function(prm) {
     fuserbams = fuserbams(prm)
     nthr = nthreads(prm)
@@ -179,8 +214,7 @@ def1StepManager <- function(prm) {
                fmdlbam = paste0(tmpdir(prm), tag, '.bam'),
                mdldir  = paste0(tmpdir(prm), tag, '/'),
                fmdlgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
-               foutgtf = paste0(outdir(prm), label, '.gtf'),
-               foutrda = paste0(outdir(prm), label, '.rda') )]
+               foutgtf = paste0(outdir(prm), label, '.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
@@ -223,8 +257,7 @@ def2StepManager <- function(prm) {
                fmrg_err = paste0(mrgpref, '_run.err'),
                mrgdir   = paste0(mrgpref, '/'),
                fmrggtf  = paste0(mrgpref, '/', mrgbase, '.gtf'),
-               foutgtf = paste0(outdir(prm), label, '.gtf'),
-               foutrda = paste0(outdir(prm), label, '.rda') )]
+               foutgtf = paste0(outdir(prm), label, '.gtf'))]
 
     all_chromoridt = dt[, .(chrom, ori)]
     setkey(all_chromoridt, NULL)
@@ -235,35 +268,49 @@ def2StepManager <- function(prm) {
 }
 
 
-outputModel <- function(gtfl, prm) {
+outputModel <- function(prm) {
+    ## for 1-step or 2-step builder, there is only one foutgtf
+    ## for cs builder, there may be multiple foutgtf
+
     dt = managerdt(prm)
-    foutgtf = unique(dt$foutgtf)
-    foutrda = unique(dt$foutrda)
-    label   = unique(dt$label)
+    nthr = nthreads(prm)
+    info_keys = gtfinfokeys(prm)
+    foutgtfs = unique(dt$foutgtf)
+    lapply(foutgtfs, outputModelByGTF, dt, info_keys, nthr)
+}
+
+
+outputModelByGTF <- function(in_foutgtf, managerdt, info_keys, nthr) {
+    dt = managerdt[ foutgtf == in_foutgtf ]
+
+    label = unique(dt$label)
+    fmdlgtfs = unique(dt$fmdlgtf)
+
+    grdt = data.table()
+    if ( nthr == 1 ) {
+        grdt = rbindlist(lapply(fmdlgtfs, getGRangeDT, info_keys, label))
+    } else if ( nthr > 1 ) {
+        grdt = rbindlist(mclapply(fmdlgtfs, getGRangeDT, info_keys, label,
+                                  mc.cores=nthr))
+    }
 
     gtf = new('GTF')
-    fgtf(gtf)     = foutgtf
+    fgtf(gtf)     = in_foutgtf
     origin(gtf)   = label
-    infokeys(gtf) = gtfinfokeys(prm)
-    grangedt(gtf) = rbindlist(lapply(gtfl, function(x) grangedt(x)))
-    writeGTF(gtf, foutgtf, append=F)
-   #cat('File writtne:', foutgtf, "\n")
+    infokeys(gtf) = info_keys
+    grangedt(gtf) = grdt
 
-   #grs = makeGRangesFromDataFrame(grangedt(gtf), keep.extra.columns=T)
-   #save(grs, file=foutrda)
-   #cat('R obj saved:', foutrda, "\n")
+    writeGTF(gtf, in_foutgtf, append=F)
 }
 
 
 modelByPoolingCufflinks <- function(prm) {
-    gtfl = modelByPoolingBams('cufflinks', prm)
-    return(gtfl)
+    modelByPoolingBams('cufflinks', prm)
 }
 
 
 modelByPoolingStringTie <- function(prm) {
-    gtfl = modelByPoolingBams('stringtie', prm)
-    return(gtfl)
+    modelByPoolingBams('stringtie', prm)
 }
 
 
@@ -282,6 +329,16 @@ modelByStringtieMerge <- function(prm) {
 modelByCufflinksTACO <- function(prm) {
     modelByMethod('cufflinks', prm)
     mergeModels('taco', prm)
+}
+
+
+modelByCufflinks <- function(prm) {
+    modelByMethod('cufflinks', prm)
+}
+
+
+modelByStringTie <- function(prm) {
+    modelByMethod('stringtie', prm)
 }
 
 
@@ -322,7 +379,7 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
 
     fsel_mdlgtfs = fmdlgtfs[sel]
 
-    gtf = new('GTF')
+   #gtf = new('GTF')
     if ( length(fsel_mdlgtfs) > 0 ) {
         write(paste0(fsel_mdlgtfs, collapse="\n"), fmrglist)
 
@@ -339,12 +396,12 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
         }
         system2('nohup', args=args, stdout=fmrg_out, stderr=fmrg_err)
 
-        gtf = initFromGTFFile(gtf, fmrggtf, gtfinfokeys(prm), origin=label)
+       #gtf = initFromGTFFile(gtf, fmrggtf, gtfinfokeys(prm), origin=label)
     } else {
         write('no model was build from bam', fmrglist)
     }
 
-    return(gtf)
+   #return(gtf)
 }
 
 
@@ -359,16 +416,17 @@ modelByPoolingBams <- function(method, prm) {
     gtfs = NULL
     if ( nthr == 1 ) {
         mapply(poolBamByChromOri, dt$chrom, dt$ori, MoreArgs=list(prm=prm))
-        gtfl = mapply(modelByChromOriBam, dt$chrom, dt$ori, dt$fmdlbam,
-                      MoreArgs=list(method=method, prm=prm))
+       #gtfl = lapply(dt$fmdlbam, modelByChromOriBam, method, prm)
+        lapply(dt$fmdlbam, modelByChromOriBam, method, prm)
     } else if ( nthr > 1 ) {
         mcmapply(poolBamByChromOri, dt$chrom, dt$ori, MoreArgs=list(prm=prm),
                  mc.cores=nthr)
-        gtfl = mcmapply(modelByChromOriBam, dt$chrom, dt$ori, dt$fmdlbam,
-                        MoreArgs=list(method=method, prm=prm), mc.cores=nthr)
+       #gtfl = mclapply(dt$fmdlbam, modelByChromOriBam, method, prm,
+       #                mc.cores=nthr)
+        mclapply(dt$fmdlbam, modelByChromOriBam, method, prm, mc.cores=nthr)
     }
 
-    return(gtfl)
+   #return(gtfl)
 }
 
 
@@ -392,18 +450,18 @@ modelByMethod <- function(method, prm) {
     dt = managerdt(prm)
     nthr = nthreads(prm)
     if ( nthr == 1 ) {
-        mapply(modelByChromOriBam, dt$chrom, dt$ori, dt$fmdlbam,
-               MoreArgs=list(method=method, prm=prm))
+        lapply(dt$fmdlbam, modelByChromOriBam, method, prm)
     } else if ( nthr > 1 ) {
-        mcmapply(modelByChromOriBam, dt$chrom, dt$ori, dt$fmdlbam,
-                 MoreArgs=list(method=method, prm=prm), mc.cores=nthr)
+        mclapply(dt$fmdlbam, modelByChromOriBam, method, prm, mc.cores=nthr)
     }
 }
 
 
-modelByChromOriBam <- function(in_chrom, in_ori, in_fmdlbam, method, prm) {
+#modelByChromOriBam <- function(in_chrom, in_ori, in_fmdlbam, method, prm) {
+modelByChromOriBam <- function(in_fmdlbam, method, prm) {
     managerdt = managerdt(prm)
-    dt = managerdt[ chrom == in_chrom & ori == in_ori & fmdlbam == in_fmdlbam ]
+   #dt = managerdt[ chrom == in_chrom & ori == in_ori & fmdlbam == in_fmdlbam ]
+    dt = managerdt[ fmdlbam == in_fmdlbam ]
     mdldir  = unique(dt$mdldir)
     fmdlbam = unique(dt$fmdlbam)
     fmdlgtf = unique(dt$fmdlgtf)
@@ -424,10 +482,10 @@ modelByChromOriBam <- function(in_chrom, in_ori, in_fmdlbam, method, prm) {
 
     system2('nohup', args=args, stdout=fout, stderr=ferr)
 
-    gtf = new('GTF')
-    gtf = initFromGTFFile(gtf, fmdlgtf, gtfinfokeys(prm), origin=label)
+   #gtf = new('GTF')
+   #gtf = initFromGTFFile(gtf, fmdlgtf, gtfinfokeys(prm), origin=label)
 
-    return(gtf)
+   #return(gtf)
 }
 
 
@@ -503,9 +561,10 @@ getTacoArgs <- function(fin_gtfs, outdir, fout_gtf, prm) {
 
 checkModeBin <- function(prm) {
     mode = mode(prm)
-    if ( mode  == 'pooling+cufflinks' ) {
+    if ( mode %in% c('pooling+cufflinks', 'cufflinks') ) {
         checkCufflinksBin(prm)
-    } else if ( mode %in% c('pooling+stringtie', 'stringtie+merging') ) {
+    } else if ( mode %in% c('pooling+stringtie', 'stringtie+merging',
+                            'stringtie') ) {
         checkStringTieBin(prm)
     } else if ( mode == 'cufflinks+cuffmerge' ) {
         checkCuffmergeRequiredBins(prm)

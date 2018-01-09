@@ -83,7 +83,9 @@ Param = setClass('Param',
                            'pooling+stringtie'   = 'plst',
                            'cufflinks+cuffmerge' = 'cfmg',
                            'stringtie+merging'   = 'stmg',
-                           'cufflinks+taco'      = 'cftc' ),
+                           'cufflinks+taco'      = 'cftc',
+                           'cufflinks'           = 'cf',
+                           'stringtie'           = 'st' ),
 
         NTHREADS = 1,
 

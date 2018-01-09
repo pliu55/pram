@@ -8,30 +8,31 @@ buildModel(fbams, outdir, mode = "pooling+cufflinks", nthreads = 1,
   cufflinks = "", stringtie = "", taco = "")
 }
 \arguments{
-\item{fbams}{a character vector of input RNA-seq BAM files.  Currently,
+\item{fbams}{A character vector of input RNA-seq BAM file(s).  Currently,
 PRAM only supports strand-specific paired-end data with the
 first mate on the right-most of transcript coordinate, i.e.,
 'fr-firststrand' by Cufflinks's definition}
 
-\item{outdir}{a character string defining the full name of a directory for
-saving output files. PRAM will a folder named 'pram_tmp/'}
+\item{outdir}{A character string defining the full name of a directory for
+saving output files. PRAM will a folder named 'pram_tmp/'
+under this directory to save temporary files.}
 
-\item{mode}{a character string defining PRAM's model building mode.
+\item{mode}{A character string defining PRAM's model building mode.
 Must be one of 'pooling+cufflinks', 'pooling+stringtie',
-'cufflinks+cuffmerge', 'stringtie+merging', or
-'cufflinks+taco'.  Default: 'pooling+cufflinks'}
+'cufflinks+cuffmerge', 'stringtie+merging', 'cufflinks+taco',
+'cufflinks', or 'stringtie'. Default: 'pooling+cufflinks'}
 
-\item{nthreads}{an integer defining the number of threads to-be-used.
+\item{nthreads}{An integer defining the number of threads to-be-used.
 Default: 1}
 
-\item{cufflinks}{Cufflinks executable file. Required by mode
+\item{cufflinks}{Cufflinks executable file.  Required by mode 'cufflinks',
 'pooling+cufflinks' and 'cufflinks+cuffmerge'.
 For mode 'cufflinks+cuffmerge',  executable files of
 Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
-suite will be assumed in the same folder as Cufflinks.
-Default: ''}
+suite are assumed to be under the same folder as
+Cufflinks.  Default: ''}
 
-\item{stringtie}{StringTie executable file. Required by mode
+\item{stringtie}{StringTie executable file.  Required by mode 'stringtie',
 'pooling+stringtie' and 'stringtie+merging'. Default: ''}
 
 \item{taco}{TACO executable file. Required by mode
