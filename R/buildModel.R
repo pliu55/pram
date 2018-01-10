@@ -10,32 +10,39 @@
 #'                 under this directory to save temporary files.
 #'
 #' @param  mode  A character string defining PRAM's model building mode.
-#'               Must be one of 'pooling+cufflinks', 'pooling+stringtie',
-#'               'cufflinks+cuffmerge', 'stringtie+merging', 'cufflinks+taco',
-#'               'cufflinks', or 'stringtie'. Default: 'pooling+cufflinks'
+#'               Current available modes are:
+#'               \itemize{
+#'                   \item plcf: pooling   + cufflinks
+#'                   \item plst: pooling   + stringtie
+#'                   \item cfmg: cufflinks + cuffmerge
+#'                   \item stmg: stringtie + merging
+#'                   \item cftc: cufflinks + taco
+#'                   \item cf:   cufflinks
+#'                   \item st:   stringtie
+#'               }
+#'               Default: 'plcf'
 #'
 #' @param  nthreads  An integer defining the number of threads to-be-used.
 #'                   Default: 1
 #'
-#' @param  cufflinks  Cufflinks executable file.  Required by mode 'cufflinks',
-#'                    'pooling+cufflinks' and 'cufflinks+cuffmerge'.
-#'                    For mode 'cufflinks+cuffmerge',  executable files of
+#' @param  cufflinks  Cufflinks executable file.  Required by mode 'plcf',
+#'                    'cfmg', and 'cf'.  For mode 'cfmg', executable files of
 #'                    Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
 #'                    suite are assumed to be under the same folder as
 #'                    Cufflinks.  Default: ''
 #'
-#' @param  stringtie  StringTie executable file.  Required by mode 'stringtie',
-#'                    'pooling+stringtie' and 'stringtie+merging'. Default: ''
+#' @param  stringtie  StringTie executable file.  Required by mode
+#'                    'plst', 'stmg', and 'st'. Default: ''
 #'
-#' @param  taco       TACO executable file. Required by mode
-#'                    'cufflinks+taco'. Default: ''
+#' @param  taco       TACO executable file. Required by mode 'cftc'.
+#'                    Default: ''
 #'
 #' @return  NULL
 #'
 #' @export
 #'
-buildModel <- function(fbams, outdir, mode='pooling+cufflinks', nthreads=1,
-                       cufflinks='', stringtie='', taco='') {
+buildModel <- function(fbams, outdir, mode='plcf', nthreads=1, cufflinks='',
+                       stringtie='', taco='') {
 
     prm = new('Param')
     fuserbams(prm) = fbams
@@ -53,24 +60,23 @@ buildModel <- function(fbams, outdir, mode='pooling+cufflinks', nthreads=1,
     if ( ! file.exists(tmpdir) ) dir.create(tmpdir, recursive=T)
     tmpdir(prm) = tmpdir
 
-    if ( mode %in% c('pooling+cufflinks', 'pooling+stringtie') ) {
+    if ( mode %in% c('plcf', 'plst') ) {
         prm = def1StepManager(prm)
-    } else if ( mode %in% c('cufflinks+cuffmerge', 'stringtie+merging',
-                            'cufflinks+taco') ) {
+    } else if ( mode %in% c('cfmg', 'stmg', 'cftc') ) {
         prm = def2StepManager(prm)
-    } else if ( mode %in% c( 'cufflinks', 'stringtie' ) ) {
+    } else if ( mode %in% c( 'cf', 'st' ) ) {
         prm = defCSManager(prm)
     }
 
     splitUserBams(prm)
 
-    mode2func = list( 'pooling+cufflinks'   = modelByPoolingCufflinks,
-                      'pooling+stringtie'   = modelByPoolingStringTie,
-                      'cufflinks+cuffmerge' = modelByCufflinksCuffmerge,
-                      'stringtie+merging'   = modelByStringtieMerge,
-                      'cufflinks+taco'      = modelByCufflinksTACO,
-                      'cufflinks'           = modelByCufflinks,
-                      'stringtie'           = modelByStringTie )
+    mode2func = list( 'plcf' = modelByPoolingCufflinks,
+                      'plst' = modelByPoolingStringTie,
+                      'cfmg' = modelByCufflinksCuffmerge,
+                      'stmg' = modelByStringtieMerge,
+                      'cftc' = modelByCufflinksTACO,
+                      'cf'   = modelByCufflinks,
+                      'st'   = modelByStringTie )
 
     func = mode2func[[mode(prm)]]
     func(prm)
@@ -173,7 +179,7 @@ defCSManager <- function(prm) {
         dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
     }
 
-    dt[, `:=`( label = mode2label(prm)[[mode(prm)]],
+    dt[, `:=`( label = mode(prm),
                bamid = file_path_sans_ext(basename(fuserbam)) )]
 
     dt[, tag := paste0(bamid, '_', chrom, '_', strand) ]
@@ -205,7 +211,7 @@ def1StepManager <- function(prm) {
         dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
     }
 
-    dt[, label := mode2label(prm)[[mode(prm)]] ]
+    dt[, label := mode(prm) ]
     dt[, tag := paste0(label, '_', chrom, '_', strand) ]
 
     dt[, `:=`( fchromoribam = paste0(tmpdir(prm),
@@ -238,15 +244,13 @@ def2StepManager <- function(prm) {
     }
 
     mode = mode(prm)
-    dt[, label := mode2label(prm)[[mode(prm)]] ]
+    dt[, label := mode(prm) ]
     dt[, `:=`( mdlpref = paste0(tmpdir(prm),
                                 file_path_sans_ext(basename(fuserbam)),
                                 '_', label, '_', chrom, '_', strand),
                mrgpref = paste0(tmpdir(prm), label, '_', chrom, '_', strand),
-               mrgbase = ifelse(mode %in% c('cufflinks+cuffmerge',
-                                            'stringtie+merging'), 'merged',
-                                ifelse(mode == 'cufflinks+taco', 'assembly',
-                                       NA)) )]
+               mrgbase = ifelse(mode %in% c('cfmg', 'stmg'), 'merged',
+                                ifelse(mode == 'cftc', 'assembly', NA)) )]
 
     dt[, `:=`( fchromoribam = paste0(mdlpref, '.bam'),
                fmdlbam      = paste0(mdlpref, '.bam'),
@@ -379,7 +383,6 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
 
     fsel_mdlgtfs = fmdlgtfs[sel]
 
-   #gtf = new('GTF')
     if ( length(fsel_mdlgtfs) > 0 ) {
         write(paste0(fsel_mdlgtfs, collapse="\n"), fmrglist)
 
@@ -395,13 +398,9 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
                                    Sys.getenv('PATH')))
         }
         system2('nohup', args=args, stdout=fmrg_out, stderr=fmrg_err)
-
-       #gtf = initFromGTFFile(gtf, fmrggtf, gtfinfokeys(prm), origin=label)
     } else {
         write('no model was build from bam', fmrglist)
     }
-
-   #return(gtf)
 }
 
 
@@ -457,10 +456,8 @@ modelByMethod <- function(method, prm) {
 }
 
 
-#modelByChromOriBam <- function(in_chrom, in_ori, in_fmdlbam, method, prm) {
 modelByChromOriBam <- function(in_fmdlbam, method, prm) {
     managerdt = managerdt(prm)
-   #dt = managerdt[ chrom == in_chrom & ori == in_ori & fmdlbam == in_fmdlbam ]
     dt = managerdt[ fmdlbam == in_fmdlbam ]
     mdldir  = unique(dt$mdldir)
     fmdlbam = unique(dt$fmdlbam)
@@ -481,11 +478,6 @@ modelByChromOriBam <- function(in_fmdlbam, method, prm) {
     args = func(mdldir, label, fmdlbam, fmdlgtf, prm)
 
     system2('nohup', args=args, stdout=fout, stderr=ferr)
-
-   #gtf = new('GTF')
-   #gtf = initFromGTFFile(gtf, fmdlgtf, gtfinfokeys(prm), origin=label)
-
-   #return(gtf)
 }
 
 
@@ -561,19 +553,18 @@ getTacoArgs <- function(fin_gtfs, outdir, fout_gtf, prm) {
 
 checkModeBin <- function(prm) {
     mode = mode(prm)
-    if ( mode %in% c('pooling+cufflinks', 'cufflinks') ) {
+    if ( mode %in% c('plcf', 'cf') ) {
         checkCufflinksBin(prm)
-    } else if ( mode %in% c('pooling+stringtie', 'stringtie+merging',
-                            'stringtie') ) {
+    } else if ( mode %in% c('plst', 'stmg', 'st') ) {
         checkStringTieBin(prm)
-    } else if ( mode == 'cufflinks+cuffmerge' ) {
+    } else if ( mode == 'cfmg' ) {
         checkCuffmergeRequiredBins(prm)
-    } else if ( mode == 'cufflinks+taco' ) {
+    } else if ( mode == 'cftc' ) {
         checkTacoBin(prm)
         checkCufflinksBin(prm)
     } else {
         msg = paste0('mode= ', mode, ' is not implemented. Must be one of ',
-                     paste0(names(mode2label(prm)), collapse=', '), "\n")
+                     "plcf, plst, cfmg, stmg, cftc, cf, or st\n")
         stop(msg)
     }
 }

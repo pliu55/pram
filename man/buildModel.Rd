@@ -4,8 +4,8 @@
 \alias{buildModel}
 \title{Build transcript models from aligned RNA-seq data}
 \usage{
-buildModel(fbams, outdir, mode = "pooling+cufflinks", nthreads = 1,
-  cufflinks = "", stringtie = "", taco = "")
+buildModel(fbams, outdir, mode = "plcf", nthreads = 1, cufflinks = "",
+  stringtie = "", taco = "")
 }
 \arguments{
 \item{fbams}{A character vector of input RNA-seq BAM file(s).  Currently,
@@ -18,25 +18,32 @@ saving output files. PRAM will a folder named 'pram_tmp/'
 under this directory to save temporary files.}
 
 \item{mode}{A character string defining PRAM's model building mode.
-Must be one of 'pooling+cufflinks', 'pooling+stringtie',
-'cufflinks+cuffmerge', 'stringtie+merging', 'cufflinks+taco',
-'cufflinks', or 'stringtie'. Default: 'pooling+cufflinks'}
+Current available modes are:
+\itemize{
+    \item plcf: pooling   + cufflinks
+    \item plst: pooling   + stringtie
+    \item cfmg: cufflinks + cuffmerge
+    \item stmg: stringtie + merging
+    \item cftc: cufflinks + taco
+    \item cf:   cufflinks
+    \item st:   stringtie
+}
+Default: 'plcf'}
 
 \item{nthreads}{An integer defining the number of threads to-be-used.
 Default: 1}
 
-\item{cufflinks}{Cufflinks executable file.  Required by mode 'cufflinks',
-'pooling+cufflinks' and 'cufflinks+cuffmerge'.
-For mode 'cufflinks+cuffmerge',  executable files of
+\item{cufflinks}{Cufflinks executable file.  Required by mode 'plcf',
+'cfmg', and 'cf'.  For mode 'cfmg', executable files of
 Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
 suite are assumed to be under the same folder as
 Cufflinks.  Default: ''}
 
-\item{stringtie}{StringTie executable file.  Required by mode 'stringtie',
-'pooling+stringtie' and 'stringtie+merging'. Default: ''}
+\item{stringtie}{StringTie executable file.  Required by mode
+'plst', 'stmg', and 'st'. Default: ''}
 
-\item{taco}{TACO executable file. Required by mode
-'cufflinks+taco'. Default: ''}
+\item{taco}{TACO executable file. Required by mode 'cftc'.
+Default: ''}
 }
 \description{
 Build transcript models from aligned RNA-seq data
