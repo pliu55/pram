@@ -25,7 +25,7 @@ Param = setClass('Param',
         CHROM_ORI_DT = 'data.table',
 
         GTF_INFO_KEYS = 'vector',
-        MODE2LABEL    = 'list',
+       #MODE2LABEL    = 'list',
 
 
         CUFFLINKS_LIB_TYPE = 'character',
@@ -79,13 +79,13 @@ Param = setClass('Param',
 
         GTF_INFO_KEYS = c('gene_id', 'transcript_id'),
 
-        MODE2LABEL = list( 'pooling+cufflinks'   = 'plcf',
-                           'pooling+stringtie'   = 'plst',
-                           'cufflinks+cuffmerge' = 'cfmg',
-                           'stringtie+merging'   = 'stmg',
-                           'cufflinks+taco'      = 'cftc',
-                           'cufflinks'           = 'cf',
-                           'stringtie'           = 'st' ),
+       #MODE2LABEL = list( 'pooling+cufflinks'   = 'plcf',
+       #                   'pooling+stringtie'   = 'plst',
+       #                   'cufflinks+cuffmerge' = 'cfmg',
+       #                   'stringtie+merging'   = 'stmg',
+       #                   'cufflinks+taco'      = 'cftc',
+       #                   'cufflinks'           = 'cf',
+       #                   'stringtie'           = 'st' ),
 
         NTHREADS = 1,
 
@@ -178,7 +178,7 @@ setGeneric('tmpdir',        function(x) standardGeneric('tmpdir'))
 setGeneric('managerdt',     function(x) standardGeneric('managerdt'))
 setGeneric('chromoridt',    function(x) standardGeneric('chromoridt'))
 setGeneric('gtfinfokeys',   function(x) standardGeneric('gtfinfokeys'))
-setGeneric('mode2label',    function(x) standardGeneric('mode2label'))
+#setGeneric('mode2label',    function(x) standardGeneric('mode2label'))
 setGeneric('nthreads',      function(x) standardGeneric('nthreads'))
 setGeneric('maxunindupaln', function(x) standardGeneric('maxunindupaln'))
 setGeneric('maxmulndupaln', function(x) standardGeneric('maxmulndupaln'))
@@ -240,7 +240,7 @@ setMethod('tmpdir',        'Param', function(x) x@TMP_DIR)
 setMethod('managerdt',     'Param', function(x) x@MANAGER_DT)
 setMethod('chromoridt',    'Param', function(x) x@CHROM_ORI_DT)
 setMethod('gtfinfokeys',   'Param', function(x) x@GTF_INFO_KEYS)
-setMethod('mode2label',    'Param', function(x) x@MODE2LABEL)
+#setMethod('mode2label',    'Param', function(x) x@MODE2LABEL)
 setMethod('nthreads',      'Param', function(x) x@NTHREADS)
 setMethod('maxunindupaln', 'Param', function(x) x@MAX_UNI_N_DUP_ALN)
 setMethod('maxmulndupaln', 'Param', function(x) x@MAX_MUL_N_DUP_ALN)
