@@ -14,9 +14,9 @@ first mate on the right-most of transcript coordinate, i.e.,
 'fr-firststrand' by Cufflinks's definition}
 
 \item{outdir}{A character string defining the full name of a directory for
-saving output files. PRAM will a folder named
+saving output files. PRAM will create a folder named
 'pram_tmp_$mode/' under this directory to save temporary
-files.}
+files. Any prior existing 'pram_tmp_$mode/' will be removed.}
 
 \item{mode}{A character string defining PRAM's model building mode.
 Current available modes are:

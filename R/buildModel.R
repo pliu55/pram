@@ -6,9 +6,9 @@
 #'                'fr-firststrand' by Cufflinks's definition
 #'
 #' @param  outdir  A character string defining the full name of a directory for
-#'                 saving output files. PRAM will a folder named
+#'                 saving output files. PRAM will create a folder named
 #'                 'pram_tmp_$mode/' under this directory to save temporary
-#'                 files.
+#'                 files. Any prior existing 'pram_tmp_$mode/' will be removed.
 #'
 #' @param  mode  A character string defining PRAM's model building mode.
 #'               Current available modes are:
@@ -58,7 +58,8 @@ buildModel <- function(fbams, outdir, mode='plcf', nthreads=1, cufflinks='',
     checkModeBin(prm)
 
     tmpdir = paste0(outdir, 'pram_tmp_', mode, '/')
-    if ( ! file.exists(tmpdir) ) dir.create(tmpdir, recursive=T)
+    if ( file.exists(tmpdir) ) unlink(tmpdir, recursive=T, force=T)
+    dir.create(tmpdir, recursive=T)
     tmpdir(prm) = tmpdir
 
     if ( mode %in% c('plcf', 'plst') ) {
@@ -111,8 +112,9 @@ splitUserBamByChromOri <- function(i, prm) {
 }
 
 
-#' @importFrom  Rsamtools  filterBam BamFile ScanBamParam
-#' @importFrom  S4Vectors  FilterRules
+#' @importFrom  data.table     data.table
+#' @importFrom  Rsamtools      filterBam BamFile ScanBamParam scanBam
+#' @importFrom  S4Vectors      FilterRules
 #' @importFrom  GenomicRanges  GRanges
 #'
 filterBamByChromOri <- function(fuserbam, fchromoribam, chrom, strand, prm) {
@@ -144,7 +146,8 @@ filterBamByChromOri <- function(fuserbam, fchromoribam, chrom, strand, prm) {
 }
 
 
-#' @importFrom  Rsamtools  indexBam
+#' @importFrom  data.table  data.table
+#' @importFrom  Rsamtools   indexBam idxstatsBam
 #'
 genBamChromOri <- function(fbam)  {
     fbai = paste0(fbam, '.bai')
@@ -416,17 +419,12 @@ modelByPoolingBams <- function(method, prm) {
     gtfs = NULL
     if ( nthr == 1 ) {
         mapply(poolBamByChromOri, dt$chrom, dt$ori, MoreArgs=list(prm=prm))
-       #gtfl = lapply(dt$fmdlbam, modelByChromOriBam, method, prm)
         lapply(dt$fmdlbam, modelByChromOriBam, method, prm)
     } else if ( nthr > 1 ) {
         mcmapply(poolBamByChromOri, dt$chrom, dt$ori, MoreArgs=list(prm=prm),
                  mc.cores=nthr)
-       #gtfl = mclapply(dt$fmdlbam, modelByChromOriBam, method, prm,
-       #                mc.cores=nthr)
         mclapply(dt$fmdlbam, modelByChromOriBam, method, prm, mc.cores=nthr)
     }
-
-   #return(gtfl)
 }
 
 
