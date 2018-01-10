@@ -6,8 +6,9 @@
 #'                'fr-firststrand' by Cufflinks's definition
 #'
 #' @param  outdir  A character string defining the full name of a directory for
-#'                 saving output files. PRAM will a folder named 'pram_tmp/'
-#'                 under this directory to save temporary files.
+#'                 saving output files. PRAM will a folder named
+#'                 'pram_tmp_$mode/' under this directory to save temporary
+#'                 files.
 #'
 #' @param  mode  A character string defining PRAM's model building mode.
 #'               Current available modes are:
@@ -56,7 +57,7 @@ buildModel <- function(fbams, outdir, mode='plcf', nthreads=1, cufflinks='',
 
     checkModeBin(prm)
 
-    tmpdir = paste0(outdir, 'pram_tmp/')
+    tmpdir = paste0(outdir, 'pram_tmp_', mode, '/')
     if ( ! file.exists(tmpdir) ) dir.create(tmpdir, recursive=T)
     tmpdir(prm) = tmpdir
 
