@@ -183,7 +183,7 @@ defCSManager <- function(prm) {
         dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
     }
 
-    dt[, `:=`( label = mode(prm),
+    dt[, `:=`( mode  = mode(prm),
                bamid = file_path_sans_ext(basename(fuserbam)) )]
 
     dt[, tag := paste0(bamid, '_', chrom, '_', strand) ]
@@ -192,7 +192,7 @@ defCSManager <- function(prm) {
                fmdlbam      = paste0(tmpdir(prm), tag, '.bam'),
                mdldir       = paste0(tmpdir(prm), tag, '/'),
                fmdlgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
-               foutgtf      = paste0(outdir(prm), bamid, '_', label, '.gtf') )]
+               foutgtf      = paste0(outdir(prm), bamid, '_', mode, '.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
@@ -215,8 +215,8 @@ def1StepManager <- function(prm) {
         dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
     }
 
-    dt[, label := mode(prm) ]
-    dt[, tag := paste0(label, '_', chrom, '_', strand) ]
+    dt[, mode := mode(prm) ]
+    dt[, tag := paste0(mode, '_', chrom, '_', strand) ]
 
     dt[, `:=`( fchromoribam = paste0(tmpdir(prm),
                                      file_path_sans_ext(basename(fuserbam)),
@@ -224,7 +224,7 @@ def1StepManager <- function(prm) {
                fmdlbam = paste0(tmpdir(prm), tag, '.bam'),
                mdldir  = paste0(tmpdir(prm), tag, '/'),
                fmdlgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
-               foutgtf = paste0(outdir(prm), label, '.gtf') )]
+               foutgtf = paste0(outdir(prm), mode, '.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
@@ -247,12 +247,12 @@ def2StepManager <- function(prm) {
         dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
     }
 
-    mode = mode(prm)
-    dt[, label := mode(prm) ]
+    dt[, mode := mode(prm) ]
+    dt[, tag := paste0(mode, '_', chrom, '_', strand)]
     dt[, `:=`( mdlpref = paste0(tmpdir(prm),
                                 file_path_sans_ext(basename(fuserbam)),
-                                '_', label, '_', chrom, '_', strand),
-               mrgpref = paste0(tmpdir(prm), label, '_', chrom, '_', strand),
+                                '_', tag),
+               mrgpref = paste0(tmpdir(prm), tag),
                mrgbase = ifelse(mode %in% c('cfmg', 'stmg'), 'merged',
                                 ifelse(mode == 'cftc', 'assembly', NA)) )]
 
@@ -265,7 +265,7 @@ def2StepManager <- function(prm) {
                fmrg_err = paste0(mrgpref, '_run.err'),
                mrgdir   = paste0(mrgpref, '/'),
                fmrggtf  = paste0(mrgpref, '/', mrgbase, '.gtf'),
-               foutgtf = paste0(outdir(prm), label, '.gtf'))]
+               foutgtf  = paste0(outdir(prm), mode, '.gtf'))]
 
     all_chromoridt = dt[, .(chrom, ori)]
     setkey(all_chromoridt, NULL)
@@ -291,20 +291,20 @@ outputModel <- function(prm) {
 outputModelByGTF <- function(in_foutgtf, managerdt, info_keys, nthr) {
     dt = managerdt[ foutgtf == in_foutgtf ]
 
-    label = unique(dt$label)
+    mode = unique(dt$mode)
     fmdlgtfs = unique(dt$fmdlgtf)
 
     grdt = data.table()
     if ( nthr == 1 ) {
-        grdt = rbindlist(lapply(fmdlgtfs, getGRangeDT, info_keys, label))
+        grdt = rbindlist(lapply(fmdlgtfs, getGRangeDT, info_keys, mode))
     } else if ( nthr > 1 ) {
-        grdt = rbindlist(mclapply(fmdlgtfs, getGRangeDT, info_keys, label,
+        grdt = rbindlist(mclapply(fmdlgtfs, getGRangeDT, info_keys, mode,
                                   mc.cores=nthr))
     }
 
     gtf = new('GTF')
     fgtf(gtf)     = in_foutgtf
-    origin(gtf)   = label
+    origin(gtf)   = mode
     infokeys(gtf) = info_keys
     grangedt(gtf) = grdt
 
@@ -369,7 +369,6 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
     fmdlgtfs = unique(dt$fmdlgtf)
     fmrggtf  = unique(dt$fmrggtf)
     mrgdir   = unique(dt$mrgdir)
-    label    = unique(dt$label)
     fmrglist = unique(dt$fmrglist)
     fmrg_out = unique(dt$fmrg_out)
     fmrg_err = unique(dt$fmrg_err)
@@ -461,7 +460,7 @@ modelByChromOriBam <- function(in_fmdlbam, method, prm) {
     mdldir  = unique(dt$mdldir)
     fmdlbam = unique(dt$fmdlbam)
     fmdlgtf = unique(dt$fmdlgtf)
-    label   = unique(dt$label)
+    tag     = unique(dt$tag)
 
     if ( file.exists(mdldir) ) unlink(mdldir, recursive=T, force=T)
     dir.create(mdldir, recursive=T)
@@ -474,13 +473,13 @@ modelByChromOriBam <- function(in_fmdlbam, method, prm) {
                         'stringtie' = getStringTieArgs )
 
     func = method2func[[method]]
-    args = func(mdldir, label, fmdlbam, fmdlgtf, prm)
+    args = func(mdldir, tag, fmdlbam, fmdlgtf, prm)
 
     system2('nohup', args=args, stdout=fout, stderr=ferr)
 }
 
 
-getCufflinksArgs <- function(outdir, label, finbam, fout_gtf, prm) {
+getCufflinksArgs <- function(outdir, tag, finbam, fout_gtf, prm) {
     ## not use '--frag-bias-correct' or '--multi-read-correct'
     args = c( cufflinks(prm),
               '-o', outdir,
@@ -489,7 +488,7 @@ getCufflinksArgs <- function(outdir, label, finbam, fout_gtf, prm) {
               '--min-isoform-fraction',    minisoformfraction(prm),
               '--max-multiread-fraction',  maxmultireadfraction(prm),
               '--min-frags-per-transfrag', minfragspertransfrag(prm),
-              '--label', label,
+              '--label', tag,
               '--quiet',
               '--no-update-check', finbam)
 
@@ -497,12 +496,12 @@ getCufflinksArgs <- function(outdir, label, finbam, fout_gtf, prm) {
 }
 
 
-getStringTieArgs <- function(outdir, label, finbam, fout_gtf, prm) {
+getStringTieArgs <- function(outdir, tag, finbam, fout_gtf, prm) {
     args = c( stringtie(prm),
               finbam,
               '-o', fout_gtf,
               stringtielibtype(prm),
-              '-l', label,
+              '-l', tag,
               '-f', minisoformfraction(prm),
               '-M', maxmultireadfraction(prm),
               '-c', minfragspertransfrag(prm),
