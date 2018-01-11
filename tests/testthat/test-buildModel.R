@@ -5,9 +5,11 @@ main <- function() {
     context('buildModel')
 
     prm = new('Param')
+    os = getOS()
+    outdir = paste0(tempdir(), '/')
 
-    testFilterBamByChromOri('chr10', 'plus',  prm)
-    testFilterBamByChromOri('chr12', 'minus', prm)
+    testFilterBamByChromOri('chr10', 'plus',  outdir, prm)
+    testFilterBamByChromOri('chr12', 'minus', outdir, prm)
 
 
     fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam',
@@ -15,23 +17,25 @@ main <- function() {
                system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam',
                            package='pram') )
 
+
+    testBinPLCF(fbams, outdir, 'plcf', prm, os)
+    testBinPLST(fbams, outdir, 'plst', prm, os)
+    testBinCFMG(fbams, outdir, 'cfmg', prm, os)
+    testBinCFTC(fbams, outdir, 'cftc', prm, os)
+
+
     nthr = 4
-    outdir = paste0(tempdir(), '/')
     fout_cf_gtfs = paste0(outdir, 'CMPRep', 1:2, '.sortedByCoord.clean_cf.gtf')
     fout_st_gtfs = paste0(outdir, 'CMPRep', 1:2, '.sortedByCoord.clean_st.gtf')
-
-    os = getOS()
-    testBinPLCF(fbams, 'plcf', nthr, prm, os)
-    testBinPLST(fbams, 'plst', nthr, prm, os)
-    testBinCFMG(fbams, 'cfmg', nthr, prm, os)
-    testBinCFTC(fbams, 'cftc', nthr, prm, os)
 
 
     cufflinks = '/ua/pliu/local/cufflinks-2.2.1/cufflinks'
     stringtie = '/ua/pliu/local/stringtie-1.3.3/stringtie'
     taco      = '/ua/pliu/local/taco-0.7.0/taco_run'
     if ( file.exists(cufflinks) ) {
-        testBuildByCF(fbams, outdir, nthr, cufflinks, fout_cf_gtfs)
+        for ( i in 1:length(fbams) ) {
+            testBuildByCF(fbams[i], fout_cf_gtfs[i], nthr, cufflinks)
+        }
 
         testBuildByPLCF(fbams, outdir, nthr, cufflinks)
         testBuildByCFMG(fbams, outdir, nthr, cufflinks)
@@ -42,7 +46,9 @@ main <- function() {
     }
 
     if ( file.exists(stringtie) ) {
-        testBuildByST(fbams, outdir, nthr, stringtie, fout_st_gtfs)
+        for ( i in 1:length(fbams) ) {
+            testBuildByST(fbams[i], fout_st_gtfs[i], nthr, stringtie)
+        }
 
         testBuildByPLST(fbams, outdir, nthr, stringtie)
         testBuildBySTMG(fbams, outdir, nthr, stringtie)
@@ -50,8 +56,7 @@ main <- function() {
 }
 
 
-testFilterBamByChromOri <- function(chrom, strand, prm) {
-    outdir = paste0(tempdir(), '/')
+testFilterBamByChromOri <- function(chrom, strand, outdir, prm) {
     fin = system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam',
                       package='pram')
 
@@ -74,110 +79,113 @@ testFilterBamByChromOri <- function(chrom, strand, prm) {
 
 
 testBuildByCFTC <- function(fbams, outdir, nthr, cufflinks, taco) {
-    buildModel(fbams, outdir, mode='cftc', nthreads=nthr,
+    foutgtf = paste0(outdir, 'build_cftc.gtf')
+    if ( file.exists(foutgtf) ) file.remove(foutgtf)
+    buildModel(fbams, foutgtf, mode='cftc', nthreads=nthr,
                cufflinks=cufflinks, taco=taco)
-    foutgtf = paste0(outdir, 'cftc.gtf')
     test_that(paste0('buildModel::testBuildByCFTC: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }
 
 
 testBuildBySTMG <- function(fbams, outdir, nthr, stringtie) {
-    buildModel(fbams, outdir, mode='stmg', nthreads=nthr, stringtie=stringtie)
-    foutgtf = paste0(outdir, 'stmg.gtf')
+    foutgtf = paste0(outdir, 'build_stmg.gtf')
+    if ( file.exists(foutgtf) ) file.remove(foutgtf)
+    buildModel(fbams, foutgtf, mode='stmg', nthreads=nthr, stringtie=stringtie)
     test_that(paste0('buildModel::testBuildBySTMG: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }
 
 
 testBuildByCFMG <- function(fbams, outdir, nthr, cufflinks) {
-    buildModel(fbams, outdir, mode='cfmg', nthreads=nthr, cufflinks=cufflinks)
-    foutgtf = paste0(outdir, 'cfmg.gtf')
+    foutgtf = paste0(outdir, 'build_cfmg.gtf')
+    if ( file.exists(foutgtf) ) file.remove(foutgtf)
+    buildModel(fbams, foutgtf, mode='cfmg', nthreads=nthr, cufflinks=cufflinks)
     test_that(paste0('buildModel::testBuildByCFMG: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }
 
 
-testBuildByCF <- function(fbams, outdir, nthr, cufflinks, foutgtfs) {
-    buildModel(fbams, outdir, mode='cf', nthreads=nthr, cufflinks=cufflinks)
-
-    lapply(foutgtfs,
-           function(foutgtf) {
-               test_that(paste0('buildModel::testBuildByCF: ', foutgtf),
-                         expect_true( file.exists(foutgtf) ))
-           })
+testBuildByCF <- function(fbam, foutgtf, nthr, cufflinks) {
+    if ( file.exists(foutgtf) ) file.remove(foutgtf)
+    buildModel(fbam, foutgtf, mode='cf', nthreads=nthr, cufflinks=cufflinks)
+    test_that(paste0('buildModel::testBuildByCF: ', foutgtf),
+              expect_true( file.exists(foutgtf) ))
 }
 
 
-testBuildByST <- function(fbams, outdir, nthr, stringtie, foutgtfs) {
-    buildModel(fbams, outdir, mode='st', nthreads=nthr, stringtie=stringtie)
-
-    lapply(foutgtfs,
-           function(foutgtf) {
-               test_that(paste0('buildModel::testBuildByST: ', foutgtf),
-                         expect_true( file.exists(foutgtf) ))
-           })
+testBuildByST <- function(fbam, foutgtf, nthr, stringtie) {
+    if ( file.exists(foutgtf) ) file.remove(foutgtf)
+    buildModel(fbam, foutgtf, mode='st', nthreads=nthr, stringtie=stringtie)
+    test_that(paste0('buildModel::testBuildByST: ', foutgtf),
+              expect_true( file.exists(foutgtf) ))
 }
 
 
 testBuildByPLCF <- function(fbams, outdir, nthr, cufflinks) {
-    buildModel(fbams, outdir, mode='plcf', nthreads=nthr, cufflinks=cufflinks)
-    foutgtf = paste0(outdir, 'plcf.gtf')
+    foutgtf = paste0(outdir, 'build_plcf.gtf')
+    if ( file.exists(foutgtf) ) file.remove(foutgtf)
+    buildModel(fbams, foutgtf, mode='plcf', nthreads=nthr, cufflinks=cufflinks)
     test_that(paste0('buildModel::testBuildByPLCF: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }
 
 
 testBuildByPLST <- function(fbams, outdir, nthr, stringtie) {
-    buildModel(fbams, outdir, mode='plst', nthreads=nthr, stringtie=stringtie)
-    foutgtf = paste0(outdir, 'plst.gtf')
+    foutgtf = paste0(outdir, 'build_plst.gtf')
+    if ( file.exists(foutgtf) ) file.remove(foutgtf)
+    buildModel(fbams, foutgtf, mode='plst', nthreads=nthr, stringtie=stringtie)
     test_that(paste0('buildModel::testBuildByPLST: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }
 
 
-testBinPLCF <- function(fbams, mode, nthr, prm, os) {
-    outdir = paste0(tempdir(), '/')
+testBinPLCF <- function(fbams, outdir, mode, prm, os) {
+    foutgtf = paste0(outdir, 'bin_plcf.gtf')
+    if ( file.exists(foutgtf) ) file.remove(foutgtf)
     url = os2cufflinks_url(prm)[[os]]
     test_that('buildModel::testBinPLCF',
               expect_error(
-                  buildModel(fbams, outdir, mode, nthr),
+                  buildModel(fbams, foutgtf, mode),
                   regexp=paste0('cufflinks not found: \n',
                                 'It can be downloaded at ', url, "\n"),
                   ignore.case=T))
 }
 
 
-testBinPLST <- function(fbams, mode, nthr, prm, os) {
-    outdir = paste0(tempdir(), '/')
+testBinPLST <- function(fbams, outdir, mode, prm, os) {
+    foutgtf = paste0(outdir, 'bin_plst.gtf')
+    if ( file.exists(foutgtf) ) file.remove(foutgtf)
     url = os2stringtie_url(prm)[[os]]
     test_that('buildModel::testBinPLST',
               expect_error(
-                  buildModel(fbams, outdir, mode, nthr),
+                  buildModel(fbams, foutgtf, mode),
                   regexp=paste0('StringTie not found: \n',
                                 'It can be downloaded at ', url, "\n"),
                   ignore.case=T))
 }
 
 
-testBinCFMG <- function(fbams, mode, nthr, prm, os) {
-    outdir = paste0(tempdir(), '/')
+testBinCFMG <- function(fbams, outdir, mode, prm, os) {
+    foutgtf = paste0(outdir, 'bin_cfmg.gtf')
+    if ( file.exists(foutgtf) ) file.remove(foutgtf)
     url = os2cufflinks_url(prm)[[os]]
     test_that('buildModel::testBinCFMG',
               expect_error(
-                  buildModel(fbams, outdir, mode, nthr),
+                  buildModel(fbams, foutgtf, mode),
                   regexp=paste0('Cufflinks suite can be downloaded at ', url,
                                 "\n"),
                   ignore.case=T))
 }
 
 
-testBinCFTC <- function(fbams, mode, nthr, prm, os) {
-    outdir = paste0(tempdir(), '/')
+testBinCFTC <- function(fbams, outdir, mode, prm, os) {
+    foutgtf = paste0(outdir, 'bin_cftc.gtf')
+    if ( file.exists(foutgtf) ) file.remove(foutgtf)
     url = os2taco_url(prm)[[os]]
     test_that('buildModel::testBinCFTC',
               expect_error(
-                  buildModel(fbams, outdir, mode, nthr),
+                  buildModel(fbams, foutgtf, mode),
                   regexp=paste0('TACO not found: \n',
                                 'It can be downloaded at ', url, "\n"),
                   ignore.case=T))

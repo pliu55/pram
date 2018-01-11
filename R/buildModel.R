@@ -1,14 +1,12 @@
 #' Build transcript models from aligned RNA-seq data
 #'
-#' @param  fbams  A character vector of input RNA-seq BAM file(s).  Currently,
-#'                PRAM only supports strand-specific paired-end data with the
-#'                first mate on the right-most of transcript coordinate, i.e.,
-#'                'fr-firststrand' by Cufflinks's definition
+#' @param  finbamv  A character vector of input BAM file(s). If mode 'cf'
+#'                or 'st' is used, only one input RNA-seq BAM file is allowed.
+#'                Currently, PRAM only supports strand-specific paired-end data
+#'                with the first mate on the right-most of transcript
+#'                coordinate, i.e., 'fr-firststrand' by Cufflinks's definition.
 #'
-#' @param  outdir  A character string defining the full name of a directory for
-#'                 saving output files. PRAM will create a folder named
-#'                 'pram_tmp_$mode/' under this directory to save temporary
-#'                 files. Any prior existing 'pram_tmp_$mode/' will be removed.
+#' @param  foutgtf  A character string defining the full name of output GTF file
 #'
 #' @param  mode  A character string defining PRAM's model building mode.
 #'               Current available modes are:
@@ -26,14 +24,21 @@
 #' @param  nthreads  An integer defining the number of threads to-be-used.
 #'                   Default: 1
 #'
+#' @param  tmpdir  A character string defining the full name of a folder for
+#'                 saving temporary files. Any pre-existing files under this
+#'                 folder will be removed. If not tmpdir is give, PRAM will
+#'                 create one under system's temporary folder.
+#'
 #' @param  cufflinks  Cufflinks executable file.  Required by mode 'plcf',
 #'                    'cfmg', and 'cf'.  For mode 'cfmg', executable files of
 #'                    Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
 #'                    suite are assumed to be under the same folder as
-#'                    Cufflinks.  Default: ''
+#'                    Cufflinks.
+#'                    Default: ''
 #'
 #' @param  stringtie  StringTie executable file.  Required by mode
-#'                    'plst', 'stmg', and 'st'. Default: ''
+#'                    'plst', 'stmg', and 'st'.
+#'                    Default: ''
 #'
 #' @param  taco       TACO executable file. Required by mode 'cftc'.
 #'                    Default: ''
@@ -42,22 +47,27 @@
 #'
 #' @export
 #'
-buildModel <- function(fbams, outdir, mode='plcf', nthreads=1, cufflinks='',
-                       stringtie='', taco='') {
+buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1, tmpdir=NULL,
+                       cufflinks='', stringtie='', taco='') {
 
     prm = new('Param')
-    fuserbams(prm) = fbams
-    outdir(prm)    = ifelse(grepl('/$', outdir, perl=T), outdir,
-                            paste0(outdir, '/'))
+    fuserbams(prm) = finbamv
+    foutgtf(prm)   = foutgtf
+   #outdir(prm)    = ifelse(grepl('/$', outdir, perl=T), outdir,
+   #                        paste0(outdir, '/'))
     mode(prm)      = tolower(mode)
     nthreads(prm)  = nthreads
     cufflinks(prm) = cufflinks
     stringtie(prm) = stringtie
     taco(prm)      = taco
 
-    checkModeBin(prm)
+    checkArgs(prm)
 
-    tmpdir = paste0(outdir, 'pram_tmp_', mode, '/')
+   #tmpdir = paste0(outdir, 'pram_tmp_', mode, '/')
+    if ( is.null(tmpdir) ) {
+        tmpdir = paste0(tempdir(), '/pram_', mode, '/')
+    }
+
     if ( file.exists(tmpdir) ) unlink(tmpdir, recursive=T, force=T)
     dir.create(tmpdir, recursive=T)
     tmpdir(prm) = tmpdir
@@ -191,8 +201,8 @@ defCSManager <- function(prm) {
     dt[, `:=`( fchromoribam = paste0(tmpdir(prm), tag, '.bam'),
                fmdlbam      = paste0(tmpdir(prm), tag, '.bam'),
                mdldir       = paste0(tmpdir(prm), tag, '/'),
-               fmdlgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
-               foutgtf      = paste0(outdir(prm), bamid, '_', mode, '.gtf') )]
+               fmdlgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
+              #foutgtf      = paste0(outdir(prm), bamid, '_', mode, '.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
@@ -223,8 +233,8 @@ def1StepManager <- function(prm) {
                                      '.', tag, '.bam'),
                fmdlbam = paste0(tmpdir(prm), tag, '.bam'),
                mdldir  = paste0(tmpdir(prm), tag, '/'),
-               fmdlgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
-               foutgtf = paste0(outdir(prm), mode, '.gtf') )]
+               fmdlgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
+              #foutgtf = paste0(outdir(prm), mode, '.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
@@ -264,8 +274,8 @@ def2StepManager <- function(prm) {
                fmrg_out = paste0(mrgpref, '_run.out'),
                fmrg_err = paste0(mrgpref, '_run.err'),
                mrgdir   = paste0(mrgpref, '/'),
-               fmrggtf  = paste0(mrgpref, '/', mrgbase, '.gtf'),
-               foutgtf  = paste0(outdir(prm), mode, '.gtf'))]
+               fmrggtf  = paste0(mrgpref, '/', mrgbase, '.gtf') )]
+              #foutgtf  = paste0(outdir(prm), mode, '.gtf'))]
 
     all_chromoridt = dt[, .(chrom, ori)]
     setkey(all_chromoridt, NULL)
@@ -277,21 +287,12 @@ def2StepManager <- function(prm) {
 
 
 outputModel <- function(prm) {
-    ## for 1-step or 2-step builder, there is only one foutgtf
-    ## for cs builder, there may be multiple foutgtf
-
-    dt = managerdt(prm)
-    nthr = nthreads(prm)
+    dt        = managerdt(prm)
+    nthr      = nthreads(prm)
     info_keys = gtfinfokeys(prm)
-    foutgtfs = unique(dt$foutgtf)
-    lapply(foutgtfs, outputModelByGTF, dt, info_keys, nthr)
-}
+    foutgtf   = foutgtf(prm)
+    mode      = mode(prm)
 
-
-outputModelByGTF <- function(in_foutgtf, managerdt, info_keys, nthr) {
-    dt = managerdt[ foutgtf == in_foutgtf ]
-
-    mode = unique(dt$mode)
     fmdlgtfs = unique(dt$fmdlgtf)
 
     grdt = data.table()
@@ -303,12 +304,12 @@ outputModelByGTF <- function(in_foutgtf, managerdt, info_keys, nthr) {
     }
 
     gtf = new('GTF')
-    fgtf(gtf)     = in_foutgtf
+    fgtf(gtf)     = foutgtf
     origin(gtf)   = mode
     infokeys(gtf) = info_keys
     grangedt(gtf) = grdt
 
-    writeGTF(gtf, in_foutgtf, append=F)
+    writeGTF(gtf, foutgtf, append=F)
 }
 
 
@@ -549,7 +550,7 @@ getTacoArgs <- function(fin_gtfs, outdir, fout_gtf, prm) {
 }
 
 
-checkModeBin <- function(prm) {
+checkArgs <- function(prm) {
     mode = mode(prm)
     if ( mode %in% c('plcf', 'cf') ) {
         checkCufflinksBin(prm)
@@ -561,8 +562,21 @@ checkModeBin <- function(prm) {
         checkTacoBin(prm)
         checkCufflinksBin(prm)
     } else {
-        msg = paste0('mode= ', mode, ' is not implemented. Must be one of ',
-                     "plcf, plst, cfmg, stmg, cftc, cf, or st\n")
+        msg = paste0('mode "', mode, '" is not implemented. Must be one of ',
+                     "[plcf, plst, cfmg, stmg, cftc, cf, st]\n")
         stop(msg)
     }
+
+    for ( fbam in fuserbams(prm) ) {
+        if ( ! file.exists(fbam) ) {
+            stop(paste0('Cannot find input BAM: ', fbam, "\n"))
+        }
+    }
+
+    if ( (mode %in% c( 'cf', 'st' )) & (length(fuserbams(prm)) > 1) ) {
+        msg = paste0('length(finbamv) > 1. Only one input bam file is allowed ',
+                     'for mode "', mode, '"\n')
+        stop(msg)
+    }
+
 }

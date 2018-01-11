@@ -4,19 +4,17 @@
 \alias{buildModel}
 \title{Build transcript models from aligned RNA-seq data}
 \usage{
-buildModel(fbams, outdir, mode = "plcf", nthreads = 1, cufflinks = "",
-  stringtie = "", taco = "")
+buildModel(finbamv, foutgtf, mode = "plcf", nthreads = 1, tmpdir = NULL,
+  cufflinks = "", stringtie = "", taco = "")
 }
 \arguments{
-\item{fbams}{A character vector of input RNA-seq BAM file(s).  Currently,
-PRAM only supports strand-specific paired-end data with the
-first mate on the right-most of transcript coordinate, i.e.,
-'fr-firststrand' by Cufflinks's definition}
+\item{finbamv}{A character vector of input BAM file(s). If mode 'cf'
+or 'st' is used, only one input RNA-seq BAM file is allowed.
+Currently, PRAM only supports strand-specific paired-end data
+with the first mate on the right-most of transcript
+coordinate, i.e., 'fr-firststrand' by Cufflinks's definition.}
 
-\item{outdir}{A character string defining the full name of a directory for
-saving output files. PRAM will create a folder named
-'pram_tmp_$mode/' under this directory to save temporary
-files. Any prior existing 'pram_tmp_$mode/' will be removed.}
+\item{foutgtf}{A character string defining the full name of output GTF file}
 
 \item{mode}{A character string defining PRAM's model building mode.
 Current available modes are:
@@ -34,14 +32,21 @@ Default: 'plcf'}
 \item{nthreads}{An integer defining the number of threads to-be-used.
 Default: 1}
 
+\item{tmpdir}{A character string defining the full name of a folder for
+saving temporary files. Any pre-existing files under this
+folder will be removed. If not tmpdir is give, PRAM will
+create one under system's temporary folder.}
+
 \item{cufflinks}{Cufflinks executable file.  Required by mode 'plcf',
 'cfmg', and 'cf'.  For mode 'cfmg', executable files of
 Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
 suite are assumed to be under the same folder as
-Cufflinks.  Default: ''}
+Cufflinks.
+Default: ''}
 
 \item{stringtie}{StringTie executable file.  Required by mode
-'plst', 'stmg', and 'st'. Default: ''}
+'plst', 'stmg', and 'st'.
+Default: ''}
 
 \item{taco}{TACO executable file. Required by mode 'cftc'.
 Default: ''}
