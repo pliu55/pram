@@ -53,8 +53,6 @@ buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1, tmpdir=NULL,
     prm = new('Param')
     fuserbams(prm) = finbamv
     foutgtf(prm)   = foutgtf
-   #outdir(prm)    = ifelse(grepl('/$', outdir, perl=T), outdir,
-   #                        paste0(outdir, '/'))
     mode(prm)      = tolower(mode)
     nthreads(prm)  = nthreads
     cufflinks(prm) = cufflinks
@@ -63,12 +61,16 @@ buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1, tmpdir=NULL,
 
     checkArgs(prm)
 
-   #tmpdir = paste0(outdir, 'pram_tmp_', mode, '/')
     if ( is.null(tmpdir) ) {
         tmpdir = paste0(tempdir(), '/pram_', mode, '/')
+        while ( file.exists(tmpdir) ) {
+            tmpdir = paste0(tempdir(), '/pram_', mode, '_',
+                            sample.int(999999, size=1), '/')
+        }
+    } else {
+        if ( file.exists(tmpdir) ) unlink(tmpdir, recursive=T, force=T)
     }
 
-    if ( file.exists(tmpdir) ) unlink(tmpdir, recursive=T, force=T)
     dir.create(tmpdir, recursive=T)
     tmpdir(prm) = tmpdir
 
@@ -202,7 +204,6 @@ defCSManager <- function(prm) {
                fmdlbam      = paste0(tmpdir(prm), tag, '.bam'),
                mdldir       = paste0(tmpdir(prm), tag, '/'),
                fmdlgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
-              #foutgtf      = paste0(outdir(prm), bamid, '_', mode, '.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
@@ -234,7 +235,6 @@ def1StepManager <- function(prm) {
                fmdlbam = paste0(tmpdir(prm), tag, '.bam'),
                mdldir  = paste0(tmpdir(prm), tag, '/'),
                fmdlgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
-              #foutgtf = paste0(outdir(prm), mode, '.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
@@ -275,7 +275,6 @@ def2StepManager <- function(prm) {
                fmrg_err = paste0(mrgpref, '_run.err'),
                mrgdir   = paste0(mrgpref, '/'),
                fmrggtf  = paste0(mrgpref, '/', mrgbase, '.gtf') )]
-              #foutgtf  = paste0(outdir(prm), mode, '.gtf'))]
 
     all_chromoridt = dt[, .(chrom, ori)]
     setkey(all_chromoridt, NULL)
