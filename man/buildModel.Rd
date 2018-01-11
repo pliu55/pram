@@ -4,8 +4,8 @@
 \alias{buildModel}
 \title{Build transcript models from aligned RNA-seq data}
 \usage{
-buildModel(finbamv, foutgtf, mode = "plcf", nthreads = 1, tmpdir = NULL,
-  cufflinks = "", stringtie = "", taco = "")
+buildModel(finbamv, foutgtf, mode = "plcf", nthreads = 1, cufflinks = "",
+  stringtie = "", taco = "", tmpdir = NULL)
 }
 \arguments{
 \item{finbamv}{A character vector of input BAM file(s). If mode 'cf'
@@ -32,11 +32,6 @@ Default: 'plcf'}
 \item{nthreads}{An integer defining the number of threads to-be-used.
 Default: 1}
 
-\item{tmpdir}{A character string defining the full name of a folder for
-saving temporary files. Any pre-existing files under this
-folder will be removed. If not tmpdir is give, PRAM will
-create one under system's temporary folder.}
-
 \item{cufflinks}{Cufflinks executable file.  Required by mode 'plcf',
 'cfmg', and 'cf'.  For mode 'cfmg', executable files of
 Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
@@ -50,6 +45,10 @@ Default: ''}
 
 \item{taco}{TACO executable file. Required by mode 'cftc'.
 Default: ''}
+
+\item{tmpdir}{A character string defining the full name of a folder for
+saving temporary files. If not tmpdir is give, PRAM will
+use R's tempdir().}
 }
 \description{
 Build transcript models from aligned RNA-seq data

@@ -24,11 +24,6 @@
 #' @param  nthreads  An integer defining the number of threads to-be-used.
 #'                   Default: 1
 #'
-#' @param  tmpdir  A character string defining the full name of a folder for
-#'                 saving temporary files. Any pre-existing files under this
-#'                 folder will be removed. If not tmpdir is give, PRAM will
-#'                 create one under system's temporary folder.
-#'
 #' @param  cufflinks  Cufflinks executable file.  Required by mode 'plcf',
 #'                    'cfmg', and 'cf'.  For mode 'cfmg', executable files of
 #'                    Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
@@ -43,12 +38,16 @@
 #' @param  taco       TACO executable file. Required by mode 'cftc'.
 #'                    Default: ''
 #'
+#' @param  tmpdir  A character string defining the full name of a folder for
+#'                 saving temporary files. If not tmpdir is give, PRAM will
+#'                 use R's tempdir().
+#'
 #' @return  NULL
 #'
 #' @export
 #'
-buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1, tmpdir=NULL,
-                       cufflinks='', stringtie='', taco='') {
+buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1,
+                       cufflinks='', stringtie='', taco='', tmpdir=NULL) {
 
     prm = new('Param')
     fuserbams(prm) = finbamv
@@ -61,18 +60,7 @@ buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1, tmpdir=NULL,
 
     checkArgs(prm)
 
-    if ( is.null(tmpdir) ) {
-        tmpdir = paste0(tempdir(), '/pram_', mode, '/')
-        while ( file.exists(tmpdir) ) {
-            tmpdir = paste0(tempdir(), '/pram_', mode, '_',
-                            sample.int(999999, size=1), '/')
-        }
-    } else {
-        if ( file.exists(tmpdir) ) unlink(tmpdir, recursive=T, force=T)
-    }
-
-    dir.create(tmpdir, recursive=T)
-    tmpdir(prm) = tmpdir
+    tmpdir(prm) = createTmpdir(tmpdir, mode)
 
     if ( mode %in% c('plcf', 'plst') ) {
         prm = def1StepManager(prm)
@@ -96,6 +84,21 @@ buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1, tmpdir=NULL,
     func(prm)
 
     outputModel(prm)
+}
+
+
+createTmpdir <- function(tmpdir, mode) {
+    if ( is.null(tmpdir) ) tmpdir = tempdir()
+
+    sub_tmpdir = paste0(tmpdir, '/pram_', mode, '/')
+    while ( file.exists(sub_tmpdir) ) {
+        sub_tmpdir = paste0(tempdir(), '/pram_', mode, '_',
+                            sample.int(999999, size=1), '/')
+    }
+
+    dir.create(sub_tmpdir, recursive=T)
+
+    return(sub_tmpdir)
 }
 
 
