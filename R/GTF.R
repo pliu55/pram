@@ -194,6 +194,9 @@ setMethod('writeGTF',
         } else {
             warning(paste0('emptry GRange in ', fgtf(x), "\n"))
         }
+
+        outdir = dirname(fout)
+        if ( ! file.exists(outdir) ) dir.create(outdir, recursive=T)
         write.table(outdt, fout, quote=F, sep="\t", col.names=F, row.names=F,
                     append=append)
     }
