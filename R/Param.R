@@ -16,7 +16,7 @@ Param = setClass('Param',
         FUSERBAMS = 'vector',
         IGGRS     = 'GRanges',
         MODE      = 'character',
-        OUT_DIR   = 'character',
+        FOUTGTF   = 'character',
         NTHREADS  = 'numeric',
 
         TMP_DIR    = 'character',
@@ -25,7 +25,6 @@ Param = setClass('Param',
         CHROM_ORI_DT = 'data.table',
 
         GTF_INFO_KEYS = 'vector',
-       #MODE2LABEL    = 'list',
 
 
         CUFFLINKS_LIB_TYPE = 'character',
@@ -78,14 +77,6 @@ Param = setClass('Param',
         RANDOM_SEED = 88888888,
 
         GTF_INFO_KEYS = c('gene_id', 'transcript_id'),
-
-       #MODE2LABEL = list( 'pooling+cufflinks'   = 'plcf',
-       #                   'pooling+stringtie'   = 'plst',
-       #                   'cufflinks+cuffmerge' = 'cfmg',
-       #                   'stringtie+merging'   = 'stmg',
-       #                   'cufflinks+taco'      = 'cftc',
-       #                   'cufflinks'           = 'cf',
-       #                   'stringtie'           = 'st' ),
 
         NTHREADS = 1,
 
@@ -157,7 +148,7 @@ setGeneric('nthreads<-',    function(x, value) standardGeneric('nthreads<-'))
 setGeneric('fuserbams<-',   function(x, value) standardGeneric('fuserbams<-'))
 setGeneric('iggrs<-',       function(x, value) standardGeneric('iggrs<-'))
 setGeneric('mode<-',        function(x, value) standardGeneric('mode<-'))
-setGeneric('outdir<-',      function(x, value) standardGeneric('outdir<-'))
+setGeneric('foutgtf<-',     function(x, value) standardGeneric('foutgtf<-'))
 setGeneric('tmpdir<-',      function(x, value) standardGeneric('tmpdir<-'))
 setGeneric('managerdt<-',   function(x, value) standardGeneric('managerdt<-'))
 setGeneric('chromoridt<-',  function(x, value) standardGeneric('chromoridt<-'))
@@ -173,12 +164,11 @@ setGeneric('maxchromlen',   function(x) standardGeneric('maxchromlen'))
 setGeneric('fuserbams',     function(x) standardGeneric('fuserbams'))
 setGeneric('iggrs',         function(x) standardGeneric('iggrs'))
 setGeneric('mode',          function(x) standardGeneric('mode'))
-setGeneric('outdir',        function(x) standardGeneric('outdir'))
+setGeneric('foutgtf',       function(x) standardGeneric('foutgtf'))
 setGeneric('tmpdir',        function(x) standardGeneric('tmpdir'))
 setGeneric('managerdt',     function(x) standardGeneric('managerdt'))
 setGeneric('chromoridt',    function(x) standardGeneric('chromoridt'))
 setGeneric('gtfinfokeys',   function(x) standardGeneric('gtfinfokeys'))
-#setGeneric('mode2label',    function(x) standardGeneric('mode2label'))
 setGeneric('nthreads',      function(x) standardGeneric('nthreads'))
 setGeneric('maxunindupaln', function(x) standardGeneric('maxunindupaln'))
 setGeneric('maxmulndupaln', function(x) standardGeneric('maxmulndupaln'))
@@ -209,7 +199,7 @@ setReplaceMethod('nthreads',  'Param', function(x, value) {x@NTHREADS=value; x})
 setReplaceMethod('fuserbams', 'Param', function(x, value) {x@FUSERBAMS=value;x})
 setReplaceMethod('iggrs',     'Param', function(x, value) {x@IGGRS=value; x})
 setReplaceMethod('mode',      'Param', function(x, value) {x@MODE=value; x})
-setReplaceMethod('outdir',    'Param', function(x, value) {x@OUT_DIR=value; x})
+setReplaceMethod('foutgtf',   'Param', function(x, value) {x@FOUTGTF=value; x})
 setReplaceMethod('tmpdir',    'Param', function(x, value) {x@TMP_DIR=value; x})
 setReplaceMethod('managerdt', 'Param',
                  function(x, value) {x@MANAGER_DT=value; x})
@@ -235,12 +225,11 @@ setMethod('maxchromlen',   'Param', function(x) x@MAX_CHROM_LEN)
 setMethod('fuserbams',     'Param', function(x) x@FUSERBAMS)
 setMethod('iggrs',         'Param', function(x) x@IGGRS)
 setMethod('mode',          'Param', function(x) x@MODE)
-setMethod('outdir',        'Param', function(x) x@OUT_DIR)
+setMethod('foutgtf',       'Param', function(x) x@FOUTGTF)
 setMethod('tmpdir',        'Param', function(x) x@TMP_DIR)
 setMethod('managerdt',     'Param', function(x) x@MANAGER_DT)
 setMethod('chromoridt',    'Param', function(x) x@CHROM_ORI_DT)
 setMethod('gtfinfokeys',   'Param', function(x) x@GTF_INFO_KEYS)
-#setMethod('mode2label',    'Param', function(x) x@MODE2LABEL)
 setMethod('nthreads',      'Param', function(x) x@NTHREADS)
 setMethod('maxunindupaln', 'Param', function(x) x@MAX_UNI_N_DUP_ALN)
 setMethod('maxmulndupaln', 'Param', function(x) x@MAX_MUL_N_DUP_ALN)
