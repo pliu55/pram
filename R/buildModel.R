@@ -24,6 +24,10 @@
 #' @param  nthreads  An integer defining the number of threads to-be-used.
 #'                   Default: 1
 #'
+#' @param  tmpdir  A character string defining the full name of a folder for
+#'                 saving temporary files. If not tmpdir is give, PRAM will
+#'                 use R's tempdir().
+#'
 #' @param  cufflinks  Cufflinks executable file.  Required by mode 'plcf',
 #'                    'cfmg', and 'cf'.  For mode 'cfmg', executable files of
 #'                    Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
@@ -38,16 +42,12 @@
 #' @param  taco       TACO executable file. Required by mode 'cftc'.
 #'                    Default: ''
 #'
-#' @param  tmpdir  A character string defining the full name of a folder for
-#'                 saving temporary files. If not tmpdir is give, PRAM will
-#'                 use R's tempdir().
-#'
 #' @return  NULL
 #'
 #' @export
 #'
-buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1,
-                       cufflinks='', stringtie='', taco='', tmpdir=NULL) {
+buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1, tmpdir=NULL,
+                       cufflinks='', stringtie='', taco='') {
 
     prm = new('Param')
     fuserbams(prm) = finbamv
@@ -90,9 +90,9 @@ buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1,
 createTmpdir <- function(tmpdir, mode) {
     if ( is.null(tmpdir) ) tmpdir = tempdir()
 
-    sub_tmpdir = paste0(tmpdir, '/pram_', mode, '/')
+    sub_tmpdir = paste0(tmpdir, '/tmp_pram_', mode, '/')
     while ( file.exists(sub_tmpdir) ) {
-        sub_tmpdir = paste0(tempdir(), '/pram_', mode, '_',
+        sub_tmpdir = paste0(tempdir(), '/tmp_pram_', mode, '_',
                             sample.int(999999, size=1), '/')
     }
 
