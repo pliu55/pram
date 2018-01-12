@@ -92,7 +92,7 @@ createTmpdir <- function(tmpdir, mode) {
 
     sub_tmpdir = paste0(tmpdir, '/tmp_pram_', mode, '/')
     while ( file.exists(sub_tmpdir) ) {
-        sub_tmpdir = paste0(tempdir(), '/tmp_pram_', mode, '_',
+        sub_tmpdir = paste0(tmpdir, '/tmp_pram_', mode, '_',
                             sample.int(999999, size=1), '/')
     }
 
