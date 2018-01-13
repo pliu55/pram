@@ -75,6 +75,8 @@ setMethod(
     'initFromGTFFile',
     c('GTF', 'character', 'vector'),
     function(obj, fgtf, infokeys, ...) {
+        if ( ! file.exists(fgtf) ) stop(paste0('Cannot find :', fgtf, "\n"))
+
         obj = GTF()
         obj@fgtf     = fgtf
         obj@infokeys = infokeys
@@ -210,26 +212,3 @@ getGRangeDT <- function(fgtf, info_keys=c(), label='') {
 
     return(grdt)
 }
-
-
-#readGTF4Transcripts <- function(fin) {
-# dt <- readGTF4ExonGeneIDTrID(fin)
-# trdt <- dt[, list( chrom  = last(chrom),
-#                    start  = min(start),
-#                    end    = max(end),
-#                    strand = last(strand),
-#                    geneid = last(geneid) ), by=trid ]
-# return(trdt)
-#}
-
-
-#readGTF4Genes <- function(fin) {
-# dt <- readGTF4ExonGeneIDTrID(fin)
-# genedt <- dt[, list( chrom  = last(chrom),
-#                      start  = min(start),
-#                      end    = max(end),
-#                      strand = last(strand),
-#                      trids  = paste0(unique(trid), collapse=',')
-#                    ), by=geneid]
-# return(genedt)
-#}
