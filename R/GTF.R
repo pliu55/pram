@@ -19,6 +19,8 @@ setGeneric('initFromGTFFile',
            function(obj, fgtf, infokeys, ...) standardGeneric('initFromGTFFile'))
 setGeneric('initFromGRanges',
            function(obj, grs) standardGeneric('initFromGRanges'))
+setGeneric('initFromDataTable', function(obj, dt, infokeys, ...)
+                                    standardGeneric('initFromDataTable'))
 
 ## 2nd argument to be named as 'value'
 setGeneric('fgtf<-',     function(x, value) standardGeneric('fgtf<-'))
@@ -67,7 +69,7 @@ setMethod(
 #' @param fgtf file name with full path to a GTF file
 #' @param infokeys a vector of characters to define to-be-extracted entries in GTF file's column 9
 #'
-#' @import data.table
+#' @importFrom data.table  data.table fread setnames
 #'
 #' @export
 #'
@@ -110,8 +112,8 @@ setMethod(
             dt[, info := NULL ]
         }
 
-
         obj@grangedt = dt
+
         return(obj)
     }
 )
@@ -142,10 +144,15 @@ setMethod(
 )
 
 
+#' construct a GTF object from a data.table object
+#'
+#' @param obj  a GTF object to be initialized
+#' @param dt   a data.table object to define genomic ranges
+#' @param infokeys  a vector of characters to define to-be-extracted entries
+#'                  in GTF file's column 9
+#'
 #' @export
 #'
-setGeneric('initFromDataTable', function(obj, dt, infokeys, ...)
-                                    standardGeneric('initFromDataTable'))
 setMethod('initFromDataTable', c('GTF', 'data.table', 'vector'),
     function(obj, dt, infokeys, ...) {
         obj = GTF()
