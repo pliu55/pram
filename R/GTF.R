@@ -65,10 +65,10 @@ setMethod(
 
 #  initialize a GTF object from a GTF file with a vector of info keys to parse
 #
-#' @param obj a GTF object to be initialized
-#' @param fgtf file name with full path to a GTF file
-#' @param infokeys a vector of characters to define to-be-extracted entries in GTF file's column 9
-#'
+#  @param obj a GTF object to be initialized
+#  @param fgtf file name with full path to a GTF file
+#  @param infokeys a vector of characters to define to-be-extracted entries in GTF file's column 9
+#
 #' @importFrom data.table  data.table fread setnames
 #'
 setMethod(
@@ -119,9 +119,9 @@ setMethod(
 
 #  construct a GTF object from a GenomicRanges object
 #
-#' @param obj a GTF object to be initialized
-#' @param grs a GenomicRanges object to define ranges in GTF file
-#'
+#  @param obj a GTF object to be initialized
+#  @param grs a GenomicRanges object to define ranges in GTF file
+#
 #' @import data.table
 #' @importFrom GenomicRanges as.data.frame
 #'
@@ -142,12 +142,12 @@ setMethod(
 
 #  construct a GTF object from a data.table object
 #
-#' @param obj  a GTF object to be initialized
-#' @param dt   a data.table object to define genomic ranges
-#' @param infokeys  a vector of characters to define to-be-extracted entries
-#'                  in GTF file's column 9
-#t
-#'
+#  @param obj  a GTF object to be initialized
+#  @param dt   a data.table object to define genomic ranges
+#  @param infokeys  a vector of characters to define to-be-extracted entries
+#                   in GTF file's column 9
+#
+#
 setMethod('initFromDataTable', c('GTF', 'data.table', 'vector'),
     function(obj, dt, infokeys, ...) {
         obj = GTF()
@@ -164,10 +164,10 @@ setMethod('initFromDataTable', c('GTF', 'data.table', 'vector'),
 
 #  write a GTF object to a GTF file
 #
-#' @param x a GTF object
-#' @param fout a character object of GTF file name
-#' @param append a boolean to inidicate if to append to a GTF file or not
-#'
+#  @param x a GTF object
+#  @param fout a character object of GTF file name
+#  @param append a boolean to inidicate if to append to a GTF file or not
+#
 setMethod('writeGTF',
     c('GTF', 'character', 'logical'),
     function(x, fout, append) {
