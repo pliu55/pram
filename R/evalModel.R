@@ -1,19 +1,83 @@
 #' Evaluate transcript model
 #'
-#' Evaluate trascript model's precision and recall on exon nucleotide,
-#' splice junctions, and transcript's splice pattern
+#' Evaluate trascript model's precision and recall on exon nucleotides,
+#' splice junctions, and splice patterns by comparing them to transcript targets
 #'
-#' @param mdltr a Transcript object for models
-#' @param tgttr a Transcript object for targets
-#'
-#' @import data.table
+#' @param  model_exons   genomic coordinates for transcript model exons
+#' @param  target_exons  genomic coordinates for transcript target exons
 #'
 #' @return a data table of precision, recall, number of true positive,
 #'         false negative, false positive for all three evaluated features
 #'
 #' @export
 #'
-evalModel <- function(mdltr, tgttr) {
+setGeneric('evalModel',
+           function(model_exons, target_exons) standardGeneric('evalModel'))
+
+
+#' @describeIn evalModel  Both \strong{model_exons} and \strong{target_exons}
+#'                        are GRanges objects
+#'                        to define genomic coordinates of exons. Required to
+#'                        have a meta-data column named 'trid' to define each
+#'                        exon's transcript ID.
+#'
+#' @importFrom  data.table data.table
+#' @importFrom  BiocGenerics as.data.frame
+#'
+setMethod( 'evalModel',
+           c('GRanges', 'GRanges'),
+           function(model_exons, target_exons) {
+               mdltr = Transcript(data.table(as.data.frame(model_exons )))
+               tgttr = Transcript(data.table(as.data.frame(target_exons)))
+               evalModelByTr(mdltr, tgttr)
+           }
+)
+
+
+#' @describeIn evalModel  Both \strong{model_exons} and \strong{target_exons}
+#'                        are GTF files with full names. Each GTF file is
+#'                        required to have a 'transcript_id' tag in column 9.
+setMethod( 'evalModel',
+           c('character', 'character'),
+           function(model_exons, target_exons) {
+               mdlgtf = new('GTF')
+               tgtgtf = new('GTF')
+               info_keys = c('transcript_id')
+               mdlgtf = initFromGTFFile(mdlgtf, model_exons,  info_keys)
+               tgtgtf = initFromGTFFile(tgtgtf, target_exons, info_keys)
+
+               mdldt = grangedt(mdlgtf)[feature == 'exon']
+               tgtdt = grangedt(tgtgtf)[feature == 'exon']
+
+               evalModel(mdldt, tgtdt)
+           }
+)
+
+
+#' @describeIn evalModel  Both \strong{model_exons} and \strong{target_exons}
+#'                        are data.table objects to define exon genomic
+#'                        coordinatess. Required to have the following columns:
+#'                        \itemize{
+#'                            \item chrom:   exon's chromosome, e.g. 'chr8'
+#'                            \item start:   exon's start position
+#'                            \item end:     exon's end position
+#'                            \item strand:  exon's strand, '+' or '-'
+#'                            \item trid:    exon's transcript ID
+#'                        }
+#'
+setMethod( 'evalModel',
+           c('data.table', 'data.table'),
+           function(model_exons, target_exons) {
+               mdltr = Transcript(model_exons)
+               tgttr = Transcript(target_exons)
+               evalModelByTr(mdltr, tgttr)
+           }
+)
+
+
+#' @importFrom  data.table setnames
+#'
+evalModelByTr <- function(mdltr, tgttr) {
     mdlexondt = getExon(mdltr)
     tgtexondt = getExon(tgttr)
 
@@ -38,12 +102,12 @@ evalModel <- function(mdltr, tgttr) {
 }
 
 
-#' Evaluate transcript model's splice junction
-#'
-#' @return a data table of precision, recall, number of true positive,
-#'         false negative, false positive at each junction and all junctions in
-#'         a transcript
-#'
+#  Evaluate transcript model's splice junction
+#
+#  @return a data table of precision, recall, number of true positive,
+#          false negative, false positive at each junction and all junctions in
+#          a transcript
+#
 evalMdlJnc <- function(tgtjnc_in_mdldt, mdljnc_in_tgtdt, mdl_ol_tgtdt,
                        tgtjncdt) {
     tpfndt = calTpFn4Jnc(tgtjnc_in_mdldt, tgtjncdt)
@@ -55,6 +119,7 @@ evalMdlJnc <- function(tgtjnc_in_mdldt, mdljnc_in_tgtdt, mdl_ol_tgtdt,
 
     return(dt)
 }
+
 
 #' find if model's splice junction exists in a target transcript
 #'
@@ -180,13 +245,11 @@ calFp4Jnc <- function(mdljnc_in_tgtdt, mdl_ol_tgtdt, tgtjncdt) {
 }
 
 
-#' Evaluate transcript model's exon nucleotide
-#'
-#' @inheritParams evalModel
-#'
-#' @return a data.table of precision, recall, number of true positive,
+#  Evaluate transcript model's exon nucleotide
+#
+#  @return a data.table of precision, recall, number of true positive,
 #          false negative, and false positive
-#'
+#
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom GenomicRanges intersect
 #' @importFrom GenomicRanges setdiff

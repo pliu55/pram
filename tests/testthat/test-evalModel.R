@@ -31,7 +31,7 @@ testBenchmarkMethod <- function(method, method2results, tgttr) {
                        package='pram')
     mdldt = fread(fmdl, header=T, sep="\t")
     mdltr = Transcript(mdldt)
-    evaldt = evalModel(mdltr, tgttr)
+    evaldt = evalModelByTr(mdltr, tgttr)
 
     indi_jnc_tp = method2results[[method]][1]
     indi_jnc_fn = method2results[[method]][2]
