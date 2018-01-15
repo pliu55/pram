@@ -6,6 +6,7 @@
 \alias{evalModel,GRanges,GRanges-method}
 \alias{evalModel,character,character-method}
 \alias{evalModel,data.table,data.table-method}
+\alias{evalModel,character,data.table-method}
 \title{Evaluate transcript model}
 \usage{
 evalModel(model_exons, target_exons)
@@ -15,6 +16,8 @@ evalModel(model_exons, target_exons)
 \S4method{evalModel}{character,character}(model_exons, target_exons)
 
 \S4method{evalModel}{data.table,data.table}(model_exons, target_exons)
+
+\S4method{evalModel}{character,data.table}(model_exons, target_exons)
 }
 \arguments{
 \item{model_exons}{genomic coordinates for transcript model exons}
@@ -51,5 +54,10 @@ coordinatess. Required to have the following columns:
     \item strand:  exon's strand, '+' or '-'
     \item trid:    exon's transcript ID
 }
+
+\item \code{model_exons = character,target_exons = data.table}: \strong{model_exons} is a GTF file with full
+name and \strong{target_exons} is a data.table object.
+Requirements for GTF and data.table are the same as
+above
 }}
 

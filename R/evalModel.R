@@ -75,6 +75,25 @@ setMethod( 'evalModel',
 )
 
 
+#' @describeIn evalModel  \strong{model_exons} is a GTF file with full
+#'                        name and \strong{target_exons} is a data.table object.
+#'                        Requirements for GTF and data.table are the same as
+#'                        above
+setMethod( 'evalModel',
+           c('character', 'data.table'),
+           function(model_exons, target_exons) {
+               mdlgtf = new('GTF')
+               info_keys = c('transcript_id')
+               mdlgtf = initFromGTFFile(mdlgtf, model_exons,  info_keys)
+               mdldt = grangedt(mdlgtf)[feature == 'exon']
+
+               tgtdt = target_exons
+
+               evalModel(mdldt, tgtdt)
+           }
+)
+
+
 #' @importFrom  data.table setnames
 #'
 evalModelByTr <- function(mdltr, tgttr) {
