@@ -1,4 +1,5 @@
 library(data.table)
+suppressMessages(library(GenomicRanges))
 
 main <- function() {
     context('evalModel')
@@ -10,7 +11,6 @@ main <- function() {
 testBenchmark <- function() {
     ftgt = system.file('extdata/benchmark/tgt.tsv', package='pram')
     tgtdt = fread(ftgt, header=T, sep="\t")
-    tgttr = Transcript(tgtdt)
 
     method2results = list(
                   ##--- indi jnc ---##--- tr jnc ---##-------- nuc --------##
@@ -22,28 +22,93 @@ testBenchmark <- function() {
         'taco' = c( 2723, 328, 251,  1038, 218, 417,  1533130, 299788, 9128 )
     )
 
-    lapply(names(method2results), testBenchmarkMethod, method2results, tgttr)
+    nthr = 4
+
+    mdldtlist = mclapply(names(method2results), readModel, mc.cores=nthr)
+    names(mdldtlist) = names(method2results)
+
+    mclapply(names(method2results), testEvalModelByDT, method2results,
+             mdldtlist, tgtdt, mc.cores=nthr)
+
+    mclapply(names(method2results), testEvalModelByGR, method2results,
+             mdldtlist, tgtdt, mc.cores=nthr)
+
+    mclapply(names(method2results), testEvalModelByGTF, method2results,
+             mdldtlist, tgtdt, mc.cores=nthr)
 }
 
 
-testBenchmarkMethod <- function(method, method2results, tgttr) {
+testEvalModelByGTF <- function(method, method2results, mdldtlist, tgtdt) {
+    mdldt = mdldtlist[[method]]
+    mdlgtf = new('GTF')
+    tgtgtf = new('GTF')
+
+    if ( ! 'transcript_id' %in% names(mdldt) ) {
+        setnames(mdldt, 'trid', 'transcript_id')
+    }
+
+    if ( ! 'transcript_id' %in% names(tgtdt) ) {
+        setnames(tgtdt, 'trid', 'transcript_id')
+    }
+
+    mdldt[, feature := 'exon']
+    tgtdt[, feature := 'exon']
+    mdlgtf = initFromDataTable(mdlgtf, mdldt, c('transcript_id'))
+    tgtgtf = initFromDataTable(tgtgtf, tgtdt, c('transcript_id'))
+    fmdlgtf = paste0(tempdir(), '/', method, '_mdl.gtf')
+    ftgtgtf = paste0(tempdir(), '/', method, '_tgt.gtf')
+    writeGTF(mdlgtf, fmdlgtf, append=F)
+    writeGTF(tgtgtf, ftgtgtf, append=F)
+
+    evaldt = evalModel(fmdlgtf, ftgtgtf)
+
+    results = method2results[[method]]
+    testResults(results, evaldt, 'testEvalModelByGTF', method)
+}
+
+
+testEvalModelByGR <- function(method, method2results, mdldtlist, tgtdt) {
+    mdldt = mdldtlist[[method]]
+    mdlgrs = makeGRangesFromDataFrame(mdldt, keep.extra.columns=T)
+    tgtgrs = makeGRangesFromDataFrame(tgtdt, keep.extra.columns=T)
+
+    evaldt = evalModel(mdlgrs, tgtgrs)
+
+    results = method2results[[method]]
+    testResults(results, evaldt, 'testEvalModelByGR', method)
+}
+
+
+testEvalModelByDT <- function(method, method2results, mdldtlist, tgtdt) {
+    mdldt = mdldtlist[[method]]
+    evaldt = evalModel(mdldt, tgtdt)
+
+    results = method2results[[method]]
+    testResults(results, evaldt, 'testEvalModelByDT', method)
+}
+
+
+readModel <- function(method) {
     fmdl = system.file(paste0('extdata/benchmark/', method, '.tsv'),
                        package='pram')
     mdldt = fread(fmdl, header=T, sep="\t")
-    mdltr = Transcript(mdldt)
-    evaldt = evalModelByTr(mdltr, tgttr)
 
-    indi_jnc_tp = method2results[[method]][1]
-    indi_jnc_fn = method2results[[method]][2]
-    indi_jnc_fp = method2results[[method]][3]
+    return(mdldt)
+}
 
-    tr_jnc_tp   = method2results[[method]][4]
-    tr_jnc_fn   = method2results[[method]][5]
-    tr_jnc_fp   = method2results[[method]][6]
 
-    nuc_tp      = method2results[[method]][7]
-    nuc_fn      = method2results[[method]][8]
-    nuc_fp      = method2results[[method]][9]
+testResults <- function(results, evaldt, func_name, method) {
+    indi_jnc_tp = results[1]
+    indi_jnc_fn = results[2]
+    indi_jnc_fp = results[3]
+
+    tr_jnc_tp   = results[4]
+    tr_jnc_fn   = results[5]
+    tr_jnc_fp   = results[6]
+
+    nuc_tp      = results[7]
+    nuc_fn      = results[8]
+    nuc_fp      = results[9]
 
     indi_jnc_precision = indi_jnc_tp/(indi_jnc_tp + indi_jnc_fp)
     indi_jnc_recall    = indi_jnc_tp/(indi_jnc_tp + indi_jnc_fn)
@@ -54,7 +119,7 @@ testBenchmarkMethod <- function(method, method2results, tgttr) {
     nuc_precision      = nuc_tp/(nuc_tp + nuc_fp)
     nuc_recall         = nuc_tp/(nuc_tp + nuc_fn)
 
-    test_that(paste0('evalModel::testBenchmarkMethod::', method), {
+    test_that(paste0('evalModel::', func_name, method), {
         expect_equal(indi_jnc_tp, evaldt[feat=='indi_jnc', ntp])
         expect_equal(indi_jnc_fn, evaldt[feat=='indi_jnc', nfn])
         expect_equal(indi_jnc_fp, evaldt[feat=='indi_jnc', nfp])
