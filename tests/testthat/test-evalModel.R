@@ -30,11 +30,9 @@ testBenchmark <- function() {
     mclapply(names(method2results), testEvalModelByDT, method2results,
              mdldtlist, tgtdt, mc.cores=nthr)
 
-    mclapply(names(method2results), testEvalModelByGR, method2results,
-             mdldtlist, tgtdt, mc.cores=nthr)
+    testEvalModelByGR('cfpl', method2results, mdldtlist, tgtdt)
 
-    mclapply(names(method2results), testEvalModelByGTF, method2results,
-             mdldtlist, tgtdt, mc.cores=nthr)
+    testEvalModelByGTF('stmg', method2results, mdldtlist, tgtdt)
 }
 
 
