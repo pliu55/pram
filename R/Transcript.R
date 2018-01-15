@@ -52,14 +52,14 @@ setMethod('show', 'Transcript',
     }
 )
 
-#' Construct a Transcript Object
-#'
-#' Construct a transcript object from an exon data.table
-#'
-#' @param exon a data.table object of exon
-#'
-#' @return a Transcript object
-#'
+#  Construct a Transcript Object
+#
+#  Construct a transcript object from an exon data.table
+#
+#  @param exon a data.table object of exon
+#
+#  @return a Transcript object
+#
 setMethod('initialize', 'Transcript',
     function(.Object, exon, ...) {
         exondt = copy(exon)
@@ -90,22 +90,22 @@ setMethod('getJnc',  'Transcript', function(x) x@jnc)
 setMethod('getTr',   'Transcript', function(x) x@tr)
 
 
-#' obtain junction info from exon
-#'
-#' @param exondt a data.table of exons with columns: chrom, start, end, strand,
-#'                and transcript ID
-#'
+#  obtain junction info from exon
+#
+#  @param exondt a data.table of exons with columns: chrom, start, end, strand,
+#                 and transcript ID
+#
+#  @return a data table of junctions with columns: chrom, start, end, strand,
+#          transcript ID, number of junctions, and junction's index in
+#          transcript
+#
 #' @importFrom IRanges IRanges
 #' @importFrom IRanges gaps
 #' @importFrom S4Vectors split
 #' @importFrom BiocGenerics unlist
 #' @importFrom BiocGenerics start
 #' @importFrom BiocGenerics end
-#'
-#' @return a data table of junctions with columns: chrom, start, end, strand,
-#'         transcript ID, number of junctions, and junction's index in
-#'         transcript
-#'
+#
 getTrJncFromExon <- function(exondt) {
     ## gaps() cannot be applied to GRangesList, have to use IRangesList instead
     exonirs = IRanges( start = exondt[, start],
@@ -129,15 +129,15 @@ getTrJncFromExon <- function(exondt) {
 }
 
 
-#' get transcript genomic ranges from exons
-#'
-#' @param exondt a data table of exon with columns: chrom, start, end, strand,
-#'               and transcript ID
-#' @param id_col_name the column name of transcript ID, default is 'trid'
-#'
-#' @return a data table of transcript genomic ranges with columns: chrom, start,
-#'         end, strand, number of exons, and transcript ID
-#'
+#  get transcript genomic ranges from exons
+#
+#  @param exondt a data table of exon with columns: chrom, start, end, strand,
+#                and transcript ID
+#  @param id_col_name the column name of transcript ID, default is 'trid'
+#
+#  @return a data table of transcript genomic ranges with columns: chrom, start,
+#          end, strand, number of exons, and transcript ID
+#
 getTrFromExon <- function(exondt, id_col_name='trid') {
     trdt = exondt[, list( chrom  = last(chrom),
                           start  = min(start),

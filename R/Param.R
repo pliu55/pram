@@ -1,5 +1,5 @@
-#' save all parameters and binary urls
-#'
+#  save all parameters and binary urls
+#
 Param = setClass('Param',
     slots = list(
         OS2CUFFLINKS_URL = 'list',

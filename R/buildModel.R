@@ -517,7 +517,7 @@ getStringTieArgs <- function(outdir, tag, finbam, fout_gtf, prm) {
 getCuffmergeArgs <- function(fin_gtfs, outdir, fout_gtf, prm) {
     args = c( paste0(dirname(cufflinks(prm)), '/cuffmerge'),
               '-o', outdir,
-             #'--ref-sequence', prm$fgnmfa,
+            ## '--ref-sequence', prm$fgnmfa,
               '--min-isoform-fraction', minisoformfraction(prm),
               '--num-threads 1',
               fin_gtfs )

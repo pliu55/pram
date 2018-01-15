@@ -20,7 +20,6 @@ Collate:
     'Transcript.R'
     'buildModel.R'
     'evalModel.R'
-    'filterModel.R'
     'prepIgBam.R'
     'screenModel.R'
     'util.R'

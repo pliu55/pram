@@ -121,8 +121,8 @@ evalMdlJnc <- function(tgtjnc_in_mdldt, mdljnc_in_tgtdt, mdl_ol_tgtdt,
 }
 
 
-#' find if model's splice junction exists in a target transcript
-#'
+#  find if model's splice junction exists in a target transcript
+#
 #' @importFrom GenomicRanges makeGRangesFromDataFrame
 #' @importFrom GenomicRanges findOverlaps
 #' @importFrom S4Vectors mcols

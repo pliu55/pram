@@ -1,5 +1,5 @@
-#'  get operation system info
-#'
+#  get operation system info
+#
 getOS <- function() {
     os = toupper(.Platform$OS.type)
     sysinf = Sys.info()
@@ -22,8 +22,8 @@ getOS <- function() {
 }
 
 
-#' convert ori 2 strand
-#'
+# convert ori 2 strand
+#
 convertOri2Strand <- function(ori) {
     if ( length(setdiff(unique(ori), c( '+', '-' ))) > 0  ) {
         msg = paste0("Ori must be one of '+' or '-'\n")
@@ -36,8 +36,8 @@ convertOri2Strand <- function(ori) {
 }
 
 
-#' convert strand 2 ori
-#'
+# convert strand 2 ori
+#
 convertStrand2Ori <- function(strand) {
     if ( length(setdiff(unique(strand), c( 'plus', 'minus' ))) > 0 ) {
         msg = paste0("Strand must be one of 'plus' or 'minus'\n")
@@ -50,8 +50,8 @@ convertStrand2Ori <- function(strand) {
 }
 
 
-#' Get a data.table of unique combinations of chrom and ori from input GRanges
-#'
+#  Get a data.table of unique combinations of chrom and ori from input GRanges
+#
 #' @importFrom  GenomeInfoDb  seqnames
 #' @importFrom  BiocGenerics  strand
 #'
