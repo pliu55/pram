@@ -62,9 +62,19 @@ setMethod('show', 'Transcript',
 #'
 setMethod('initialize', 'Transcript',
     function(.Object, exon, ...) {
-        .Object@exon = exon
-        .Object@jnc  = getTrJncFromExon(exon)
-        .Object@tr   = getTrFromExon(exon)
+        exondt = copy(exon)
+        if ( (! 'chrom' %in% names(exondt)) & ('seqnames' %in% names(exondt))){
+            setnames(exondt, 'seqnames', 'chrom')
+        }
+
+        if ( (! 'trid' %in% names(exondt)) &
+             ('transcript_id' %in% names(exondt))) {
+            setnames(exondt, 'transcript_id', 'trid')
+        }
+
+        .Object@exon = exondt
+        .Object@jnc  = getTrJncFromExon(exondt)
+        .Object@tr   = getTrFromExon(exondt)
 
         validObject(.Object)
         return(.Object)
