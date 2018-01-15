@@ -71,8 +71,6 @@ setMethod(
 #'
 #' @importFrom data.table  data.table fread setnames
 #'
-#' @export
-#'
 setMethod(
     'initFromGTFFile',
     c('GTF', 'character', 'vector'),
@@ -127,8 +125,6 @@ setMethod(
 #' @import data.table
 #' @importFrom GenomicRanges as.data.frame
 #'
-#' @export
-#'
 setMethod(
     'initFromGRanges',
     c('GTF', 'GRanges'),
@@ -150,8 +146,7 @@ setMethod(
 #' @param dt   a data.table object to define genomic ranges
 #' @param infokeys  a vector of characters to define to-be-extracted entries
 #'                  in GTF file's column 9
-#'
-#' @export
+#t
 #'
 setMethod('initFromDataTable', c('GTF', 'data.table', 'vector'),
     function(obj, dt, infokeys, ...) {
@@ -172,8 +167,6 @@ setMethod('initFromDataTable', c('GTF', 'data.table', 'vector'),
 #' @param x a GTF object
 #' @param fout a character object of GTF file name
 #' @param append a boolean to inidicate if to append to a GTF file or not
-#'
-#' @export
 #'
 setMethod('writeGTF',
     c('GTF', 'character', 'logical'),
