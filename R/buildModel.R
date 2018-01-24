@@ -206,7 +206,8 @@ defCSManager <- function(prm) {
     dt[, `:=`( fchromoribam = paste0(tmpdir(prm), tag, '.bam'),
                fmdlbam      = paste0(tmpdir(prm), tag, '.bam'),
                mdldir       = paste0(tmpdir(prm), tag, '/'),
-               fmdlgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
+               fmdlgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
+               foutgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
@@ -237,7 +238,8 @@ def1StepManager <- function(prm) {
                                      '.', tag, '.bam'),
                fmdlbam = paste0(tmpdir(prm), tag, '.bam'),
                mdldir  = paste0(tmpdir(prm), tag, '/'),
-               fmdlgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
+               fmdlgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
+               foutgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
@@ -277,7 +279,8 @@ def2StepManager <- function(prm) {
                fmrg_out = paste0(mrgpref, '_run.out'),
                fmrg_err = paste0(mrgpref, '_run.err'),
                mrgdir   = paste0(mrgpref, '/'),
-               fmrggtf  = paste0(mrgpref, '/', mrgbase, '.gtf') )]
+               fmrggtf  = paste0(mrgpref, '/', mrgbase, '.gtf'),
+               foutgtf  = paste0(mrgpref, '/pram_out.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     setkey(all_chromoridt, NULL)
@@ -295,13 +298,13 @@ outputModel <- function(prm) {
     foutgtf   = foutgtf(prm)
     mode      = mode(prm)
 
-    fmdlgtfs = unique(dt$fmdlgtf)
+    foutgtfs = unique(dt$foutgtf)
 
     grdt = data.table()
     if ( nthr == 1 ) {
-        grdt = rbindlist(lapply(fmdlgtfs, getGRangeDT, info_keys, mode))
+        grdt = rbindlist(lapply(foutgtfs, getExonGRangeDT, info_keys, mode))
     } else if ( nthr > 1 ) {
-        grdt = rbindlist(mclapply(fmdlgtfs, getGRangeDT, info_keys, mode,
+        grdt = rbindlist(mclapply(foutgtfs, getExonGRangeDT, info_keys, mode,
                                   mc.cores=nthr))
     }
 
@@ -312,6 +315,21 @@ outputModel <- function(prm) {
     grangedt(gtf) = grdt
 
     writeGTF(gtf, foutgtf, append=F)
+}
+
+
+getExonGRangeDT <- function(fgtf, info_keys, mode) {
+    outdt = data.table()
+    if ( file.exists(fgtf) ) {
+        gtf = new('GTF')
+        gtf = initFromGTFFile(gtf, fgtf, info_keys, origin=mode)
+        grdt = grangedt(gtf)
+        if ( nrow(grdt) > 0 ) {
+            outdt = grdt[ feature == 'exon' ]
+        }
+    }
+
+    return(outdt)
 }
 
 
@@ -371,6 +389,7 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
     dt = managerdt(prm)[ chrom == in_chrom & ori == in_ori ]
     fmdlgtfs = unique(dt$fmdlgtf)
     fmrggtf  = unique(dt$fmrggtf)
+    foutgtf  = unique(dt$foutgtf)
     mrgdir   = unique(dt$mrgdir)
     fmrglist = unique(dt$fmrglist)
     fmrg_out = unique(dt$fmrg_out)
@@ -404,9 +423,49 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
                                    Sys.getenv('PATH')))
         }
         system2('nohup', args=args, stdout=fmrg_out, stderr=fmrg_err)
+
+        ## rename trid and geneid by chrom, strand, and id
+        renameGTFTrGeneID(fmrggtf, foutgtf, prm)
+
     } else {
         write('no model was build from bam', fmrglist)
     }
+}
+
+
+renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
+    gtf = new('GTF')
+    info_keys = gtfinfokeys(prm)
+    mode = mode(prm)
+    gtf = initFromGTFFile(gtf, fingtf, info_keys, origin=mode)
+    grdt = grangedt(gtf)[ feature == 'exon' ]
+
+    grdt[, strand_label := ifelse(strand == '+', 'plus',
+                                  ifelse(strand == '-', 'minus', NA))]
+    grdt[, runid := paste0(mode, '_', chrom, '_', strand_label)]
+
+    if ( mode == 'cfmg' ) {
+        grdt[, `:=`( itr = tstrsplit(transcript_id, '_', fixed=T)[[2]],
+                     ign = tstrsplit(gene_id,       '_', fixed=T)[[2]] )]
+    } else if ( mode == 'stmg' ) {
+        grdt[, `:=`( itr = tstrsplit(transcript_id, '.', fixed=T)[[3]],
+                     ign = tstrsplit(gene_id,       '.', fixed=T)[[2]] )]
+    } else if ( mode == 'cftc' ) {
+        grdt[, `:=`( itr = tstrsplit(transcript_id, 'TU', fixed=T)[[2]],
+                     ign = tstrsplit(gene_id,       'G',  fixed=T)[[2]] )]
+    }
+
+    grdt[, `:=`( trid = paste0(runid, '.', as.integer(ign), '.',
+                               as.integer(itr)),
+                 gnid = paste0(runid, '.', as.integer(ign)) )]
+
+    grdt[, c('gene_id', 'transcript_id', 'strand_label', 'runid', 'itr',
+             'ign') := NULL]
+    setnames(grdt, c('trid', 'gnid'), c('transcript_id', 'gene_id'))
+
+    outgtf = new('GTF')
+    outgtf = initFromDataTable(outgtf, grdt, info_keys, origin=mode)
+    writeGTF(outgtf, foutgtf, append=F)
 }
 
 

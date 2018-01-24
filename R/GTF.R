@@ -203,12 +203,3 @@ setMethod('writeGTF',
                     append=append)
     }
 )
-
-
-getGRangeDT <- function(fgtf, info_keys=c(), label='') {
-    gtf = new('GTF')
-    gtf = initFromGTFFile(gtf, fgtf, info_keys, origin=label)
-    grdt = grangedt(gtf)
-
-    return(grdt)
-}
