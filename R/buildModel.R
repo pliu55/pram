@@ -542,10 +542,15 @@ modelByChromOriBam <- function(in_fmdlbam, method, prm) {
 
 
 getCufflinksArgs <- function(outdir, tag, finbam, fout_gtf, prm) {
-    ## not use '--frag-bias-correct' or '--multi-read-correct'
+    ## not use '--frag-bias-correct'
+    ## but try '--multi-read-correct'
     args = c( cufflinks(prm),
               '-o', outdir,
               '-p 1',
+
+             #'--frag-bias-correct', prm$fgnmfa,
+              '--multi-read-correct',
+
               '--library-type', cufflinkslibtype(prm),
               '--min-isoform-fraction',    minisoformfraction(prm),
               '--max-multiread-fraction',  maxmultireadfraction(prm),
