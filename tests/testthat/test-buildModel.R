@@ -32,16 +32,17 @@ main <- function() {
     cufflinks = '/ua/pliu/local/cufflinks-2.2.1/cufflinks'
     stringtie = '/ua/pliu/local/stringtie-1.3.3/stringtie'
     taco      = '/ua/pliu/local/taco-0.7.0/taco_run'
+    fgnmfa    = '/tier2/deweylab/pliu/genome/cufflinks_mm10_male/genome.fa'
     if ( file.exists(cufflinks) ) {
         for ( i in 1:length(fbams) ) {
             testBuildByCF(fbams[i], fout_cf_gtfs[i], nthr, cufflinks)
         }
 
-        testBuildByPLCF(fbams, outdir, nthr, cufflinks)
-        testBuildByCFMG(fbams, outdir, nthr, cufflinks)
+        testBuildByPLCF(fbams, outdir, nthr, cufflinks, fgnmfa)
+        testBuildByCFMG(fbams, outdir, nthr, cufflinks, fgnmfa)
 
         if ( file.exists(taco) ) {
-            testBuildByCFTC(fbams, outdir, nthr, cufflinks, taco)
+            testBuildByCFTC(fbams, outdir, nthr, cufflinks, taco, fgnmfa)
         }
     }
 
@@ -78,11 +79,11 @@ testFilterBamByChromOri <- function(chrom, strand, outdir, prm) {
 }
 
 
-testBuildByCFTC <- function(fbams, outdir, nthr, cufflinks, taco) {
+testBuildByCFTC <- function(fbams, outdir, nthr, cufflinks, taco, fgnmfa) {
     foutgtf = paste0(outdir, 'build_cftc.gtf')
     if ( file.exists(foutgtf) ) file.remove(foutgtf)
     buildModel(fbams, foutgtf, mode='cftc', nthreads=nthr,
-               cufflinks=cufflinks, taco=taco)
+               cufflinks=cufflinks, taco=taco, cufflinks_ref_fa=fgnmfa)
     test_that(paste0('buildModel::testBuildByCFTC: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }
@@ -97,10 +98,11 @@ testBuildBySTMG <- function(fbams, outdir, nthr, stringtie) {
 }
 
 
-testBuildByCFMG <- function(fbams, outdir, nthr, cufflinks) {
+testBuildByCFMG <- function(fbams, outdir, nthr, cufflinks, fgnmfa) {
     foutgtf = paste0(outdir, 'build_cfmg.gtf')
     if ( file.exists(foutgtf) ) file.remove(foutgtf)
-    buildModel(fbams, foutgtf, mode='cfmg', nthreads=nthr, cufflinks=cufflinks)
+    buildModel(fbams, foutgtf, mode='cfmg', nthreads=nthr, cufflinks=cufflinks,
+               cufflinks_ref_fa=fgnmfa)
     test_that(paste0('buildModel::testBuildByCFMG: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }
@@ -122,10 +124,11 @@ testBuildByST <- function(fbam, foutgtf, nthr, stringtie) {
 }
 
 
-testBuildByPLCF <- function(fbams, outdir, nthr, cufflinks) {
+testBuildByPLCF <- function(fbams, outdir, nthr, cufflinks, fgnmfa) {
     foutgtf = paste0(outdir, 'build_plcf.gtf')
     if ( file.exists(foutgtf) ) file.remove(foutgtf)
-    buildModel(fbams, foutgtf, mode='plcf', nthreads=nthr, cufflinks=cufflinks)
+    buildModel(fbams, foutgtf, mode='plcf', nthreads=nthr, cufflinks=cufflinks,
+               cufflinks_ref_fa=fgnmfa)
     test_that(paste0('buildModel::testBuildByPLCF: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }

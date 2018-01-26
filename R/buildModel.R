@@ -42,12 +42,19 @@
 #' @param  taco       TACO executable file. Required by mode 'cftc'.
 #'                    Default: ''
 #'
+#' @param  cufflinks_ref_fa  Genome reference fasta file for Cufflinks. If
+#'                           supplied, will be used for cufflinks's
+#'                           '--frag-bias-correct' and cuffmerge's
+#'                           '--ref-sequence' options.
+#'                           Default: ''
+#'
 #' @return  NULL
 #'
 #' @export
 #'
 buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1, tmpdir=NULL,
-                       cufflinks='', stringtie='', taco='') {
+                       cufflinks='', stringtie='', taco='',
+                       cufflinks_ref_fa='') {
 
     prm = new('Param')
     fuserbams(prm) = finbamv
@@ -57,6 +64,7 @@ buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1, tmpdir=NULL,
     cufflinks(prm) = cufflinks
     stringtie(prm) = stringtie
     taco(prm)      = taco
+    cufflinksreffa(prm) = cufflinks_ref_fa
 
     checkArgs(prm)
 
@@ -542,13 +550,32 @@ modelByChromOriBam <- function(in_fmdlbam, method, prm) {
 
 
 getCufflinksArgs <- function(outdir, tag, finbam, fout_gtf, prm) {
-    ## not use '--frag-bias-correct'
-    ## but try '--multi-read-correct'
+    ## try '--frag-bias-correct' and '--multi-read-correct'
+   #args = c( cufflinks(prm),
+   #          '-o', outdir,
+   #          '-p 1',
+
+   #         #'--frag-bias-correct', prm$fgnmfa,
+   #          '--multi-read-correct',
+
+   #          '--library-type', cufflinkslibtype(prm),
+   #          '--min-isoform-fraction',    minisoformfraction(prm),
+   #          '--max-multiread-fraction',  maxmultireadfraction(prm),
+   #          '--min-frags-per-transfrag', minfragspertransfrag(prm),
+   #          '--label', tag,
+   #          '--quiet',
+   #          '--no-update-check', finbam)
+
     args = c( cufflinks(prm),
               '-o', outdir,
-              '-p 1',
+              '-p 1' )
 
-             #'--frag-bias-correct', prm$fgnmfa,
+    if ( cufflinksreffa(prm) != '' ) {
+        args = c( args,
+                  '--frag-bias-correct', cufflinksreffa(prm) )
+    }
+
+    args = c( args,
               '--multi-read-correct',
 
               '--library-type', cufflinkslibtype(prm),
@@ -579,9 +606,23 @@ getStringTieArgs <- function(outdir, tag, finbam, fout_gtf, prm) {
 
 
 getCuffmergeArgs <- function(fin_gtfs, outdir, fout_gtf, prm) {
+   #args = c( paste0(dirname(cufflinks(prm)), '/cuffmerge'),
+   #          '-o', outdir,
+   #        ## '--ref-sequence', prm$fgnmfa,
+   #          '--min-isoform-fraction', minisoformfraction(prm),
+   #          '--num-threads 1',
+   #          fin_gtfs )
+
     args = c( paste0(dirname(cufflinks(prm)), '/cuffmerge'),
-              '-o', outdir,
-            ## '--ref-sequence', prm$fgnmfa,
+              '-o', outdir )
+
+    if ( cufflinksreffa(prm) != '' ) {
+        args = c( args,
+                  '--ref-sequence', cufflinksreffa(prm) )
+
+    }
+
+    args = c( args,
               '--min-isoform-fraction', minisoformfraction(prm),
               '--num-threads 1',
               fin_gtfs )

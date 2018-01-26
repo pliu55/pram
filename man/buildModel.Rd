@@ -5,7 +5,7 @@
 \title{Build transcript models from aligned RNA-seq data}
 \usage{
 buildModel(finbamv, foutgtf, mode = "plcf", nthreads = 1, tmpdir = NULL,
-  cufflinks = "", stringtie = "", taco = "")
+  cufflinks = "", stringtie = "", taco = "", cufflinks_ref_fa = "")
 }
 \arguments{
 \item{finbamv}{A character vector of input BAM file(s). If mode 'cf'
@@ -48,6 +48,12 @@ Default: ''}
 Default: ''}
 
 \item{taco}{TACO executable file. Required by mode 'cftc'.
+Default: ''}
+
+\item{cufflinks_ref_fa}{Genome reference fasta file for Cufflinks. If
+supplied, will be used for cufflinks's
+'--frag-bias-correct' and cuffmerge's
+'--ref-sequence' options.
 Default: ''}
 }
 \description{
