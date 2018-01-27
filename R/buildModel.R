@@ -316,11 +316,15 @@ outputModel <- function(prm) {
                                   mc.cores=nthr))
     }
 
+    ## remove models with no strand info
+    ## cufflinks and cuffmerge model may have strand labelled as '.'
+    out_grdt = grdt[ strand %in% c('+', '-')]
+
     gtf = new('GTF')
     fgtf(gtf)     = foutgtf
     origin(gtf)   = mode
     infokeys(gtf) = info_keys
-    grangedt(gtf) = grdt
+    grangedt(gtf) = out_grdt
 
     writeGTF(gtf, foutgtf, append=F)
 }
