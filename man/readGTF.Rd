@@ -4,13 +4,14 @@
 \alias{readGTF}
 \title{parse a GTF file}
 \usage{
-readGTF(fgtf, info_keys)
+readGTF(fgtf, info_keys = c("transcript_id", "gene_id"))
 }
 \arguments{
 \item{fgtf}{input GTF file}
 
 \item{info_keys}{a vector of characters for attribute to be extracted
-from GTF file's 9th column}
+from GTF file's 9th column
+Default: c('transcript_id', 'gene_id')}
 }
 \value{
 a data.table object

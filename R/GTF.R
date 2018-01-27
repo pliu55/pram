@@ -210,12 +210,13 @@ setMethod('writeGTF',
 #' @param  fgtf       input GTF file
 #' @param  info_keys  a vector of characters for attribute to be extracted
 #'                    from GTF file's 9th column
+#'                    Default: c('transcript_id', 'gene_id')
 #'
 #' @return a data.table object
 #'
 #' @export
 #'
-readGTF <- function(fgtf, info_keys) {
+readGTF <- function(fgtf, info_keys=c('transcript_id', 'gene_id')) {
     gtf = new('GTF')
     gtf = initFromGTFFile(gtf, fgtf, info_keys)
     outdt = grangedt(gtf)
