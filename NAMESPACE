@@ -3,6 +3,7 @@
 export(buildModel)
 export(evalModel)
 export(prepIgBam)
+export(readGTF)
 export(screenModel)
 export(trainModelClassifier)
 import(data.table)

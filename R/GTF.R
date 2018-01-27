@@ -203,3 +203,22 @@ setMethod('writeGTF',
                     append=append)
     }
 )
+
+
+#' parse a GTF file
+#'
+#' @param  fgtf       input GTF file
+#' @param  info_keys  a vector of characters for attribute to be extracted
+#'                    from GTF file's 9th column
+#'
+#' @return a data.table object
+#'
+#' @export
+#'
+readGTF <- function(fgtf, info_keys) {
+    gtf = new('GTF')
+    gtf = initFromGTFFile(gtf, fgtf, info_keys)
+    outdt = grangedt(gtf)
+
+    return(outdt)
+}
