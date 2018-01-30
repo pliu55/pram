@@ -4,7 +4,8 @@
 \alias{prepIgBam}
 \title{Prepare BAM files for intergenic regions}
 \usage{
-prepIgBam(fbams, iggrs, outdir, nthreads = 1)
+prepIgBam(fbams, iggrs, outdir, nthreads = 1, max_uni_n_dup_aln = 10,
+  max_mul_n_dup_aln = 10)
 }
 \arguments{
 \item{fbams}{A vector of characters for a list of input RNA-seq BAM files.
@@ -19,6 +20,14 @@ definition}
 save all the output files}
 
 \item{nthreads}{An integer defining the number of threads. Default: 1}
+
+\item{max_uni_n_dup_aln}{Maximum number of uniquely mapped fragments
+to report per each alignment.
+Default: 10}
+
+\item{max_mul_n_dup_aln}{Maximum number of multi-mapping fragments
+to report per each alignment.
+Default: 10}
 }
 \description{
 Prepare BAM files for intergenic regions

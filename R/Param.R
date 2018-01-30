@@ -156,6 +156,8 @@ setGeneric('managerdt<-',   function(x, value) standardGeneric('managerdt<-'))
 setGeneric('chromoridt<-',  function(x, value) standardGeneric('chromoridt<-'))
 setGeneric('exprmintpm<-',  function(x, value) standardGeneric('exprmintpm<-'))
 setGeneric('cvnfolds<-',    function(x, value) standardGeneric('cvnfolds<-'))
+setGeneric('maxunindupaln<-', function(x, value) standardGeneric('maxunindupaln<-'))
+setGeneric('maxmulndupaln<-', function(x, value) standardGeneric('maxmulndupaln<-'))
 
 setGeneric('cufflinks',      function(x) standardGeneric('cufflinks'))
 setGeneric('stringtie',      function(x) standardGeneric('stringtie'))
@@ -219,6 +221,10 @@ setReplaceMethod('exprmintpm', 'Param',
                  function(x, value) {x@EXPR_MIN_TPM=value; x})
 setReplaceMethod('cvnfolds', 'Param',
                  function(x, value) {x@CV_N_FOLDS=value; x})
+setReplaceMethod('maxunindupaln', 'Param',
+                 function(x, value) {x@MAX_UNI_N_DUP_ALN=value; x})
+setReplaceMethod('maxmulndupaln', 'Param',
+                 function(x, value) {x@MAX_MUL_N_DUP_ALN=value; x})
 
 setMethod('cufflinks',      'Param', function(x) x@CUFFLINKS_BIN)
 setMethod('stringtie',      'Param', function(x) x@STRINGTIE_BIN)

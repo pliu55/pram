@@ -13,15 +13,26 @@
 #'
 #' @param  nthreads  An integer defining the number of threads. Default: 1
 #'
+#' @param  max_uni_n_dup_aln  Maximum number of uniquely mapped fragments
+#'                            to report per each alignment.
+#'                            Default: 10
+#'
+#' @param  max_mul_n_dup_aln  Maximum number of multi-mapping fragments
+#'                            to report per each alignment.
+#'                            Default: 10
+#'
 #' @return NULL
 #'
 #' @importFrom parallel mclapply
 #'
 #' @export
 #'
-prepIgBam <- function(fbams, iggrs, outdir, nthreads=1) {
+prepIgBam <- function(fbams, iggrs, outdir, nthreads=1,
+                      max_uni_n_dup_aln=10, max_mul_n_dup_aln=10) {
 
     prm = new('Param')
+    maxunindupaln(prm) = max_uni_n_dup_aln
+    maxmulndupaln(prm) = max_mul_n_dup_aln
 
     if ( ! file.exists(outdir) ) dir.create(outdir, recursive=T)
 
