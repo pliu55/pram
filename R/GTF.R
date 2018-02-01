@@ -93,9 +93,10 @@ setMethod(
 
         dt = data.table()
         if ( (length(lines) > 0) & (nskip < length(lines)) ) {
-            dt = fread(fgtf, header=F, sep="\t", colClasses=c('character',
-                       'NULL', 'character', rep('integer', 2), 'NULL',
-                       'character', 'NULL', 'character'), skip=nskip)
+            dt = fread(fgtf, header=F, sep="\t", showProgress=F, skip=nskip,
+                       colClasses=c('character', 'NULL', 'character',
+                                    rep('integer', 2), 'NULL', 'character',
+                                    'NULL', 'character'))
             setnames(dt, 1:6,
                      c('chrom', 'feature', 'start', 'end', 'strand', 'info'))
 
