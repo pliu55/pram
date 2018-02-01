@@ -19,6 +19,7 @@ Collate:
     'Param.R'
     'Transcript.R'
     'buildModel.R'
+    'defIgRanges.R'
     'evalModel.R'
     'prepIgBam.R'
     'screenModel.R'

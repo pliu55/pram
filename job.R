@@ -11,6 +11,7 @@ install(quick=T, reload=F, threads=4)
 
 # test( filter = 'screenModel' )
 # test( filter = 'prepIgBam' )
+# test( filter = 'defIgRanges' )
 # test( filter = 'buildModel' )
 # test( filter = 'evalModel' )
   test()
