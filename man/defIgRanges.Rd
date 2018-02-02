@@ -5,7 +5,7 @@
 \title{Define intergenic genomic regions}
 \usage{
 defIgRanges(fgtf, genome = NULL, fchromsize = NULL, radius = 10000,
-  feat = "exon")
+  feat = "exon", chroms = NULL)
 }
 \arguments{
 \item{fgtf}{Name of the GTF file to define genic regions. Required to have
@@ -18,10 +18,8 @@ gene_id in the attribute column (column 9).}
     \item mm9
     \item mm10
 }
-All the above genomes have sizes for major chromosomes, i.e.
-non-random, non-alt, or mitochondria chromosomes. For hg19
-and hg38, it contains chr1-22, X, and Y. For mm9 and mm10,
-it contains chr1-19, X, and Y.
+All the above genomes have sizes for all chromosomes
+including random and alt ones.
 Default: NULL}
 
 \item{fchromsize}{Name of a file defining chromosome sizes as a supplement
@@ -40,8 +38,13 @@ Default: NULL}
 excluded from intergenic region.
 Default: 10,000}
 
-\item{feat}{feature in the GTF file to-be-used for defining genic region.
+\item{feat}{Feature in the GTF file (column 3) to-be-used for defining
+genic region.
 Default: exon}
+
+\item{chroms}{A vector of chromosomes names to define intergenic regions.
+e.g. c('chr10', 'chr11')
+Default: NULL}
 }
 \value{
 a GRanges object of intergenic regions

@@ -10,10 +10,8 @@
 #'                     \item mm9
 #'                     \item mm10
 #'                 }
-#'                 All the above genomes have sizes for major chromosomes, i.e.
-#'                 non-random, non-alt, or mitochondria chromosomes. For hg19
-#'                 and hg38, it contains chr1-22, X, and Y. For mm9 and mm10,
-#'                 it contains chr1-19, X, and Y.
+#'                 All the above genomes have sizes for all chromosomes
+#'                 including random and alt ones.
 #'                 Default: NULL
 #'
 #' @param  fchromsize  Name of a file defining chromosome sizes as a supplement
@@ -32,8 +30,13 @@
 #'                 excluded from intergenic region.
 #'                 Default: 10,000
 #'
-#' @param  feat  feature in the GTF file to-be-used for defining genic region.
+#' @param  feat  Feature in the GTF file (column 3) to-be-used for defining
+#'               genic region.
 #'               Default: exon
+#'
+#' @param  chroms  A vector of chromosomes names to define intergenic regions.
+#'                 e.g. c('chr10', 'chr11')
+#'                 Default: NULL
 #'
 #' @return  a GRanges object of intergenic regions
 #'
@@ -42,14 +45,17 @@
 #' @export
 #'
 defIgRanges <- function(fgtf, genome=NULL, fchromsize=NULL, radius=1e+4,
-                        feat='exon'){
-    chromgrs = getChromGRanges(genome, fchromsize)
+                        feat='exon', chroms=NULL){
+    chromgrs = getChromGRanges(genome, fchromsize, chroms)
 
     gtf = new('GTF')
     gtf = initFromGTFFile(gtf, fgtf, infokeys=c('gene_id'))
     grdt = grangedt(gtf)
     seldt = grdt[ feature == feat ]
-    gndt = seldt[, `:=`( chrom    = unique(chrom),
+    if ( ! is.null(chroms) ) {
+        seldt = seldt[ chrom %in% chroms ]
+    }
+    gndt = seldt[, list( chrom    = unique(chrom),
                          gn_start = min(start),
                          gn_end   = max(end) ), by=gene_id]
 
@@ -66,7 +72,7 @@ defIgRanges <- function(fgtf, genome=NULL, fchromsize=NULL, radius=1e+4,
 }
 
 
-getChromGRanges <- function(genome, fchromsize) {
+getChromGRanges <- function(genome, fchromsize, chroms) {
     chromdt = NULL
     avail_genomes = c('hg19', 'hg38', 'mm10', 'mm9')
 
@@ -88,7 +94,11 @@ getChromGRanges <- function(genome, fchromsize) {
         chromdt = readChromSize(fchromsize)
     }
 
-    outgrs = makeGRangesFromDataFrame(chromdt, keep.extra.columns=F)
+    outdt = chromdt
+    if ( ! is.null(chroms) ) {
+        outdt = chromdt[ chrom %in% chroms ]
+    }
+    outgrs = makeGRangesFromDataFrame(outdt, keep.extra.columns=F)
 
     return(outgrs)
 }
