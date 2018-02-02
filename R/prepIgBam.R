@@ -11,7 +11,9 @@
 #' @param  outdir  A string defining the full name of an directory to
 #'                 save all the output files
 #'
-#' @param  nthreads  An integer defining the number of threads. Default: 1
+#' @param  nthreads  An integer defining the number of threads. Input BAM files
+#'                   will be distributed by this number for processing.
+#'                   Default: 1
 #'
 #' @param  max_uni_n_dup_aln  Maximum number of uniquely mapped fragments
 #'                            to report per each alignment.
@@ -160,6 +162,7 @@ selAlnByMateMaxNDup <- function(alns, max_uni_ndup, max_mul_ndup) {
 }
 
 
+#' @importFrom  IRanges            subsetByOverlaps
 #' @importFrom  Rsamtools          ScanBamParam
 #' @importFrom  GenomicAlignments  readGAlignments
 #'

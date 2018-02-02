@@ -19,7 +19,9 @@ definition}
 \item{outdir}{A string defining the full name of an directory to
 save all the output files}
 
-\item{nthreads}{An integer defining the number of threads. Default: 1}
+\item{nthreads}{An integer defining the number of threads. Input BAM files
+will be distributed by this number for processing.
+Default: 1}
 
 \item{max_uni_n_dup_aln}{Maximum number of uniquely mapped fragments
 to report per each alignment.
