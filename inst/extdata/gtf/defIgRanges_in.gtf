@@ -1,7 +1,9 @@
 ##hg38 v24 
+chr9	HAVANA	gene	10000	90000	.	-	.	gene_id "ENSG0.0";
 chr10	HAVANA	exon	10000	20000	.	-	.	gene_id "ENSG0.1";
 chr10	HAVANA	exon	50000	60000	.	-	.	gene_id "ENSG0.1";
 chr10	HAVANA	exon	80000	90000	.	+	.	gene_id "ENSG0.2";
 chr11	HAVANA	exon	10000	20000	.	+	.	gene_id "ENSG0.3";
 chr11	HAVANA	exon	50000	60000	.	-	.	gene_id "ENSG0.4";
 chr11	HAVANA	exon	80000	90000	.	-	.	gene_id "ENSG0.4";
+chr12	HAVANA	transcript	80000	90000	.	-	.	gene_id "ENSG0.5";
