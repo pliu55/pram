@@ -98,6 +98,7 @@ getChromGRanges <- function(genome, fchromsize, chroms) {
     if ( ! is.null(chroms) ) {
         outdt = chromdt[ chrom %in% chroms ]
     }
+    outdt[, chrom := as.character(chrom) ] ## avoid chrom w/ 0 length
     outgrs = makeGRangesFromDataFrame(outdt, keep.extra.columns=F)
 
     return(outgrs)
