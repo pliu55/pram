@@ -2,13 +2,13 @@
 % Please edit documentation in R/prepIgBam.R
 \name{prepIgBam}
 \alias{prepIgBam}
-\title{Prepare BAM files for intergenic regions}
+\title{Extract alignments in intergenic regions from BAM files}
 \usage{
-prepIgBam(fbams, iggrs, outdir, nthreads = 1, max_uni_n_dup_aln = 10,
+prepIgBam(finbam, iggrs, foutbam, max_uni_n_dup_aln = 10,
   max_mul_n_dup_aln = 10)
 }
 \arguments{
-\item{fbams}{A vector of characters for a list of input RNA-seq BAM files.
+\item{finbam}{Full name of an input RNA-seq BAM file.
 Currently, PRAM only supports strand-specific paired-end
 data with the first mate on the right-most of transcript
 coordinate, i.e., 'fr-firststrand' by Cufflinks's
@@ -16,12 +16,8 @@ definition}
 
 \item{iggrs}{A GenomicRanges object defining intergenic regions}
 
-\item{outdir}{A string defining the full name of an directory to
-save all the output files}
-
-\item{nthreads}{An integer defining the number of threads. Input BAM files
-will be distributed by this number for processing.
-Default: 1}
+\item{foutbam}{Full name of an output BAM file to save all alignment fell
+into intergenic regions}
 
 \item{max_uni_n_dup_aln}{Maximum number of uniquely mapped fragments
 to report per each alignment.
@@ -32,5 +28,5 @@ to report per each alignment.
 Default: 10}
 }
 \description{
-Prepare BAM files for intergenic regions
+Extract alignments in intergenic regions from BAM files
 }

@@ -1,19 +1,15 @@
-#' Prepare BAM files for intergenic regions
+#' Extract alignments in intergenic regions from BAM files
 #'
-#' @param  fbams  A vector of characters for a list of input RNA-seq BAM files.
-#'                Currently, PRAM only supports strand-specific paired-end
-#'                data with the first mate on the right-most of transcript
-#'                coordinate, i.e., 'fr-firststrand' by Cufflinks's
-#'                definition
+#' @param  finbam   Full name of an input RNA-seq BAM file.
+#'                  Currently, PRAM only supports strand-specific paired-end
+#'                  data with the first mate on the right-most of transcript
+#'                  coordinate, i.e., 'fr-firststrand' by Cufflinks's
+#'                  definition
 #'
 #' @param  iggrs  A GenomicRanges object defining intergenic regions
 #'
-#' @param  outdir  A string defining the full name of an directory to
-#'                 save all the output files
-#'
-#' @param  nthreads  An integer defining the number of threads. Input BAM files
-#'                   will be distributed by this number for processing.
-#'                   Default: 1
+#' @param  foutbam  Full name of an output BAM file to save all alignment fell
+#'                  into intergenic regions
 #'
 #' @param  max_uni_n_dup_aln  Maximum number of uniquely mapped fragments
 #'                            to report per each alignment.
@@ -25,38 +21,38 @@
 #'
 #' @return NULL
 #'
-#' @importFrom parallel mclapply
-#'
 #' @export
 #'
-prepIgBam <- function(fbams, iggrs, outdir, nthreads=1,
+prepIgBam <- function(finbam, iggrs, foutbam,
                       max_uni_n_dup_aln=10, max_mul_n_dup_aln=10) {
 
     prm = new('Param')
     maxunindupaln(prm) = max_uni_n_dup_aln
     maxmulndupaln(prm) = max_mul_n_dup_aln
 
-    if ( ! file.exists(outdir) ) dir.create(outdir, recursive=T)
+    ori_iggrs = addOri(iggrs)
 
-    managerdt = defManager(fbams, outdir, prm)
-
-    if ( nthreads == 1 ) {
-        lapply(fbams, prepIgBamByFile, iggrs, managerdt, prm)
-    } else if ( nthreads > 1 ) {
-        mclapply(fbams, prepIgBamByFile, iggrs, managerdt, prm,
-                mc.cores=nthreads)
-    }
+    extractBam(finbam, ori_iggrs, foutbam, prm)
 }
 
 
-#' @importFrom  tools  file_path_sans_ext
+#' @importFrom  BiocGenerics  strand strand<-
 #'
-defManager <- function(fuserbams, outdir, prm) {
-    dt = data.table( fuserbam = fuserbams,
-                     bamid  = file_path_sans_ext(basename(fuserbams)) )
-    dt[, foutbam := paste0(outdir, bamid, '.ig.bam')]
+addOri <- function(iggrs) {
+    w_ori_iggrs  = iggrs[ ( strand(iggrs) == '+' ) |
+                          ( strand(iggrs) == '-' ) ]
+    no_ori_iggrs = iggrs[ ( strand(iggrs) != '+' ) &
+                          ( strand(iggrs) != '-' ) ]
 
-    return(dt)
+    plus_iggrs  = copy(no_ori_iggrs)
+    minus_iggrs = copy(no_ori_iggrs)
+
+    strand(plus_iggrs)  = '+'
+    strand(minus_iggrs) = '-'
+
+    outgrs = c( w_ori_iggrs, plus_iggrs, minus_iggrs )
+
+    return(outgrs)
 }
 
 
@@ -64,15 +60,13 @@ defManager <- function(fuserbams, outdir, prm) {
 #' @importFrom  Rsamtools   indexBam filterBam BamFile ScanBamParam
 #' @importFrom  S4Vectors   FilterRules
 #'
-prepIgBamByFile <- function(finbam, iggrs, managerdt, prm) {
-    foutbam = managerdt[ fuserbam == finbam ]$foutbam
-
+extractBam <- function(finbam, iggrs, foutbam, prm) {
     finbam_index = paste0(finbam, '.bai')
     if ( ! file.exists(finbam_index) ) indexBam(finbam)
 
     fr1ststrand2mate2flag = fr1ststrand2mate2flag(prm)
-    plus_flag_1st = fr1ststrand2mate2flag[['plus']][['1stmate']]
-    plus_flag_2nd = fr1ststrand2mate2flag[['plus']][['2ndmate']]
+    plus_flag_1st  = fr1ststrand2mate2flag[['plus']][['1stmate']]
+    plus_flag_2nd  = fr1ststrand2mate2flag[['plus']][['2ndmate']]
 
     minus_flag_1st = fr1ststrand2mate2flag[['minus']][['1stmate']]
     minus_flag_2nd = fr1ststrand2mate2flag[['minus']][['2ndmate']]
@@ -80,8 +74,8 @@ prepIgBamByFile <- function(finbam, iggrs, managerdt, prm) {
     plus_iggrs  = iggrs[ strand(iggrs) == '+' ]
     minus_iggrs = iggrs[ strand(iggrs) == '-' ]
 
-    plus_alns_1st = selAlnInGRanges(plus_iggrs, finbam, plus_flag_1st)
-    plus_alns_2nd = selAlnInGRanges(plus_iggrs, finbam, plus_flag_2nd)
+    plus_alns_1st  = selAlnInGRanges(plus_iggrs, finbam, plus_flag_1st)
+    plus_alns_2nd  = selAlnInGRanges(plus_iggrs, finbam, plus_flag_2nd)
 
     minus_alns_1st = selAlnInGRanges(minus_iggrs, finbam, minus_flag_1st)
     minus_alns_2nd = selAlnInGRanges(minus_iggrs, finbam, minus_flag_2nd)

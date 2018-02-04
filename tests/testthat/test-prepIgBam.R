@@ -1,38 +1,36 @@
-library(data.table)
-library(tools)
 suppressMessages(library(GenomicAlignments))
 
 main <- function() {
     context('prepIgBam')
 
-    fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.raw.bam',
-                           package='pram'),
-               system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam',
-                           package='pram') )
-
+    rnaseqids = c('CMPRep1', 'CMPRep2')
     seqinfo = Seqinfo( c('chr10', 'chr12') )
     iggrs = c( GRanges( 'chr10:77236000-77247000:+', seqinfo = seqinfo ),
                GRanges( 'chr12:32095000-32125000:-', seqinfo = seqinfo ),
                GRanges( 'chr12:77038000-77054000:-', seqinfo = seqinfo ) )
 
     outdir = paste0(tempdir(), '/')
-    nthr = 2
 
-    prepIgBam(fbams, iggrs, outdir, nthreads=nthr)
-    lapply(fbams, testPrepIgBam, iggrs, outdir)
+    lapply(rnaseqids, testExtractIgBam, iggrs, outdir)
 }
 
 
-testPrepIgBam <- function(finbam, iggrs, outdir) {
-    foutbam = paste0(outdir, file_path_sans_ext(basename(finbam)), '.ig.bam')
-    fcleanbam = gsub('raw', 'clean', finbam)
+testExtractIgBam <- function(rnaseqid, iggrs, outdir) {
+    finbam  = system.file(paste0('extdata/bam/', rnaseqid,
+                                 '.sortedByCoord.raw.bam'), package='pram')
+    fcmpbam = system.file(paste0('extdata/bam/', rnaseqid,
+                                 '.sortedByCoord.clean.bam'), package='pram')
+    foutbam = paste0(outdir, rnaseqid, '.ig.bam')
+
+    prepIgBam(finbam, iggrs, foutbam)
 
     bamprm = ScanBamParam(what=c('flag', 'qname'), which=iggrs)
-    out_alns   = readGAlignments(foutbam,   use.names=F, param=bamprm)
-    clean_alns = readGAlignments(fcleanbam, use.names=F, param=bamprm)
+    cmp_alns = readGAlignments(fcmpbam, use.names=F, param=bamprm)
+    out_alns = readGAlignments(foutbam, use.names=F, param=bamprm)
 
-    test_that( paste0('BamManager::testPrepIgBam:', foutbam, ' vs ', fcleanbam),
-               expect_identical(out_alns, clean_alns) )
+    test_that( paste0(foutbam, ' vs ', fcmpbam),
+               expect_identical(cmp_alns, out_alns) )
 }
+
 
 main()
