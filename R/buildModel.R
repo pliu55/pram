@@ -91,7 +91,10 @@ buildModel <- function(finbamv, foutgtf, mode='plcf', nthreads=1, tmpdir=NULL,
     func = mode2func[[mode(prm)]]
     func(prm)
 
-    outputModel(prm)
+    ## model will be removed if:
+    ## - strand is not '+' or '-'
+    ## - strand does not match the one where bam was derived
+    outputCorrectStrandModel(prm)
 }
 
 
@@ -299,50 +302,63 @@ def2StepManager <- function(prm) {
 }
 
 
-outputModel <- function(prm) {
+outputCorrectStrandModel <- function(prm) {
     dt        = managerdt(prm)
     nthr      = nthreads(prm)
     info_keys = gtfinfokeys(prm)
     foutgtf   = foutgtf(prm)
     mode      = mode(prm)
 
-    foutgtfs = unique(dt$foutgtf)
+    stranddt = unique(dt[, .(ori, foutgtf)], by=c('ori', 'foutgtf'))
 
     grdt = data.table()
     if ( nthr == 1 ) {
-        grdt = rbindlist(lapply(foutgtfs, getExonGRangeDT, info_keys, mode))
+        grdt = rbindlist(lapply(stranddt$foutgtf, getCorrectStrandExon,
+                                stranddt, info_keys, mode))
     } else if ( nthr > 1 ) {
-        grdt = rbindlist(mclapply(foutgtfs, getExonGRangeDT, info_keys, mode,
-                                  mc.cores=nthr))
+        grdt = rbindlist(mclapply(stranddt$foutgtf, getCorrectStrandExon,
+                                  stranddt, info_keys, mode, mc.cores=nthr))
     }
-
-    ## remove models with no strand info
-    ## cufflinks and cuffmerge model may have strand labelled as '.'
-    out_grdt = grdt[ strand %in% c('+', '-')]
 
     gtf = new('GTF')
     fgtf(gtf)     = foutgtf
     origin(gtf)   = mode
     infokeys(gtf) = info_keys
-    grangedt(gtf) = out_grdt
+    grangedt(gtf) = grdt
 
     writeGTF(gtf, foutgtf, append=F)
 }
 
 
-getExonGRangeDT <- function(fgtf, info_keys, mode) {
+getCorrectStrandExon <- function(fgtf, stranddt, info_keys, mode) {
+    ori = stranddt[ foutgtf == fgtf ]$ori
     outdt = data.table()
     if ( file.exists(fgtf) ) {
         gtf = new('GTF')
         gtf = initFromGTFFile(gtf, fgtf, info_keys, origin=mode)
         grdt = grangedt(gtf)
         if ( nrow(grdt) > 0 ) {
-            outdt = grdt[ feature == 'exon' ]
+            outdt = grdt[ (feature == 'exon') & (strand == ori) ]
         }
     }
 
     return(outdt)
 }
+
+
+#getExonGRangeDT <- function(fgtf, info_keys, mode) {
+#   outdt = data.table()
+#   if ( file.exists(fgtf) ) {
+#       gtf = new('GTF')
+#       gtf = initFromGTFFile(gtf, fgtf, info_keys, origin=mode)
+#       grdt = grangedt(gtf)
+#       if ( nrow(grdt) > 0 ) {
+#           outdt = grdt[ feature == 'exon' ]
+#       }
+#   }
+
+#   return(outdt)
+#}
 
 
 modelByPoolingCufflinks <- function(prm) {
