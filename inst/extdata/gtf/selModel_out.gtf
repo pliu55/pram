@@ -1,0 +1,5 @@
+chr11	UNKNOWN	exon	500	600	.	-	.	transcript_id "ENSG0.4"; gene_id "ENSG.4";
+chr11	UNKNOWN	exon	800	900	.	-	.	transcript_id "ENSG0.4"; gene_id "ENSG.4";
+chr12	UNKNOWN	exon	700	750	.	+	.	transcript_id "ENSG0.5"; gene_id "ENSG.5";
+chr12	UNKNOWN	exon	800	900	.	+	.	transcript_id "ENSG0.5"; gene_id "ENSG.5";
+chr12	UNKNOWN	transcript	700	900	.	+	.	transcript_id "ENSG0.5"; gene_id "ENSG.5";

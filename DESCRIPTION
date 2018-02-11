@@ -23,4 +23,5 @@ Collate:
     'evalModel.R'
     'prepIgBam.R'
     'screenModel.R'
+    'selModel.R'
     'util.R'
