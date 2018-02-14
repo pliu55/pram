@@ -555,22 +555,6 @@ modelByChromOriBam <- function(in_fmdlbam, method, prm) {
 
 
 getCufflinksArgs <- function(outdir, tag, finbam, fout_gtf, prm) {
-    ## try '--frag-bias-correct' and '--multi-read-correct'
-   #args = c( cufflinks(prm),
-   #          '-o', outdir,
-   #          '-p 1',
-
-   #         #'--frag-bias-correct', prm$fgnmfa,
-   #          '--multi-read-correct',
-
-   #          '--library-type', cufflinkslibtype(prm),
-   #          '--min-isoform-fraction',    minisoformfraction(prm),
-   #          '--max-multiread-fraction',  maxmultireadfraction(prm),
-   #          '--min-frags-per-transfrag', minfragspertransfrag(prm),
-   #          '--label', tag,
-   #          '--quiet',
-   #          '--no-update-check', finbam)
-
     args = c( cufflinks(prm),
               '-o', outdir,
               '-p 1' )
@@ -611,13 +595,6 @@ getStringTieArgs <- function(outdir, tag, finbam, fout_gtf, prm) {
 
 
 getCuffmergeArgs <- function(fin_gtfs, outdir, fout_gtf, prm) {
-   #args = c( paste0(dirname(cufflinks(prm)), '/cuffmerge'),
-   #          '-o', outdir,
-   #        ## '--ref-sequence', prm$fgnmfa,
-   #          '--min-isoform-fraction', minisoformfraction(prm),
-   #          '--num-threads 1',
-   #          fin_gtfs )
-
     args = c( paste0(dirname(cufflinks(prm)), '/cuffmerge'),
               '-o', outdir )
 
