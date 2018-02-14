@@ -346,21 +346,6 @@ getCorrectStrandExon <- function(fgtf, stranddt, info_keys, mode) {
 }
 
 
-#getExonGRangeDT <- function(fgtf, info_keys, mode) {
-#   outdt = data.table()
-#   if ( file.exists(fgtf) ) {
-#       gtf = new('GTF')
-#       gtf = initFromGTFFile(gtf, fgtf, info_keys, origin=mode)
-#       grdt = grangedt(gtf)
-#       if ( nrow(grdt) > 0 ) {
-#           outdt = grdt[ feature == 'exon' ]
-#       }
-#   }
-
-#   return(outdt)
-#}
-
-
 modelByPoolingCufflinks <- function(prm) {
     modelByPoolingBams('cufflinks', prm)
 }
