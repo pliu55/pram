@@ -8,12 +8,12 @@ trainModelClassifier(fbeds, ftpms, fgtf, tmpdir = NULL, expr_min_tpm = 1,
   cv_n_folds = 10, nthreads = 1)
 }
 \arguments{
-\item{fbeds}{A string vector of BED files for histone marks and/or RNA
-Pol II ChIP-seq signals in RPKM.  They are required to have
-at least three columns describing the names of chromosome,
-starting and ending positions, and strand.}
+\item{fbeds}{A vector of BED file names for histone marks and/or RNA Pol II
+ChIP-seq alignments.  Each BED file is required to have at least
+four columns describing chromosome names, starting and
+ending positions, and strand.}
 
-\item{ftpms}{A string vector of RSEM quantification results at the
+\item{ftpms}{A vector of RSEM quantification result file names at the
 isoform level.  It is required to have two columns named
 'transcript_id' and 'TPM' to define the abundances of
 training transcripts.  This file is the one with a suffix
@@ -24,28 +24,32 @@ all training transcripts.  The file is required for have 'exon'
 in the feature column, where transcript coordinates will be
 derived.}
 
-\item{tmpdir}{A string of a temporary directory to save four files:
+\item{tmpdir}{Name of a temporary directory to save four files:
 \itemize{
     \item 'rf.rda' for an R random forest classifier
     \item 'roc_pr.pdf' plots ROC and precision-recall curves
           from cross validation
     \item 'cv.tsv' saved the prediction results on training
           transcript from cross validation.
+    \item 'pred.tsv' saved the prediction results testing transcripts
 }
-File with the same name in this folder will be overwritten.}
+File with the same name in this folder will be overwritten.
+Default: NULL}
 
-\item{expr_min_tpm}{Minimium TPM for a transcript to be defined as
+\item{expr_min_tpm}{A numeric value of minimium TPM for a transcript to be defined as
 expressed.  An 'expressed' or 'unexpressed'
 transcript must have TPM >= or < this cutoff in all
 supplied RSEM quantification files (ftpms),
 respectively.  Otherwise, a transcript's expression
 status will be defined as 'indeterminate'.  Transcripts with
 'indeterminate' expression status will be omitted from the
-training and output files.  Default: 1.}
+training and output files.
+Default: 1}
 
-\item{cv_n_folds}{Number of folds for cross validation.  'Expressed' and
+\item{cv_n_folds}{An integer of folds for cross validation. 'Expressed' and
 'unexpressed' training transcripts will be stratified
-for calculating AUC.  Default: 10.}
+for calculating AUC.
+Default: 10}
 
 \item{nthreads}{An integer defining the number of threads to-be-used.
 Default: 1}
