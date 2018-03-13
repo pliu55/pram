@@ -137,12 +137,12 @@ trainModelClassifier <- function(fbeds, ftpms, fgtf, tmpdir=NULL,
 
     beddt = processBEDs(fbeds, nthreads, chipseqmaxndupaln(prm))
 
-    tpmdt = processTPMs(ftpms, nthreads, expr_min_tpm)
-
     gtf = new('GTF')
     gtf = initFromGTFFile(gtf, fgtf, infokeys = c('transcript_id'))
 
     trdt = getTrGRanges(gtf)
+
+    tpmdt = processTPMs(ftpms, nthreads, expr_min_tpm, trdt$trid)
 
     locgrs = defUpDownStream(trdt, tsstesextwidth(prm))
 
@@ -378,12 +378,13 @@ getTrGRanges <- function(gtf) {
 }
 
 
-processTPMs <- function(ftpms, nthr, expr_min_tpm) {
+processTPMs <- function(ftpms, nthr, expr_min_tpm, trids) {
     tpmdt = data.table()
     if ( nthr == 1 ) {
-        tpmdt = rbindlist(lapply(ftpms, readTPM, expr_min_tpm))
+        tpmdt = rbindlist(lapply(ftpms, readTPM, expr_min_tpm, trids))
     } else if ( nthr > 1 ) {
-        tpmdt = rbindlist(mclapply(ftpms, readTPM, expr_min_tpm))
+        tpmdt = rbindlist(mclapply(ftpms, readTPM, expr_min_tpm, trids,
+                                   mc.cores=nthr))
     }
 
     nexprdt = tpmdt[, list(nexpr = sum(is_expr)), by=trid]
@@ -402,15 +403,24 @@ processTPMs <- function(ftpms, nthr, expr_min_tpm) {
 
 #' @importFrom  tools  file_path_sans_ext
 #'
-readTPM <- function(ftpm, expr_min_tpm) {
+readTPM <- function(ftpm, expr_min_tpm, trids) {
     rnaseqid = file_path_sans_ext(basename(ftpm))
     tpmdt = fread(ftpm, header=T, sep="\t", select=c('transcript_id', 'TPM'),
                   showProgress=F)
     setnames(tpmdt, c('trid', 'tpm'))
-    tpmdt[, `:=`( rnaseqid = rnaseqid,
+
+    non_trids = setdiff(trids, tpmdt$trid)
+    if ( length(non_trids) > 0 ) {
+        msg = paste0('The following training transcript_id not found in ',
+                     ftpm, "\n", paste0(non_trids, collapse=','), "\n")
+        warnings(msg)
+    }
+
+    outdt = tpmdt[ trid %in% trids ]
+    outdt[, `:=`( rnaseqid = rnaseqid,
                   is_expr  = ifelse(tpm >= expr_min_tpm, 1, 0) )]
 
-    return(tpmdt)
+    return(outdt)
 }
 
 
