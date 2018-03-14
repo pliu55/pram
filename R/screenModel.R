@@ -429,7 +429,7 @@ processBEDs <- function(fbeds, nthr, max_n_aln) {
     if ( nthr == 1 ) {
         beddt = rbindlist(lapply(fbeds, readCapBed, max_n_aln))
     } else if ( nthr > 1 ) {
-        beddt = rbindlist(mclapply(fbeds, readCapBed, man_n_aln))
+        beddt = rbindlist(mclapply(fbeds, readCapBed, max_n_aln, mc.cores=nthr))
     }
 
     return(beddt)
