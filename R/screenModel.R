@@ -57,7 +57,8 @@
 #'                     Default: 10
 #'
 #' @param  nthreads  An integer defining the number of threads to-be-used.
-#'                   Default: 1
+#'                   An ideal number would be equal to the maximum one of
+#'                   cv_n_folds and number of input BED files. Default: 1
 #'
 #' @return  NULL
 #'
@@ -174,6 +175,7 @@ trainModelClassifier <- function(fbeds, ftpms, fgtf, tmpdir=NULL,
 
 
 #' @importFrom  caret  createFolds
+#' @importFrom  parallel mclapply
 #'
 trainRF <- function(rpkmdt, tpmdt, nfolds, nthr, fout_rf, fout_cv, fpdf_rocpr,
                     random_seed) {
@@ -286,6 +288,8 @@ trainByRF <- function(traindt, feature_names, resp_name) {
 }
 
 
+#' @importFrom  parallel  mclapply
+#'
 calRPKM <- function(beddt, locgrs, nthr) {
     chipseqids = unique(beddt$chipseqid)
     rpkmdt = data.table()
@@ -378,6 +382,8 @@ getTrGRanges <- function(gtf) {
 }
 
 
+#' @importFrom  parallel  mclapply
+#'
 processTPMs <- function(ftpms, nthr, expr_min_tpm, trids) {
     tpmdt = data.table()
     if ( nthr == 1 ) {
@@ -424,6 +430,8 @@ readTPM <- function(ftpm, expr_min_tpm, trids) {
 }
 
 
+#' @importFrom  parallel  mclapply
+#'
 processBEDs <- function(fbeds, nthr, max_n_aln) {
     beddt = data.table()
     if ( nthr == 1 ) {
