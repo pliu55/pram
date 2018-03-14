@@ -52,7 +52,8 @@ for calculating AUC.
 Default: 10}
 
 \item{nthreads}{An integer defining the number of threads to-be-used.
-Default: 1}
+An ideal number would be equal to the maximum one of
+cv_n_folds and number of input BED files. Default: 1}
 }
 \value{
 A list contains:
