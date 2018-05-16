@@ -3,7 +3,7 @@ title: "Pooling RNA-seq and Assembling Models"
 author: "Peng Liu, Colin N. Dewey, and Sündüz Keleş"
 date: "`r Sys.Date()`"
 output: 
-    rmarkdown::html_vignette:
+    rmarkdown::html_document:
         toc: true
 vignette: >
   %\VignetteIndexEntry{Pooling RNA-seq and Assembling Models}
@@ -20,11 +20,10 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-```r
-knitr::include_graphics("mainPRAMWorkflow.pdf")
+```{r, out.width='579px', out.height='324px', echo=F}
+knitr::include_graphics("mainPRAMWorkflow.jpg")
 ```
 
-![alt](mainPRAMWorkflow.pdf)
 
 ## Define intergenic genomic regions
 
