@@ -20,6 +20,10 @@ knitr::opts_chunk$set(
 
 ## Overview
 
+```r
+knitr::include_graphics("mainPRAMWorkflow.pdf")
+```
+
 ![alt](mainPRAMWorkflow.pdf)
 
 ## Define intergenic genomic regions
