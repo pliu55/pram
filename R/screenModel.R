@@ -4,8 +4,8 @@
 #' @param  fbeds
 #'         A vector of BED file names for histone marks and/or RNA Pol II
 #'         ChIP-seq alignments.  Each BED file is required to have at least
-#'         four columns describing chromosome names, starting and
-#'         ending positions, and strand. Do not include header in BED files.
+#'         three columns describing chromosome names, starting and
+#'         ending positions. Do not include header in BED files.
 #'
 #' @param  ftpms  A vector of RSEM quantification result file names at the
 #'                isoform level.  It is required to have two columns named
