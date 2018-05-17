@@ -3,8 +3,9 @@ title: "Pooling RNA-seq and Assembling Models"
 author: "Peng Liu, Colin N. Dewey, and Sündüz Keleş"
 date: "`r Sys.Date()`"
 output: 
-    rmarkdown::html_document:
+    rmarkdown::html_vignette:
         toc: true
+        fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{Pooling RNA-seq and Assembling Models}
   %\VignetteEngine{knitr::rmarkdown}
@@ -18,16 +19,70 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Overview
 
-```{r, out.width='579px', out.height='324px', echo=F}
+## Introduction
+
+Pooling RNA-seq and Assembling Models (__PRAM__) utilizes multiple RNA-seq 
+datasets to predict transcript models.  The workflow of PRAM contains five 
+steps, which is shown in 
+the figure below with function names and associated key parameters.  In later
+sections of this vignette, we will describe each function in details.
+
+```{r, fig.cap='PRAM workflow', out.width='579px', out.height='324px', echo=F}
 knitr::include_graphics("mainPRAMWorkflow.jpg")
 ```
 
+## Installation
 
-## Define intergenic genomic regions
+```
+devtools::install_github('https://github.com/pliu55/pram')
+```
 
-## Prepare input RNA-seq alignments
+## Quick start
+
+### Predict transcript models only
+```
+pram(in_gtf, in_bamv, out_gtf)
+```
+
+#### Input
+- `in_gtf`:  A GTF file defining existing gene ranges. Required to have
+             `gene_id` in the attribute column (column 9).
+- `in_bamv`:  A vector of BAM file(s) of RNA-seq alignments
+
+#### Output
+- `out_gtf`:  A GTF file of predicted transcript models
+
+
+### Predict transcript models and screen them by ChIP-seq data
+```
+pram(in_gtf, in_bamv, out_gtf, in_bedv, training_gtf, training_tpms)
+```
+
+#### Input
+- `in_gtf` and `in_bamv` are the same as [above](#predict-transcript-models-only)
+- `in_bedv`:  A vector of BED file(s) of ChIP-seq alignments.
+- `training_gtf`:  A GTF file defining training transcript's exons.
+- `training_tpms`:  A 
+
+#### Output
+- `out_gtf` is the same as [above](#predict-transcript-models-only)
+
+## Define intergenic genomic ranges: `defIgRanges()`
+
+### Input and key parameters
+
+### Example
+
+## Prepare input RNA-seq alignments: `prepIgBam()`
+
+## Build transcript models: `buildModel()`
+PRAM's `buildModel()` function relies on two 
+- Linux or Mac OS X
+
+## Select transcript models: `selModel()`
+
+## Screen transcript models: `screenModel()`
 
 Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
 
