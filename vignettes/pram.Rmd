@@ -42,31 +42,31 @@ devtools::install_github('https://github.com/pliu55/pram')
 
 ### Predict transcript models only
 ```
-pram(in_gtf, in_bamv, out_gtf)
+runPRAM(in_gtf, in_bamv, out_gtf, cufflinks)
 ```
 
-#### Input
-- `in_gtf`:  A GTF file defining existing gene ranges. Required to have
-             `gene_id` in the attribute column (column 9).
-- `in_bamv`:  A vector of BAM file(s) of RNA-seq alignments
-
-#### Output
-- `out_gtf`:  A GTF file of predicted transcript models
+- `in_gtf`:  An input GTF file defining genomic coordinates of existing genes.  
+             Required to have `gene_id` in the attribute column (column 9).
+- `in_bamv`:  A vector of input BAM file(s) of RNA-seq alignments
+- `out_gtf`:  An output GTF file of predicted transcript models
+- `cufflinks`: Cufflinks executable, which can be downloaded for 
+  [Linux](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz) 
+  or [MacOS](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.OSX_x86_64.tar.gz)
 
 
 ### Predict transcript models and screen them by ChIP-seq data
 ```
-pram(in_gtf, in_bamv, out_gtf, in_bedv, training_gtf, training_tpms)
+runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_gtf, training_tpms, cufflinks)
 ```
 
-#### Input
-- `in_gtf` and `in_bamv` are the same as [above](#predict-transcript-models-only)
+- `in_gtf`, `in_bamv`, `out_gtf`, and `cufflinks` are the same as described
+   [above](#predict-transcript-models-only)
 - `in_bedv`:  A vector of BED file(s) of ChIP-seq alignments.
-- `training_gtf`:  A GTF file defining training transcript's exons.
-- `training_tpms`:  A 
+- `training_gtf`:  A GTF file defining genomic coordinates of training 
+                   transcripts 
+- `training_tpms`:  A vector of RSEM quantification results for training
+                    transcripts
 
-#### Output
-- `out_gtf` is the same as [above](#predict-transcript-models-only)
 
 ## Define intergenic genomic ranges: `defIgRanges()`
 
