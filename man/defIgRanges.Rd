@@ -4,12 +4,14 @@
 \alias{defIgRanges}
 \title{Define intergenic genomic regions}
 \usage{
-defIgRanges(fgtf, genome = NULL, fchromsize = NULL, radius = 10000,
+defIgRanges(in_gtf, genome = NULL, fchromsize = NULL, radius = 10000,
   feat = "exon", chroms = NULL)
 }
 \arguments{
-\item{fgtf}{Name of the GTF file to define genic regions. Required to have
-gene_id in the attribute column (column 9).}
+\item{in_gtf}{An input GTF file for defining genomic coordinates of
+existing
+genes.  Required to have `gene_id` in the attribute column
+(column 9)}
 
 \item{genome}{Version of the genome. Currently supported ones are:
 \itemize{

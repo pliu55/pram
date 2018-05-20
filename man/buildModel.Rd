@@ -4,17 +4,17 @@
 \alias{buildModel}
 \title{Build transcript models from aligned RNA-seq data}
 \usage{
-buildModel(finbamv, foutgtf, mode = "plcf", nthreads = 1, tmpdir = NULL,
+buildModel(in_bamv, out_gtf, mode = "plcf", nthreads = 1, tmpdir = NULL,
   cufflinks = "", stringtie = "", taco = "", cufflinks_ref_fa = "")
 }
 \arguments{
-\item{finbamv}{A character vector of input BAM file(s). If mode 'cf'
+\item{in_bamv}{A character vector of input BAM file(s). If mode 'cf'
 or 'st' is used, only one input RNA-seq BAM file is allowed.
 Currently, PRAM only supports strand-specific paired-end data
 with the first mate on the right-most of transcript
 coordinate, i.e., 'fr-firststrand' by Cufflinks's definition.}
 
-\item{foutgtf}{A character string defining the full name of output GTF file}
+\item{out_gtf}{An output GTF file of predicted transcript models}
 
 \item{mode}{A character string defining PRAM's model building mode.
 Current available modes are:
@@ -36,11 +36,14 @@ Default: 1}
 saving temporary files. If not tmpdir is give, PRAM will
 use R's tempdir().}
 
-\item{cufflinks}{Cufflinks executable file.  Required by mode 'plcf',
+\item{cufflinks}{Cufflinks executable.  Required by mode 'plcf',
 'cfmg', and 'cf'.  For mode 'cfmg', executable files of
 Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
 suite are assumed to be under the same folder as
 Cufflinks.
+All the executables are available to download for
+Linux \url{http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz}
+and MacOS \url{http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.OSX_x86_64.tar.gz}
 Default: ''}
 
 \item{stringtie}{StringTie executable file.  Required by mode

@@ -27,6 +27,7 @@ Collate:
     'defIgRanges.R'
     'evalModel.R'
     'prepIgBam.R'
+    'runPRAM.R'
     'screenModel.R'
     'selModel.R'
     'util.R'

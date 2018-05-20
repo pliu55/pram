@@ -1,7 +1,9 @@
 #' Define intergenic genomic regions
 #'
-#' @param  fgtf  Name of the GTF file to define genic regions. Required to have
-#'               gene_id in the attribute column (column 9).
+#' @param  in_gtf  An input GTF file for defining genomic coordinates of
+#'                 existing
+#'                 genes.  Required to have `gene_id` in the attribute column
+#'                 (column 9)
 #'
 #' @param  genome  Version of the genome. Currently supported ones are:
 #'                 \itemize{
@@ -44,8 +46,9 @@
 #'
 #' @export
 #'
-defIgRanges <- function(fgtf, genome=NULL, fchromsize=NULL, radius=1e+4,
+defIgRanges <- function(in_gtf, genome=NULL, fchromsize=NULL, radius=1e+4,
                         feat='exon', chroms=NULL){
+    fgtf = in_gtf
     chromgrs = getChromGRanges(genome, fchromsize, chroms)
 
     gtf = new('GTF')
