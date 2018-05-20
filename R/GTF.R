@@ -70,6 +70,7 @@ setMethod(
 #  @param infokeys a vector of characters to define to-be-extracted entries in GTF file's column 9
 #
 #' @importFrom data.table  data.table fread setnames
+#' @importFrom rtracklayer readGFF
 #'
 setMethod(
     'initFromGTFFile',
@@ -84,32 +85,40 @@ setMethod(
         ecl = list(...)
         obj@origin = ifelse(is.null(ecl$origin), 'UNKNOWN', ecl$origin)
 
-        lines = readLines(fgtf)
-        nskip = 0
-        for ( line in lines ) {
-            if ( ! grepl('^#', line, perl=T) ) break
-            nskip = nskip + 1
+        gtf_cols=c('seqid', 'type', 'start', 'end', 'strand')
+        if ( length(infokeys) > 0 ) {
+            dt = data.table(readGFF(fgtf, columns=gtf_cols, tags=infokeys))
+        } else {
+            dt = data.table(readGFF(fgtf, columns=gtf_cols))
         }
+        setnames(dt, c('seqid', 'type'), c('chrom', 'feature'))
 
-        dt = data.table()
-        if ( (length(lines) > 0) & (nskip < length(lines)) ) {
-            dt = fread(fgtf, header=F, sep="\t", showProgress=F, skip=nskip,
-                       colClasses=c('character', 'NULL', 'character',
-                                    rep('integer', 2), 'NULL', 'character',
-                                    'NULL', 'character'))
-            setnames(dt, 1:6,
-                     c('chrom', 'feature', 'start', 'end', 'strand', 'info'))
+       #lines = readLines(fgtf)
+       #nskip = 0
+       #for ( line in lines ) {
+       #    if ( ! grepl('^#', line, perl=T) ) break
+       #    nskip = nskip + 1
+       #}
 
-            if ( length(infokeys) > 0 ) {
-                for ( infokey in infokeys ) {
-                    dt[, eval(infokey) :=
-                        gsub(paste0('.*', infokey, ' ([^;]+);.*'),
-                             '\\1', info, perl=T) ]
-                    dt[, eval(infokey) := gsub('"', '', get(infokey), fixed=T)]
-                }
-            }
-            dt[, info := NULL ]
-        }
+       #dt = data.table()
+       #if ( (length(lines) > 0) & (nskip < length(lines)) ) {
+       #    dt = fread(fgtf, header=F, sep="\t", showProgress=F, skip=nskip,
+       #               colClasses=c('character', 'NULL', 'character',
+       #                            rep('integer', 2), 'NULL', 'character',
+       #                            'NULL', 'character'))
+       #    setnames(dt, 1:6,
+       #             c('chrom', 'feature', 'start', 'end', 'strand', 'info'))
+
+       #    if ( length(infokeys) > 0 ) {
+       #        for ( infokey in infokeys ) {
+       #            dt[, eval(infokey) :=
+       #                gsub(paste0('.*', infokey, ' ([^;]+);.*'),
+       #                     '\\1', info, perl=T) ]
+       #            dt[, eval(infokey) := gsub('"', '', get(infokey), fixed=T)]
+       #        }
+       #    }
+       #    dt[, info := NULL ]
+       #}
 
         obj@grangedt = dt
 
