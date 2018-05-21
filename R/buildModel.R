@@ -8,8 +8,8 @@
 #'
 #' @param  out_gtf  An output GTF file of predicted transcript models
 #'
-#' @param  mode  A character string defining PRAM's model building mode.
-#'               Current available modes are:
+#' @param  method  A character string defining PRAM's model building method.
+#'               Current available methods are:
 #'               \itemize{
 #'                   \item plcf: pooling   + cufflinks
 #'                   \item plst: pooling   + stringtie
@@ -55,11 +55,12 @@
 #'
 #' @export
 #'
-buildModel <- function(in_bamv, out_gtf, mode='plcf', nthreads=1, tmpdir=NULL,
+buildModel <- function(in_bamv, out_gtf, method='plcf', nthreads=1, tmpdir=NULL,
                        cufflinks='', stringtie='', taco='',
                        cufflinks_ref_fa='') {
     finbamv = in_bamv
     foutgtf = out_gtf
+    mode    = method
 
     prm = new('Param')
     fuserbams(prm) = finbamv

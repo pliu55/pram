@@ -82,7 +82,7 @@ testFilterBamByChromOri <- function(chrom, strand, outdir, prm) {
 testBuildByCFTC <- function(fbams, outdir, nthr, cufflinks, taco, fgnmfa) {
     foutgtf = paste0(outdir, 'build_cftc.gtf')
     if ( file.exists(foutgtf) ) file.remove(foutgtf)
-    buildModel(fbams, foutgtf, mode='cftc', nthreads=nthr,
+    buildModel(fbams, foutgtf, method='cftc', nthreads=nthr,
                cufflinks=cufflinks, taco=taco, cufflinks_ref_fa=fgnmfa)
     test_that(paste0('buildModel::testBuildByCFTC: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
@@ -92,7 +92,7 @@ testBuildByCFTC <- function(fbams, outdir, nthr, cufflinks, taco, fgnmfa) {
 testBuildBySTMG <- function(fbams, outdir, nthr, stringtie) {
     foutgtf = paste0(outdir, 'build_stmg.gtf')
     if ( file.exists(foutgtf) ) file.remove(foutgtf)
-    buildModel(fbams, foutgtf, mode='stmg', nthreads=nthr, stringtie=stringtie)
+    buildModel(fbams, foutgtf, method='stmg', nthreads=nthr, stringtie=stringtie)
     test_that(paste0('buildModel::testBuildBySTMG: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }
@@ -101,7 +101,7 @@ testBuildBySTMG <- function(fbams, outdir, nthr, stringtie) {
 testBuildByCFMG <- function(fbams, outdir, nthr, cufflinks, fgnmfa) {
     foutgtf = paste0(outdir, 'build_cfmg.gtf')
     if ( file.exists(foutgtf) ) file.remove(foutgtf)
-    buildModel(fbams, foutgtf, mode='cfmg', nthreads=nthr, cufflinks=cufflinks,
+    buildModel(fbams, foutgtf, method='cfmg', nthreads=nthr, cufflinks=cufflinks,
                cufflinks_ref_fa=fgnmfa)
     test_that(paste0('buildModel::testBuildByCFMG: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
@@ -110,7 +110,7 @@ testBuildByCFMG <- function(fbams, outdir, nthr, cufflinks, fgnmfa) {
 
 testBuildByCF <- function(fbam, foutgtf, nthr, cufflinks) {
     if ( file.exists(foutgtf) ) file.remove(foutgtf)
-    buildModel(fbam, foutgtf, mode='cf', nthreads=nthr, cufflinks=cufflinks)
+    buildModel(fbam, foutgtf, method='cf', nthreads=nthr, cufflinks=cufflinks)
     test_that(paste0('buildModel::testBuildByCF: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }
@@ -118,7 +118,7 @@ testBuildByCF <- function(fbam, foutgtf, nthr, cufflinks) {
 
 testBuildByST <- function(fbam, foutgtf, nthr, stringtie) {
     if ( file.exists(foutgtf) ) file.remove(foutgtf)
-    buildModel(fbam, foutgtf, mode='st', nthreads=nthr, stringtie=stringtie)
+    buildModel(fbam, foutgtf, method='st', nthreads=nthr, stringtie=stringtie)
     test_that(paste0('buildModel::testBuildByST: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }
@@ -127,7 +127,7 @@ testBuildByST <- function(fbam, foutgtf, nthr, stringtie) {
 testBuildByPLCF <- function(fbams, outdir, nthr, cufflinks, fgnmfa) {
     foutgtf = paste0(outdir, 'build_plcf.gtf')
     if ( file.exists(foutgtf) ) file.remove(foutgtf)
-    buildModel(fbams, foutgtf, mode='plcf', nthreads=nthr, cufflinks=cufflinks,
+    buildModel(fbams, foutgtf, method='plcf', nthreads=nthr, cufflinks=cufflinks,
                cufflinks_ref_fa=fgnmfa)
     test_that(paste0('buildModel::testBuildByPLCF: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
@@ -137,7 +137,7 @@ testBuildByPLCF <- function(fbams, outdir, nthr, cufflinks, fgnmfa) {
 testBuildByPLST <- function(fbams, outdir, nthr, stringtie) {
     foutgtf = paste0(outdir, 'build_plst.gtf')
     if ( file.exists(foutgtf) ) file.remove(foutgtf)
-    buildModel(fbams, foutgtf, mode='plst', nthreads=nthr, stringtie=stringtie)
+    buildModel(fbams, foutgtf, method='plst', nthreads=nthr, stringtie=stringtie)
     test_that(paste0('buildModel::testBuildByPLST: ', foutgtf),
               expect_true( file.exists(foutgtf) ))
 }
