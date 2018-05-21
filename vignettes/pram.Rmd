@@ -42,16 +42,13 @@ devtools::install_github('https://github.com/pliu55/pram')
 
 ### Predict transcript models only
 ```
-runPRAM(in_gtf, in_bamv, out_gtf, cufflinks)
+runPRAM(in_gtf, in_bamv, out_gtf)
 ```
 
-- `in_gtf`:  An input GTF file defining genomic coordinates of existing genes.  
+- `in_gtf`:  An input GTF file defining genomic coordinates of existing genes. 
              Required to have `gene_id` in the attribute column (column 9).
 - `in_bamv`:  A vector of input BAM file(s) of RNA-seq alignments
 - `out_gtf`:  An output GTF file of predicted transcript models
-- `cufflinks`: Cufflinks executable, which can be downloaded for 
-  [Linux](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz) 
-  or [MacOS](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.OSX_x86_64.tar.gz)
 
 
 ### Predict transcript models and screen them by ChIP-seq data
@@ -68,17 +65,47 @@ runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_gtf, training_tpms, cufflink
                     transcripts
 
 
-## Define intergenic genomic ranges: `defIgRanges()`
 
-### Input and key parameters
+## Define intergenic genomic ranges: `defIgRanges()`
 
 ### Example
 
 ## Prepare input RNA-seq alignments: `prepIgBam()`
 
 ## Build transcript models: `buildModel()`
-PRAM's `buildModel()` function relies on two 
-- Linux or Mac OS X
+
+### Example
+
+### Prediction methods
+PRAM has implemented seven transcript reconstruction methods.  Five methods, 
+__plcf__, __plst__, __cfmg__, __cftc__, and __stmg__, are meta-assembly methods 
+that utilize multiple RNA-seq datasets to predict a single set of 
+transcript models.  The other two methods, __cf__ and __st__, predicts
+transcript models from a single RNA-seq dataset.  The table below compares
+the prediction steps for these seven methods.  By default, `buildModel()` uses
+__plcf__ to predict transcript models.  Users can use the `method` argument in
+`buildModel()` to specifiy their preferred prediction method.
+
+Table: Prediction steps of PRAM's seven methods
+
+| method | preparing RNA-seq input  | building transcripts | assembling transcripts |
+|:------:|:------------------------:|:---------------:|:-----------------:|
+| plcf   | pooling alignments       | Cufflinks       | no                |
+| plst   | pooling alignments       | StringTie       | no                |
+| cfmg   | no                       | Cufflinks       | Cuffmerge         |
+| cftc   | no                       | Cufflinks       | TACO              |
+| stmg   | no                       | StringTie       | StringTie-merge   |
+| cf     | no                       | Cufflinks       | no                |
+| st     | no                       | StringTie       | no                |
+
+
+### Required external software
+Depending on the ternal software to reconstruct transcript models. 
+
+- `cufflinks`: Cufflinks executable, which can be downloaded for 
+  [Linux](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz) 
+  or [MacOS](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.OSX_x86_64.tar.gz)
+
 
 ## Select transcript models: `selModel()`
 
