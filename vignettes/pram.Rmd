@@ -34,7 +34,13 @@ knitr::include_graphics("mainPRAMWorkflow.jpg")
 
 ## Installation
 
-Use the following command on __Linux__ or __MacOS__
+Use the following command on __Linux__ 
+
+<!--
+Cufflinks MacOS binary seems to have some issues
+it will report segmentation fault for the same bam file, which Linux Cufflinks
+runs ok
+-->
 
 ```
 devtools::install_github('https://github.com/pliu55/pram')
@@ -101,7 +107,7 @@ Table: Prediction steps of PRAM's seven methods
 | __st__     | no                       | StringTie       | no                |
 
 
-### Required software
+### Required external software
 Depending on the prediction method, `buildModel()` requires external software, 
 Cufflinks, StringTie and/or TACO, to build and/or assemble transcript 
 models.  You can either specify the software location using the `cufflinks`, 
@@ -111,11 +117,11 @@ automatically. The table below summarized software versions PRAM would download.
 
 Table: `buildModel()`-required software
 
-| source code | Linux binary | MacOS binary | required by  |
-|:-----------:|:------------:|:------------:|:------------:|
-| [Cufflinks and Cuffmerge](https://github.com/cole-trapnell-lab/cufflinks)        | [v2.2.1](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz) | [v2.2.1](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.OSX_x86_64.tar.gz) | __plcf__, __cfmg__, __cftc__, and __cf__ |
-| [StringTie and StringTie-merge](https://github.com/gpertea/stringtie) | [v1.3.3b](http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.Linux_x86_64.tar.gz) | [v1.3.3b](http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.OSX_x86_64.tar.gz) | __plst__, __stmg__, and __st__ |
-| [TACO](https://github.com/tacorna/taco) | [v0.7.0](https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz)  | [v0.7.0](https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz) | __cftc__ |
+| source code | Linux binary | required by  |
+|:-----------:|:------------:|:------------:|
+| [Cufflinks and Cuffmerge](https://github.com/cole-trapnell-lab/cufflinks)        | [v2.2.1](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz)  | __plcf__, __cfmg__, __cftc__, and __cf__ |
+| [StringTie and StringTie-merge](https://github.com/gpertea/stringtie) | [v1.3.3b](http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.Linux_x86_64.tar.gz)  | __plst__, __stmg__, and __st__ |
+| [TACO](https://github.com/tacorna/taco) | [v0.7.0](https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz)  | __cftc__ |
 
 
 ## Select transcript models: `selModel()`
