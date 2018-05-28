@@ -72,9 +72,9 @@ buildModel <- function(in_bamv, out_gtf, method='plcf', nthreads=1, tmpdir=NULL,
     taco(prm)      = taco
     cufflinksreffa(prm) = cufflinks_ref_fa
 
-    checkArgs(prm)
-
     tmpdir(prm) = createTmpdir(tmpdir, mode)
+
+    prm = checkArgs(prm)
 
     if ( mode %in% c('plcf', 'plst') ) {
         prm = def1StepManager(prm)
@@ -648,14 +648,14 @@ getTacoArgs <- function(fin_gtfs, outdir, fout_gtf, prm) {
 checkArgs <- function(prm) {
     mode = mode(prm)
     if ( mode %in% c('plcf', 'cf') ) {
-        checkCufflinksBin(prm)
+        prm = checkCufflinksBin(prm)
     } else if ( mode %in% c('plst', 'stmg', 'st') ) {
-        checkStringTieBin(prm)
+        prm = checkStringTieBin(prm)
     } else if ( mode == 'cfmg' ) {
-        checkCuffmergeRequiredBins(prm)
+        prm = checkCuffmergeRequiredBins(prm)
     } else if ( mode == 'cftc' ) {
-        checkTacoBin(prm)
-        checkCufflinksBin(prm)
+        prm = checkTacoBin(prm)
+        prm = checkCufflinksBin(prm)
     } else {
         msg = paste0('mode "', mode, '" is not implemented. Must be one of ',
                      "[plcf, plst, cfmg, stmg, cftc, cf, st]\n")
@@ -673,5 +673,5 @@ checkArgs <- function(prm) {
                      'for mode "', mode, '"\n')
         stop(msg)
     }
-
+    return(prm)
 }

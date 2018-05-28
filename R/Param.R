@@ -20,7 +20,7 @@ Param = setClass('Param',
         NTHREADS  = 'numeric',
         CUFFLINKS_REF_FA = 'character',
 
-        TMP_DIR    = 'character',
+        TMP_DIR = 'character',
 
         MANAGER_DT   = 'data.table',
         CHROM_ORI_DT = 'data.table',
@@ -236,7 +236,17 @@ setMethod('fuserbams',      'Param', function(x) x@FUSERBAMS)
 setMethod('iggrs',          'Param', function(x) x@IGGRS)
 setMethod('mode',           'Param', function(x) x@MODE)
 setMethod('foutgtf',        'Param', function(x) x@FOUTGTF)
-setMethod('tmpdir',         'Param', function(x) x@TMP_DIR)
+
+setMethod('tmpdir',
+'Param',
+function(x) {
+    if( identical(x@TMP_DIR, character(0)) ) {
+        x@TMP_DIR = tempdir()
+    }
+
+    return(x@TMP_DIR)
+})
+
 setMethod('cufflinksreffa', 'Param', function(x) x@CUFFLINKS_REF_FA)
 setMethod('managerdt',      'Param', function(x) x@MANAGER_DT)
 setMethod('chromoridt',     'Param', function(x) x@CHROM_ORI_DT)
@@ -281,12 +291,23 @@ setGeneric('checkCufflinksBin',
 setMethod('checkCufflinksBin', 'Param',
     function(prm) {
         cufflinks_bin = cufflinks(prm)
-        if ( ! file.exists(cufflinks_bin) ) {
+        if ( ! isFileExisted(cufflinks_bin) ) {
             url = os2cufflinks_url(prm)[[getOS()]]
-            msg = paste0('cufflinks not found: ', cufflinks_bin, "\n",
-                         'It can be downloaded at ', url, "\n")
-            stop(msg)
+
+            ## check if bin exists in tmpdir(prm)
+            temp_cufflinks_bin = paste0(tmpdir(prm), '/',
+                                        gsub('.tar.gz', '', basename(url)), '/',
+                                        'cufflinks')
+            if ( ! file.exists(temp_cufflinks_bin) ) {
+                cat('Cufflinks not found: ', cufflinks_bin, "\n",
+                    'Downloading it from ', url, "\n")
+                ex_dir = downloadAndUntar(url, tmpdir(prm))
+                cufflinks(prm) = paste0(ex_dir, '/cufflinks')
+            } else {
+                cufflinks(prm) = temp_cufflinks_bin
+            }
         }
+        return(prm)
     }
 )
 
@@ -296,27 +317,32 @@ setGeneric('checkCuffmergeRequiredBins',
 
 setMethod('checkCuffmergeRequiredBins', 'Param',
     function(prm) {
-        cufflinksdir = paste0(dirname(cufflinks(prm)), '/')
-        cufflinks_bin   = paste0(cufflinksdir, 'cuffmerge')
-        cuffmerge_bin   = paste0(cufflinksdir, 'cuffmerge')
-        cuffcompare_bin = paste0(cufflinksdir, 'cuffcompare')
-        gtftosam_bin    = paste0(cufflinksdir, 'gtf_to_sam')
-        url = os2cufflinks_url(prm)[[getOS()]]
-        urlmsg = paste0('Cufflinks suite can be downloaded at ', url, "\n")
+        prm = checkCufflinksBin(prm)
+        to_dl = F
+        if ( isFileExisted( dirname(cufflinks(prm)) ) ) {
+            cufflinksdir = paste0(dirname(cufflinks(prm)), '/')
+            cuffmerge_bin   = paste0(cufflinksdir, 'cuffmerge')
+            cuffcompare_bin = paste0(cufflinksdir, 'cuffcompare')
+            gtftosam_bin    = paste0(cufflinksdir, 'gtf_to_sam')
 
-        if ( ! file.exists(cufflinks_bin) ) {
-            stop( paste0('cufflinks not found: ', cufflinks_bin, "\n", urlmsg) )
+            if ( ( ! isFileExisted(cuffmerge_bin)   ) |
+                 ( ! isFileExisted(cuffcompare_bin) ) |
+                 ( ! isFileExisted(gtftosam_bin)    ) ) {
+                    to_dl = T
+            }
+        } else {
+            to_dl = T
         }
-        if ( ! file.exists(cuffmerge_bin) ) {
-            stop( paste0('cuffmerge not found: ', cuffmerge_bin, "\n", urlmsg) )
+
+        if ( to_dl ) {
+            url = os2cufflinks_url(prm)[[getOS()]]
+            cat("Not found: Cuffmerge\n",
+                'Downloading it from ', url, "\n")
+            ex_dir = downloadAndUntar(url, tmpdir(prm))
+            cufflinks(prm) = paste0(ex_dir, '/cufflinks')
         }
-        if ( ! file.exists(cuffcompare_bin) ) {
-            stop(paste0('cuffcompare not found: ', cuffcompare_bin, "\n",
-                        urlmsg))
-        }
-        if ( ! file.exists(gtftosam_bin) ) {
-            stop(paste0('gtf_to_sam not found: ', gtftosam_bin, "\n", urlmsg))
-        }
+
+        return(prm)
     }
 )
 
@@ -327,12 +353,22 @@ setGeneric('checkStringTieBin',
 setMethod('checkStringTieBin', 'Param',
     function(prm) {
         stringtie_bin = stringtie(prm)
-        if ( ! file.exists(stringtie_bin) ) {
+        if ( ! isFileExisted(stringtie_bin) ) {
             url = os2stringtie_url(prm)[[getOS()]]
-            msg = paste0('StringTie not found: ', stringtie_bin, "\n",
-                         'It can be downloaded at ', url, "\n")
-            stop(msg)
+            ## check if bin exists in tmpdir(prm)
+            temp_stringtie_bin = paste0(tmpdir(prm), '/',
+                                        gsub('.tar.gz', '', basename(url)), '/',
+                                        'stringtie')
+            if ( ! file.exists(temp_stringtie_bin) ) {
+                cat('StringTie not found: ', stringtie_bin, "\n",
+                    'Downloading it from ', url, "\n")
+                ex_dir = downloadAndUntar(url, tmpdir(prm))
+                stringtie(prm) = paste0(ex_dir, '/stringtie')
+            } else {
+                stringtie(prm) = temp_stringtie_bin
+            }
         }
+        return(prm)
     }
 )
 
@@ -343,11 +379,21 @@ setGeneric('checkTacoBin',
 setMethod('checkTacoBin', 'Param',
     function(prm) {
         taco_bin = taco(prm)
-        if ( ! file.exists(taco_bin) ) {
+        if ( ! isFileExisted(taco_bin) ) {
             url = os2taco_url(prm)[[getOS()]]
-            msg = paste0('TACO not found: ', taco_bin, "\n",
-                         'It can be downloaded at ', url, "\n")
-            stop(msg)
+            ## check if bin exists in tmpdir(prm)
+            temp_taco_bin = paste0(tmpdir(prm), '/',
+                                   gsub('.tar.gz', '', basename(url)), '/',
+                                   'taco_run')
+            if ( ! file.exists(temp_taco_bin) ) {
+                cat('TACO not found: ', taco_bin, "\n",
+                    'Downloading it from ', url, "\n")
+                ex_dir = downloadAndUntar(url, tmpdir(prm))
+                taco(prm) = paste0(ex_dir, '/taco_run')
+            } else {
+                taco(prm) = temp_taco_bin
+            }
         }
+        return(prm)
     }
 )
