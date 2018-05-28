@@ -2,7 +2,7 @@ Package: pram
 Title: Pooling RNA-seq for Assembling Models
 Version: 0.0.0.9000
 Authors@R: person("Peng", "Liu", email = "pliu55@wisc.edu", role = c("aut", "cre"))
-Description: Pooling aligned RNA-seq fragments to asemble transcript models.
+Description: Pooling aligned RNA-seq fragments to assemble transcript models.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
@@ -15,7 +15,8 @@ Imports: methods,
          caret        (>= 6.0.77),
          randomForest (>= 4.6.12)
 RoxygenNote: 6.0.1
-Suggests: testthat,
+Suggests: 
+    testthat,
     knitr,
     rmarkdown
 Collate:
