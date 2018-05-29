@@ -81,6 +81,7 @@ Param = setClass('Param',
 
         NTHREADS = 1,
 
+        TMP_DIR = tempdir(),
 
         ### for model building
         CUFFLINKS_LIB_TYPE = 'fr-firststrand', ## paired-end, ENCODE RNA-seq
@@ -236,17 +237,7 @@ setMethod('fuserbams',      'Param', function(x) x@FUSERBAMS)
 setMethod('iggrs',          'Param', function(x) x@IGGRS)
 setMethod('mode',           'Param', function(x) x@MODE)
 setMethod('foutgtf',        'Param', function(x) x@FOUTGTF)
-
-setMethod('tmpdir',
-'Param',
-function(x) {
-    if( identical(x@TMP_DIR, character(0)) ) {
-        x@TMP_DIR = tempdir()
-    }
-
-    return(x@TMP_DIR)
-})
-
+setMethod('tmpdir',         'Param', function(x) x@TMP_DIR)
 setMethod('cufflinksreffa', 'Param', function(x) x@CUFFLINKS_REF_FA)
 setMethod('managerdt',      'Param', function(x) x@MANAGER_DT)
 setMethod('chromoridt',     'Param', function(x) x@CHROM_ORI_DT)
