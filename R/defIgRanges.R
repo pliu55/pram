@@ -5,7 +5,10 @@
 #'                 genes.  Required to have `gene_id` in the attribute column
 #'                 (column 9)
 #'
-#' @param  genome  Version of the genome. Currently supported ones are:
+#' @param chromgrs  A GRanges object defining chromosome sizes.
+#'
+#' @param  genome  Version of the genome. Will be used when `chromgrs` is
+#'                 missing. Currently supported ones are:
 #'                 \itemize{
 #'                     \item hg19
 #'                     \item hg38
@@ -16,8 +19,9 @@
 #'                 including random and alt ones.
 #'                 Default: NULL
 #'
-#' @param  fchromsize  Name of a file defining chromosome sizes as a supplement
-#'                     to unsupported genomes. Often, it can be downloaded from
+#' @param  fchromsize  Name of a file defining chromosome sizes. Will be used
+#'                     when `chromgrs` and `genome` are missing.
+#'                     It can be downloaded from
 #'                     UCSC, e.g. for hg19, http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/chromInfo.txt.gz
 #'                     Required to have at least two tab-delimited columns
 #'                     without any header:
@@ -46,10 +50,12 @@
 #'
 #' @export
 #'
-defIgRanges <- function(in_gtf, genome=NULL, fchromsize=NULL, radius=1e+4,
-                        feat='exon', chroms=NULL){
+defIgRanges <- function(in_gtf, chromgrs, genome=NULL, fchromsize=NULL,
+                        radius=1e+4, feat='exon', chroms=NULL){
     fgtf = in_gtf
-    chromgrs = getChromGRanges(genome, fchromsize, chroms)
+    if ( missing(chromgrs) ) {
+        chromgrs = getChromGRanges(genome, fchromsize, chroms)
+    }
 
     gtf = new('GTF')
     gtf = initFromGTFFile(gtf, fgtf, infokeys=c('gene_id'))
