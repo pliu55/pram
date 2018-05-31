@@ -50,7 +50,7 @@ devtools::install_github('https://github.com/pliu55/pram')
 
 ### Predict transcript models only
 ```
-runPRAM(in_gtf, in_bamv, out_gtf)
+pram::runPRAM(in_gtf, in_bamv, out_gtf)
 ```
 
 - `in_gtf`:  An input GTF file defining genomic coordinates of existing genes. 
@@ -61,16 +61,16 @@ runPRAM(in_gtf, in_bamv, out_gtf)
 
 ### Predict transcript models and screen them by ChIP-seq data
 ```
-runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_gtf, training_tpms)
+runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
 ```
 
 - `in_gtf`, `in_bamv`, `out_gtf`, and `cufflinks` are the same as described
    [above](#predict-transcript-models-only)
 - `in_bedv`:  A vector of BED file(s) of ChIP-seq alignments.
-- `training_gtf`:  A GTF file defining genomic coordinates of training 
-                   transcripts 
 - `training_tpms`:  A vector of RSEM quantification results for training
                     transcripts
+- `training_gtf`:  A GTF file defining genomic coordinates of training 
+                   transcripts 
 
 
 
