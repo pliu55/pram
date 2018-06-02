@@ -9,8 +9,8 @@ main <- function() {
 
 
 testBenchmark <- function() {
-    ftgt = system.file('extdata/benchmark/tgt.tsv', package='pram')
-    tgtdt = fread(ftgt, header=T, sep="\t")
+    ftgt = system.file('extdata/benchmark/tgt.tsv.gz', package='pram')
+    tgtdt = data.table(read.table(ftgt, header=T, sep="\t"))
 
     mode2results = list(
                   ##--- indi jnc ---##--- tr jnc ---##-------- nuc --------##
@@ -87,9 +87,9 @@ testEvalModelByDT <- function(mode, mode2results, mdldtlist, tgtdt) {
 
 
 readModel <- function(mode) {
-    fmdl = system.file(paste0('extdata/benchmark/', mode, '.tsv'),
+    fmdl = system.file(paste0('extdata/benchmark/', mode, '.tsv.gz'),
                        package='pram')
-    mdldt = fread(fmdl, header=T, sep="\t")
+    mdldt = data.table(read.table(fmdl, header=T, sep="\t"))
 
     return(mdldt)
 }
