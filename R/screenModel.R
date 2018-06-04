@@ -454,7 +454,7 @@ processBEDs <- function(fbeds, nthr, max_n_aln) {
 #'
 readCapBed <- function(fbed, max_n_aln) {
     chipseqid = file_path_sans_ext(basename(fbed))
-    beddt = fread(fbed, header=F, sep="\t", showProgress=F)
+    beddt = data.table(read.table(fbed, header=F, sep="\t"))
     setnames(beddt, c('V1', 'V2', 'V3'), c('chrom', 'start', 'end'))
     beddt[, dupi := seq_len(.N), by=list(chrom, start, end)]
 
