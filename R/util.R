@@ -67,7 +67,7 @@ getUniChromOriDt <- function(grs) {
 
 downloadAndUntar <- function(url, dldir) {
     tgz_name = basename(url)
-    ftgz_dest = paste0(dldir, tgz_name)
+    ftgz_dest = paste0(dldir, '/', tgz_name)
     download.file(url, ftgz_dest, quiet=F)
 
     untar(ftgz_dest, exdir=dldir)
