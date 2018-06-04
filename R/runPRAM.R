@@ -1,10 +1,10 @@
 #' Predict intergenic transcript models from RNA-seq and screen them by ChIP-seq
 #'
 #' @inheritParams defIgRanges
-##                to inherit `in_gtf` and `genome`
+##                to inherit `in_gtf`
 #'
 #' @inheritParams buildModel
-##                to inherit `in_bamv`, `out_gtf`, and `cufflinks`
+##                to inherit `in_bamv`, `out_gtf`
 #'
 #' @inheritParams screenModel
 ##                to inherit `in_bedv`, `training_gtf`, and `training_tpms`
@@ -15,38 +15,34 @@
 #'
 #' @export
 #'
-setGeneric( 'runPRAM',
-           function(in_gtf, in_bamv, out_gtf, in_bedv,
-                    training_tpms, training_gtf) standardGeneric('runPRAM'))
-
-setMethod( 'runPRAM',
-c('character', 'vector', 'character', 'vector', 'vector', 'character'),
-function(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf) {
+runPRAM <- function(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms,
+                    training_gtf) {
 
     chromgrs = getMaxChromGRangesFromBams(in_bamv)
 
     iggrs = defIgRanges(in_gtf, chromgrs)
 
-    tmpdir = paste0(tempdir(), '/runPRAM/')
     bamdt = data.table(finbam = in_bamv)
-    bamdt[, foutbam := paste0(tmpdir, file_path_sans_ext(basename(finbam)),
-                              '.ig.bam')]
+    bamdt[, foutbam := tempfile(pattern=file_path_sans_ext(basename(finbam)),
+                                fileext='.ig.bam')]
     apply(bamdt, 1, function(x) prepIgBam(x[['finbam']], iggrs, x[['foutbam']]))
 
-    fgtf_all_mdl = paste0(tmpdir, 'all_mdl.gtf')
-    buildModel(fbamv_ig, fgtf_all_mdl)
+    fgtf_all_mdl = tempfile(pattern='pram_all_mdl.', fileext='.gtf')
+    fgtf_sel_mdl = tempfile(pattern='pram_sel_mdl.', fileext='.gtf')
 
-    selModel(fgtf_all_mdl, out_gtf)
+    buildModel(bamdt$foutbam, fgtf_all_mdl)
 
-    if ( ( ! missing(in_bedv)) & (! missing(training_gtf)) &
-         ( ! missing(training_tpms)) ) {
-        screenModel(in_bedv, training_tpms, training_gtf, out_gtf, out_gtf)
+    selModel(fgtf_all_mdl, fgtf_sel_mdl, min_n_exon=2, min_tr_len=200,
+             info_keys = c('transcript_id'))
+
+    if ( missing(in_bedv) | missing(training_tpms) | missing(training_gtf) ) {
+        file.copy(fgtf_sel_mdl, out_gtf, overwrite=T)
+    } else {
+        screenModel(in_bedv, training_tpms, training_gtf, fgtf_sel_mdl, out_gtf)
     }
-})
+}
 
 
-
-#' @importFrom  Rsamtools      idxstatsBam
 #' @importFrom  GenomicRanges  makeGRangesFromDataFrame
 #'
 setGeneric( 'getMaxChromGRangesFromBams',
@@ -54,11 +50,27 @@ setGeneric( 'getMaxChromGRangesFromBams',
 
 setMethod('getMaxChromGRangesFromBams', 'vector',
 function(fbams) {
-    dt = rbindlist(lapply(fbams,
-                          function(x) data.table(idxstatsBam(x))[, fbam := x]))
+    dt = rbindlist(lapply(fbams, getIdxStatsFromBam))
     maxdt = dt[, list(end = max(seqlength)), by=seqnames]
     maxdt[, start := 1]
     grs = makeGRangesFromDataFrame(maxdt, keep.extra.columns=F)
 
     return(grs)
+})
+
+
+#' @importFrom  Rsamtools   idxstatsBam  indexBam
+#' @importFrom  data.table  data.table
+#'
+setGeneric( 'getIdxStatsFromBam',
+            function(fbam) standardGeneric('getIdxStatsFromBam'))
+
+setMethod('getIdxStatsFromBam', 'character',
+function(fbam) {
+    fbai = paste0(fbam, '.bai')
+    if ( ! file.exists(fbai) ) indexBam(fbam)
+    dt = data.table(idxstatsBam(fbam))
+    dt[, fbam := fbam]
+
+    return(dt)
 })
