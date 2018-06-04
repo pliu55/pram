@@ -285,14 +285,14 @@ setMethod('checkCufflinksBin', 'Param',
         if ( ! isFileExisted(cufflinks_bin) ) {
             url = os2cufflinks_url(prm)[[getOS()]]
 
-            ## check if bin exists in tmpdir(prm)
-            temp_cufflinks_bin = paste0(tmpdir(prm), '/',
+            ## check if bin exists in tempdir()
+            temp_cufflinks_bin = paste0(tempdir(), '/',
                                         gsub('.tar.gz', '', basename(url)), '/',
                                         'cufflinks')
             if ( ! file.exists(temp_cufflinks_bin) ) {
                 cat('Cufflinks not found: ', cufflinks_bin, "\n",
                     'Downloading it from ', url, "\n")
-                ex_dir = downloadAndUntar(url, tmpdir(prm))
+                ex_dir = downloadAndUntar(url, tempdir())
                 cufflinks(prm) = paste0(ex_dir, '/cufflinks')
             } else {
                 cufflinks(prm) = temp_cufflinks_bin
@@ -329,7 +329,7 @@ setMethod('checkCuffmergeRequiredBins', 'Param',
             url = os2cufflinks_url(prm)[[getOS()]]
             cat("Not found: Cuffmerge\n",
                 'Downloading it from ', url, "\n")
-            ex_dir = downloadAndUntar(url, tmpdir(prm))
+            ex_dir = downloadAndUntar(url, tempdir())
             cufflinks(prm) = paste0(ex_dir, '/cufflinks')
         }
 
@@ -346,14 +346,14 @@ setMethod('checkStringTieBin', 'Param',
         stringtie_bin = stringtie(prm)
         if ( ! isFileExisted(stringtie_bin) ) {
             url = os2stringtie_url(prm)[[getOS()]]
-            ## check if bin exists in tmpdir(prm)
-            temp_stringtie_bin = paste0(tmpdir(prm), '/',
+            ## check if bin exists in tempdir()
+            temp_stringtie_bin = paste0(tempdir(), '/',
                                         gsub('.tar.gz', '', basename(url)), '/',
                                         'stringtie')
             if ( ! file.exists(temp_stringtie_bin) ) {
                 cat('StringTie not found: ', stringtie_bin, "\n",
                     'Downloading it from ', url, "\n")
-                ex_dir = downloadAndUntar(url, tmpdir(prm))
+                ex_dir = downloadAndUntar(url, tempdir())
                 stringtie(prm) = paste0(ex_dir, '/stringtie')
             } else {
                 stringtie(prm) = temp_stringtie_bin
@@ -372,14 +372,14 @@ setMethod('checkTacoBin', 'Param',
         taco_bin = taco(prm)
         if ( ! isFileExisted(taco_bin) ) {
             url = os2taco_url(prm)[[getOS()]]
-            ## check if bin exists in tmpdir(prm)
-            temp_taco_bin = paste0(tmpdir(prm), '/',
+            ## check if bin exists in tempdir()
+            temp_taco_bin = paste0(tempdir(), '/',
                                    gsub('.tar.gz', '', basename(url)), '/',
                                    'taco_run')
             if ( ! file.exists(temp_taco_bin) ) {
                 cat('TACO not found: ', taco_bin, "\n",
                     'Downloading it from ', url, "\n")
-                ex_dir = downloadAndUntar(url, tmpdir(prm))
+                ex_dir = downloadAndUntar(url, tempdir())
                 taco(prm) = paste0(ex_dir, '/taco_run')
             } else {
                 taco(prm) = temp_taco_bin
