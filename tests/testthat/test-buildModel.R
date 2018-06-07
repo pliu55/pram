@@ -74,6 +74,9 @@ testFilterBamByChromOri <- function(chrom, strand, outdir, prm) {
     grs = GRanges(paste0(chrom, ':1-', maxchromlen(prm)))
     bamprm = ScanBamParam(what=c('flag', 'qname'), which=grs)
 
+    fcmpbai = paste0(fcmp, '.bai')
+    if ( ! file.exists(fcmpbai)) indexBam(fcmp)
+
     cmp_alns = readGAlignments(fcmp, use.names=F, param=bamprm)
     out_alns = readGAlignments(fout, use.names=F, param=bamprm)
 
