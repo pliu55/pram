@@ -3,9 +3,8 @@ library(data.table)
 main <- function() {
     context('runPRAM')
 
-    pred_out_gtf = tempfile(pattern='pram_out_pred.', fileext='.gtf')
-    pred_screen_out_gtf = tempfile(pattern='pram_out_pred_screen.',
-                                   fileext='.gtf')
+    pred_out_gtf   = tempfile(pattern='runPRAM_pred.',   fileext='.gtf')
+    screen_out_gtf = tempfile(pattern='runPRAM_screen.', fileext='.gtf')
 
     in_gtf = system.file('extdata/demo/in.gtf', package='pram')
 
@@ -24,8 +23,8 @@ main <- function() {
 
     testPred(in_gtf, in_bamv, pred_out_gtf)
 
-  # testPredScreen(in_gtf, in_bamv, pred_screen_out_gtf, in_bedv, training_tpms,
-  #                training_gtf)
+    testPredScreen(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms,
+                   training_gtf)
 }
 
 
