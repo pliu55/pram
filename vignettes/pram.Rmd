@@ -22,7 +22,8 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-Pooling RNA-seq and Assembling Models (__PRAM__) utilizes multiple RNA-seq 
+Pooling RNA-seq and Assembling Models (__PRAM__) is an __R__ package that 
+utilizes multiple RNA-seq 
 datasets to predict transcript models.  The workflow of PRAM contains five 
 steps, which is shown in 
 the figure below with function names and associated key parameters.  In later
@@ -34,7 +35,7 @@ knitr::include_graphics("mainPRAMWorkflow.jpg")
 
 ## Installation
 
-Use the following command on __Linux__ 
+Use the following __R__ command on __Linux__ 
 
 <!--
 Cufflinks MacOS binary seems to have some issues
@@ -64,7 +65,7 @@ pram::runPRAM(in_gtf, in_bamv, out_gtf)
 runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
 ```
 
-- `in_gtf`, `in_bamv`, `out_gtf`, and `cufflinks` are the same as described
+- `in_gtf`, `in_bamv`, and `out_gtf` are the same as described
    [above](#predict-transcript-models-only)
 - `in_bedv`:  A vector of BED file(s) of ChIP-seq alignments.
 - `training_tpms`:  A vector of RSEM quantification results for training
@@ -72,6 +73,26 @@ runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
 - `training_gtf`:  A GTF file defining genomic coordinates of training 
                    transcripts 
 
+## Input example
+PRAM has included input examples files in its `extdata/demo/` 
+folder.  The table provides a quick summary of all the example files.
+
+| input argument | file name(s) |
+|:--------------:|:-------------|
+| `in_gtf`       | in.gtf       |
+| `in_bamv`      | SZP.bam, TLC.bam   |
+| `in_bedv`      | H3K79me2.bed.gz, POLR2.bed.gz   |
+| `training_tpms`| AED1.isoforms.results, AED2.isoforms.results   |
+| `training_gtf` | training.gtf |
+
+You can access the example input by `system.file()` in __R__, e.g. for the 
+argument `in_gtf`, you can access its example file by
+```
+system.file('extdata/demo/in.gtf', package='pram')
+```
+
+In addition, you can also take a look of the script 
+`tests/testthat/test-runPRAM.R` on using example input.
 
 
 ## Define intergenic genomic ranges: `defIgRanges()`
