@@ -145,7 +145,7 @@ splitUserBamByChromOri <- function(i, prm) {
 
 
 #' @importFrom  data.table     data.table
-#' @importFrom  Rsamtools      filterBam BamFile ScanBamParam scanBam
+#' @importFrom  Rsamtools      filterBam BamFile ScanBamParam scanBam indexBam
 #' @importFrom  S4Vectors      FilterRules
 #' @importFrom  GenomicRanges  GRanges
 #'
@@ -154,6 +154,8 @@ filterBamByChromOri <- function(fuserbam, fchromoribam, chrom, strand, prm) {
     flag1st = fr1ststrand2mate2flag[[strand]][['1stmate']]
 
     grs = GRanges(paste0(chrom, ':1-', maxchromlen(prm)))
+    fuserbai = paste0(fuserbam, '.bai')
+    if ( ! file.exists(fuserbai) ) indexBam(fuserbam)
     mate1st = scanBam(fuserbam, param=ScanBamParam(flag=flag1st, tag=c('HI'),
                                                    what=c('qname'), which=grs))
     seldt = data.table()
