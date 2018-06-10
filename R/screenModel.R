@@ -1,5 +1,5 @@
-#' Screen transcript models by a random forest classifier trained on known
-#' transcript
+#' @title  Screen transcript models by a random forest classifier trained on
+#'         known transcripts
 #'
 #' @param  in_bedv
 #'         A vector of BED file(s) for histone marks and/or RNA Pol II
@@ -64,6 +64,26 @@
 #' @return  NULL
 #'
 #' @export
+#'
+#' @examples
+#'
+#' fbeds = c( system.file('extdata/bed/GM12878POLR2AphosphoS5Rep1.bed',
+#'                        package='pram'),
+#'            system.file('extdata/bed/GM12878POLR2AphosphoS5Rep2.bed',
+#'                        package='pram') )
+#'
+#' ftpms = c( system.file('extdata/rsem/GM12878Rep1_training.isoforms.results',
+#'                        package='pram'),
+#'            system.file('extdata/rsem/GM12878Rep2_training.isoforms.results',
+#'                        package='pram') )
+#'
+#' fgtf_training = system.file('extdata/gtf/rf_training.gtf', package='pram')
+#' fgtf_testing  = system.file('extdata/gtf/rf_testing.gtf',  package='pram')
+#'
+#' fgtf_out = tempfile(fileext='.gtf')
+#'
+#' screenModel(fbeds, ftpms, fgtf_training, fgtf_testing, fgtf_out)
+#'
 #'
 screenModel <- function(in_bedv, training_tpms, training_gtf,
                         fgtf_testing, fgtf_out,
