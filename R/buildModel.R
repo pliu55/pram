@@ -1,4 +1,4 @@
-#' Build transcript models from aligned RNA-seq data
+#' @title Build transcript models from aligned RNA-seq data
 #'
 #' @param  in_bamv  A character vector of input BAM file(s). If mode 'cf'
 #'                or 'st' is used, only one input RNA-seq BAM file is allowed.
@@ -54,6 +54,18 @@
 #' @return  NULL
 #'
 #' @export
+#'
+#' @examples
+#'
+#' fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam',
+#'                        package='pram'),
+#'            system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam',
+#'                        package='pram') )
+#'
+#' foutgtf = tempfile(fileext='.gtf')
+#'
+#' buildModel(fbams, foutgtf, method='plst')
+#'
 #'
 buildModel <- function(in_bamv, out_gtf, method='plcf', nthreads=1, tmpdir=NULL,
                        cufflinks='', stringtie='', taco='',
