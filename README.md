@@ -6,7 +6,7 @@ Table of Contents
 
 * [Introduction](#Introduction)
 * [Installation](#Installation)
-* [Quick start](#Quick start)
+* [Quick start](#Quick-start)
 
 * * *
 
@@ -35,7 +35,7 @@ runs ok
 devtools::install_github('https://github.com/pliu55/pram')
 ```
 
-## <a name='Quick start'></a> Quick start
+## <a name='Quick-start'></a>Quick start
 
 PRAM provides a function `runPRAM()` to let you run through the whole workflow.
 
