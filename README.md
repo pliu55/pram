@@ -7,6 +7,7 @@ Table of Contents
 * [Introduction](#Introduction)
 * [Installation](#Installation)
 * [Quick start](#Quick-start)
+** [predict only](#predict-only)
 
 * * *
 
@@ -39,7 +40,8 @@ devtools::install_github('https://github.com/pliu55/pram')
 
 PRAM provides a function `runPRAM()` to let you run through the whole workflow.
 
-### Predict transcript models only
+### <a name='predict-only'></a> Predict transcript models only
+
 For a given gene annotation and RNA-seq alignments, you can predict transcript
 models in intergenic genomic regions:
 ```
