@@ -7,7 +7,7 @@ Table of Contents
 * [Introduction](#Introduction)
 * [Installation](#Installation)
 * [Quick start](#Quick-start)
-** [predict only](#predict-only)
+* * [predict only](#predict-only)
 
 * * *
 
