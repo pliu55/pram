@@ -1,60 +1,114 @@
-# PRAM: Pooling RNA-seq for Assembling Models
+# PRAM: Pooling RNA-seq and Assembling Models
 
-## Input
+## Introduction
 
-### Example: mouse chr12::20,000,000-40,000,000:-
-- use ENCODE MEL histone data
+Pooling RNA-seq and Assembling Models (__PRAM__) is an __R__ package that 
+utilizes multiple RNA-seq 
+datasets to predict transcript models.  The workflow of PRAM contains five 
+steps, which is shown in 
+the figure below with function names and associated key parameters.  In later
+sections of this vignette, we will describe each function in details.
 
-### Transcript model prediction
-- RNA-seq data
-  - FASTQ files
-- A GTF file
-  - list genomic ranges where model to be built
-- A genome seq file
+![alt text](https://github.com/pliu55/pram/blob/dev/vignettes/mainPRAMWorkflow.jpg)
 
-### Transcript model screening
-- RNA-seq
-- ChIP-seq
+## Installation
 
-### Transcript model annotation
-- RNA-seq
-- ChIP-seq
-- Motif
-- Enhancer
-- Mappability: bigWig
-- Conservation: UCSC liftOver chain
+Use the following __R__ command on __Linux__ 
+
+<!--
+Cufflinks MacOS binary seems to have some issues
+it will report segmentation fault for the same bam file, which Linux Cufflinks
+runs ok
+-->
+
+```
+devtools::install_github('https://github.com/pliu55/pram')
+```
+
+## Quick start
+PRAM provides a function `runPRAM()` to let you run through the whole workflow.
+
+### Predict transcript models only
+For a given gene annotation and RNA-seq alignments, you can predict transcript
+models in intergenic genomic regions:
+```
+runPRAM(in_gtf, in_bamv, out_gtf)
+```
+
+- `in_gtf`:  an input GTF file defining genomic coordinates of existing genes. 
+             Required to have an attribute of __gene_id__ in the ninth column.
+- `in_bamv`:  a vector of input BAM file(s) containing RNA-seq alignments. 
+              Currently,
+              PRAM only supports strand-specific paired-end RNA-seq with the 
+              first mate on the right-most of transcript coordinate, i.e., 
+              'fr-firststrand' by Cufflinks definition.
+- `out_gtf`:  an output GTF file of predicted transcript models
 
 
-## Dependent packages
+### Predict transcript models and screen them by ChIP-seq
+If you are interested to predict intergenic transcripts for a particular cell
+or tissue type, you can use epigenetic ChIP-seq 
+data together with known transcripts and their expression levels to further 
+screen intergenic transcript models:
+```
+runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
+```
 
-### STAR precompiled binary
-- [v2.4.2a](https://github.com/alexdobin/STAR/archive/STAR_2.4.2a.tar.gz)
-  - bin/Linux_x86_64_static/STAR
-  - bin/MacOSX_x86_65/STAR
+- `in_gtf`, `in_bamv`, and `out_gtf` are the same as described
+   [above](#predict-transcript-models-only)
+- `in_bedv`:  A vector of BED file(s) containing ChIP-seq alignments.
+- `training_tpms`:  A vector of RSEM quantification results for known
+                    transcripts
+- `training_gtf`:  A GTF file defining genomic coordinates of known
+                   transcripts 
 
-### Cufflinks precompiled binary
-- v2.2.1
-  - [Linux](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz)
-  - [Mac OS X](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.OSX_x86_64.tar.gz)
+### Examples
+PRAM has included input examples files in its `extdata/demo/` 
+folder.  The table below provides a quick summary of all the example files.
 
-### StringTie precompiled binary
-- v1.3.3
-  - [Linux](http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.Linux_x86_64.tar.gz)
-  - [Mac OS X](http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.OSX_x86_64.tar.gz)
+Table: `runPRAM()`'s input example files.
 
-### RSEM
+| input argument | file name(s) |
+|:--------------:|:-------------|
+| `in_gtf`       | in.gtf       |
+| `in_bamv`      | SZP.bam, TLC.bam   |
+| `in_bedv`      | H3K79me2.bed.gz, POLR2.bed.gz   |
+| `training_tpms`| AED1.isoforms.results, AED2.isoforms.results   |
+| `training_gtf` | training.gtf |
 
-### EBSeq
-- on Bioconductor
+You can access example files by `system.file()` in __R__, e.g. for the 
+argument `in_gtf`, you can access its example file by
+```
+system.file('extdata/demo/in.gtf', package='pram')
+```
 
-### Bowtie
+Below shows usage of `runPRAM()` with example input files: 
+```
+##
+## Predict transcript models only
+##
+in_gtf = system.file('extdata/demo/in.gtf', package='pram')
 
-### MOSAiCS
-- on Bioconductor
+in_bamv = c( system.file('extdata/demo/SZP.bam', package='pram'),
+             system.file('extdata/demo/TLC.bam', package='pram') )
 
-### SPP
-- on CRAN
+pred_out_gtf = tempfile(fileext='.gtf')
 
-### IDR
+runPRAM(in_gtf, in_bamv, pred_out_gtf)
 
-### liftOver
+##
+## Predict transcript models and screen them by ChIP-seq data
+##
+in_bedv = c( system.file('extdata/demo/H3K79me2.bed.gz', package='pram'),
+             system.file('extdata/demo/POLR2.bed.gz',    package='pram') )
+
+training_tpms = c( system.file('extdata/demo/AED1.isoforms.results', package='pram'),
+                   system.file('extdata/demo/AED2.isoforms.results', package='pram') )
+
+training_gtf = system.file('extdata/demo/training.gtf', package='pram')
+
+screen_out_gtf = tempfile(fileext='.gtf')
+
+runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms, training_gtf)
+```
+
