@@ -10,7 +10,7 @@ Table of Contents
 
 * * *
 
-## Introduction
+## <a name='Introduction'></a> Introduction
 
 Pooling RNA-seq and Assembling Models (__PRAM__) is an __R__ package that 
 utilizes multiple RNA-seq 
@@ -21,7 +21,7 @@ sections of this vignette, we will describe each function in details.
 
 ![alt text](https://github.com/pliu55/pram/blob/dev/vignettes/mainPRAMWorkflow.jpg)
 
-## Installation
+## <a name='Installation'></a> Installation
 
 Use the following __R__ command on __Linux__ 
 
@@ -35,7 +35,7 @@ runs ok
 devtools::install_github('https://github.com/pliu55/pram')
 ```
 
-## Quick start
+## <a name='Quick start'></a> Quick start
 PRAM provides a function `runPRAM()` to let you run through the whole workflow.
 
 ### Predict transcript models only
