@@ -1,4 +1,4 @@
-#' Select transcript models
+#' @title  Select transcript models
 #'
 #' @param  fin_gtf  Character of an input GTF file that contains
 #'                  transcript models. Required to have 'transcript_id' in the
@@ -22,15 +22,16 @@
 #'
 #' @export
 #'
-setGeneric('selModel',
-           function(fin_gtf, fout_gtf, min_n_exon, min_tr_len, info_keys)
-           standardGeneric('selModel'))
-
-setMethod(
-'selModel',
-c('character', 'character', 'numeric', 'numeric', 'vector'),
-function(fin_gtf, fout_gtf, min_n_exon=2, min_tr_len=200,
-         info_keys = c('transcript_id') ) {
+#' @examples
+#'
+#' fin_gtf = system.file('extdata/gtf/selModel_in.gtf', package='pram')
+#'
+#' fout_gtf = tempfile(fileext='.gtf')
+#'
+#' selModel(fin_gtf, fout_gtf)
+#'
+selModel <- function(fin_gtf, fout_gtf, min_n_exon=2, min_tr_len=200,
+                     info_keys = c('transcript_id') ) {
     in_gtf  = new('GTF')
     out_gtf = new('GTF')
     out_infokeys = unique(c('transcript_id', info_keys))
@@ -51,4 +52,4 @@ function(fin_gtf, fout_gtf, min_n_exon=2, min_tr_len=200,
     grangedt(out_gtf) = sel_grdt
 
     writeGTF(out_gtf, fout_gtf, append=F)
-})
+}
