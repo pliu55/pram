@@ -1,4 +1,14 @@
-# PRAM: Pooling RNA-seq and Assembling Models
+PRAM: Pooling RNA-seq and Assembling Models
+===========================================
+
+Table of Contents
+-----------------
+
+* [Introduction](#Introduction)
+* [Installation](#Installation)
+* [Quick start](#Quick start)
+
+* * *
 
 ## Introduction
 
