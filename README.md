@@ -7,18 +7,22 @@ Table of Contents
 * [Introduction](#Introduction)
 * [Installation](#Installation)
 * [Quick start](#Quick-start)
-  * [predict only](#predict-only)
+  * [Predict transcript models only](#predict-only)
+  * [Predict transcript models and screen them by ChIP-seq](#predict-screen)
+  * [Examples](#Examples)
+* [Reference](#Reference)
+* [Contact](#Contact)
 
 * * *
 
 ## <a name='Introduction'></a> Introduction
 
 Pooling RNA-seq and Assembling Models (__PRAM__) is an __R__ package that 
-utilizes multiple RNA-seq 
-datasets to predict transcript models.  The workflow of PRAM contains five 
-steps, which is shown in 
-the figure below with function names and associated key parameters.  In later
-sections of this vignette, we will describe each function in details.
+utilizes multiple RNA-seq datasets to predict transcript models. The workflow 
+of PRAM contains five steps, which is shown in 
+the figure below with function names and associated key parameters.  PRAM has a
+[vignette](https://github.com/pliu55/pram/blob/dev/vignettes/pram.Rmd) that 
+describe each function in details.
 
 ![alt text](https://github.com/pliu55/pram/blob/dev/vignettes/mainPRAMWorkflow.jpg)
 
@@ -58,7 +62,8 @@ runPRAM(in_gtf, in_bamv, out_gtf)
 - `out_gtf`:  an output GTF file of predicted transcript models
 
 
-### Predict transcript models and screen them by ChIP-seq
+### <a name='predict-screen'></a> Predict transcript models and screen them by ChIP-seq
+
 If you are interested to predict intergenic transcripts for a particular cell
 or tissue type, you can use epigenetic ChIP-seq 
 data together with known transcripts and their expression levels to further 
@@ -75,7 +80,7 @@ runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
 - `training_gtf`:  A GTF file defining genomic coordinates of known
                    transcripts 
 
-### Examples
+### <a name='Examples'></a> Examples
 PRAM has included input examples files in its `extdata/demo/` 
 folder.  The table below provides a quick summary of all the example files.
 
@@ -124,4 +129,13 @@ screen_out_gtf = tempfile(fileext='.gtf')
 
 runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms, training_gtf)
 ```
+
+## <a name="Reference"></a> Reference
+
+PRAM identifies novel hematopoietic transcripts. Peng Liu, Alexandra A. Soukup, Emery H. Bresnick, Colin N. Dewey, and Sündüz Keleş. Manuscript in preparation.
+
+
+## <a name="Contact"></a> Contact
+
+Got a question? Please report it at [Issues tab](https://github.com/pliu55/pram/issues) in this repository.
 
