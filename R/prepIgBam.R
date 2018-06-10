@@ -1,4 +1,4 @@
-#' Extract alignments in intergenic regions from BAM files
+#' @title Extract alignments in intergenic regions from BAM files
 #'
 #' @param  finbam   Full name of an input RNA-seq BAM file.
 #'                  Currently, PRAM only supports strand-specific paired-end
@@ -22,6 +22,18 @@
 #' @return NULL
 #'
 #' @export
+#'
+#' @examples
+#'
+#' finbam = system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam',
+#'                      package='pram')
+#'
+#' iggrs = GenomicRanges::GRanges('chr10:77236000-77247000:+')
+#'
+#' foutbam = tempfile(fileext='.bam')
+#'
+#' prepIgBam(finbam, iggrs, foutbam)
+#'
 #'
 prepIgBam <- function(finbam, iggrs, foutbam,
                       max_uni_n_dup_aln=10, max_mul_n_dup_aln=10) {
