@@ -36,6 +36,32 @@ for all training transcripts.  This file is required to have 'exon'
 in the feature column (the 3rd column) and 'transcript_id' entry in
 the attribute column (the 9th column).}
 }
-\description{
-Predict intergenic transcript models from RNA-seq and screen them by ChIP-seq
+\examples{
+
+in_gtf = system.file('extdata/demo/in.gtf', package='pram')
+
+in_bamv = c( system.file('extdata/demo/SZP.bam', package='pram'),
+             system.file('extdata/demo/TLC.bam', package='pram') )
+
+pred_out_gtf = tempfile(fileext='.gtf')
+
+runPRAM(in_gtf, in_bamv, pred_out_gtf)
+
+
+in_bedv = c( system.file('extdata/demo/H3K79me2.bed.gz', package='pram'),
+             system.file('extdata/demo/POLR2.bed.gz',    package='pram') )
+
+training_tpms = c( system.file('extdata/demo/AED1.isoforms.results',
+                               package='pram'),
+                   system.file('extdata/demo/AED2.isoforms.results',
+                               package='pram') )
+
+training_gtf = system.file('extdata/demo/training.gtf', package='pram')
+
+screen_out_gtf = tempfile(fileext='.gtf')
+
+runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms,
+        training_gtf)
+
+
 }
