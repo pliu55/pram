@@ -33,9 +33,9 @@
 #'         \itemize{
 #'             \item 'rf.rda' for an R random forest classifier
 #'             \item 'roc_pr.pdf' plots ROC and precision-recall curves
-#'                   from cross validation
+#'                   from cross-validation
 #'             \item 'cv.tsv' saved the prediction results on training
-#'                   transcript from cross validation.
+#'                   transcript from cross-validation.
 #'             \item 'pred.tsv' saved the prediction results testing transcripts
 #'         }
 #'         File with the same name in this folder will be overwritten.
@@ -52,7 +52,7 @@
 #'         training and output files.
 #'         Default: 1
 #'
-#' @param  cv_n_folds  An integer of folds for cross validation. 'Expressed' and
+#' @param  cv_n_folds  An integer of folds for cross-validation. 'Expressed' and
 #'                     'unexpressed' training transcripts will be stratified
 #'                     for calculating AUC.
 #'                     Default: 10
