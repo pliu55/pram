@@ -1,4 +1,4 @@
-#' Define intergenic genomic regions
+#' @title Define intergenic genomic regions
 #'
 #' @param  in_gtf  An input GTF file for defining genomic coordinates of
 #'                 existing
@@ -50,6 +50,11 @@
 #'
 #' @export
 #'
+#' @examples
+#' fgtf = system.file('extdata/gtf/defIgRanges_in.gtf', package='pram')
+#'
+#' defIgRanges(fgtf, genome='hg38', chroms=c('chr10', 'chr11'))
+#'
 defIgRanges <- function(in_gtf, chromgrs, genome=NULL, fchromsize=NULL,
                         radius=1e+4, feat='exon', chroms=NULL){
     fgtf = in_gtf
@@ -86,7 +91,7 @@ getChromGRanges <- function(genome, fchromsize, chroms) {
     avail_genomes = c('hg19', 'hg38', 'mm10', 'mm9')
 
     if ( is.null(genome) & is.null(fchromsize) ) {
-        stop("defIg: either [genome] or [fchromsize] needs to be defined\n")
+        stop("either [genome] or [fchromsize] needs to be defined\n")
     } else if ( ! is.null(genome) ) {
         genome = tolower(genome)
         if ( genome %in% avail_genomes ) {
