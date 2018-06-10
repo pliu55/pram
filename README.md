@@ -72,8 +72,7 @@ screen intergenic transcript models:
 runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
 ```
 
-- `in_gtf`, `in_bamv`, and `out_gtf` are the same as described
-   [above](#predict-transcript-models-only)
+- `in_gtf`, `in_bamv`, and `out_gtf` are the same as described above
 - `in_bedv`:  A vector of BED file(s) containing ChIP-seq alignments.
 - `training_tpms`:  A vector of RSEM quantification results for known
                     transcripts
@@ -83,8 +82,6 @@ runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
 ### <a name='Examples'></a> Examples
 PRAM has included input examples files in its `extdata/demo/` 
 folder.  The table below provides a quick summary of all the example files.
-
-Table: `runPRAM()`'s input example files.
 
 | input argument | file name(s) |
 |:--------------:|:-------------|
