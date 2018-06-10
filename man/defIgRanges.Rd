@@ -55,6 +55,9 @@ Default: NULL}
 \value{
 a GRanges object of intergenic regions
 }
-\description{
-Define intergenic genomic regions
+\examples{
+fgtf = system.file('extdata/gtf/defIgRanges_in.gtf', package='pram')
+
+defIgRanges(fgtf, genome='hg38', chroms=c('chr10', 'chr11'))
+
 }

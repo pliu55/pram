@@ -2,8 +2,8 @@
 % Please edit documentation in R/screenModel.R
 \name{screenModel}
 \alias{screenModel}
-\title{Screen transcript models by a random forest classifier trained on known
-transcript}
+\title{Screen transcript models by a random forest classifier trained on
+        known transcripts}
 \usage{
 screenModel(in_bedv, training_tpms, training_gtf, fgtf_testing, fgtf_out,
   tmpdir = NULL, expr_min_tpm = 1, cv_n_folds = 10, nthreads = 1)
@@ -62,7 +62,24 @@ Default: 10}
 An ideal number would be equal to the maximum one of
 cv_n_folds and number of input BED files. Default: 1}
 }
-\description{
-Screen transcript models by a random forest classifier trained on known
-transcript
+\examples{
+
+fbeds = c( system.file('extdata/bed/GM12878POLR2AphosphoS5Rep1.bed',
+                       package='pram'),
+           system.file('extdata/bed/GM12878POLR2AphosphoS5Rep2.bed',
+                       package='pram') )
+
+ftpms = c( system.file('extdata/rsem/GM12878Rep1_training.isoforms.results',
+                       package='pram'),
+           system.file('extdata/rsem/GM12878Rep2_training.isoforms.results',
+                       package='pram') )
+
+fgtf_training = system.file('extdata/gtf/rf_training.gtf', package='pram')
+fgtf_testing  = system.file('extdata/gtf/rf_testing.gtf',  package='pram')
+
+fgtf_out = tempfile(fileext='.gtf')
+
+screenModel(fbeds, ftpms, fgtf_training, fgtf_testing, fgtf_out)
+
+
 }

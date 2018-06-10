@@ -4,7 +4,8 @@
 \alias{selModel}
 \title{Select transcript models}
 \usage{
-selModel(fin_gtf, fout_gtf, min_n_exon, min_tr_len, info_keys)
+selModel(fin_gtf, fout_gtf, min_n_exon = 2, min_tr_len = 200,
+  info_keys = c("transcript_id"))
 }
 \arguments{
 \item{fin_gtf}{Character of an input GTF file that contains
@@ -27,6 +28,12 @@ GTF file's column 9 to be saved in the output GTF file.
 'transcript_id' will always be saved.
 Default: c( 'transcript_id' )}
 }
-\description{
-Select transcript models
+\examples{
+
+fin_gtf = system.file('extdata/gtf/selModel_in.gtf', package='pram')
+
+fout_gtf = tempfile(fileext='.gtf')
+
+selModel(fin_gtf, fout_gtf)
+
 }

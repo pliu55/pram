@@ -27,6 +27,16 @@ Default: 10}
 to report per each alignment.
 Default: 10}
 }
-\description{
-Extract alignments in intergenic regions from BAM files
+\examples{
+
+finbam = system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam',
+                     package='pram')
+
+iggrs = GenomicRanges::GRanges('chr10:77236000-77247000:+')
+
+foutbam = tempfile(fileext='.bam')
+
+prepIgBam(finbam, iggrs, foutbam)
+
+
 }

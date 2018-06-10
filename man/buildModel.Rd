@@ -59,6 +59,16 @@ supplied, will be used for cufflinks's
 '--ref-sequence' options.
 Default: ''}
 }
-\description{
-Build transcript models from aligned RNA-seq data
+\examples{
+
+fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam',
+                       package='pram'),
+           system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam',
+                       package='pram') )
+
+foutgtf = tempfile(fileext='.gtf')
+
+buildModel(fbams, foutgtf, method='plst')
+
+
 }
