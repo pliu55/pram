@@ -4,8 +4,9 @@
 \alias{buildModel}
 \title{Build transcript models from aligned RNA-seq data}
 \usage{
-buildModel(in_bamv, out_gtf, method = "plcf", nthreads = 1, tmpdir = NULL,
-  cufflinks = "", stringtie = "", taco = "", cufflinks_ref_fa = "")
+buildModel(in_bamv, out_gtf, method = "plcf", nthreads = 1,
+  tmpdir = NULL, cufflinks = "", stringtie = "", taco = "",
+  cufflinks_ref_fa = "")
 }
 \arguments{
 \item{in_bamv}{A character vector of input BAM file(s). If mode 'cf'
@@ -58,6 +59,9 @@ supplied, will be used for cufflinks's
 '--frag-bias-correct' and cuffmerge's
 '--ref-sequence' options.
 Default: ''}
+}
+\description{
+Build transcript models from aligned RNA-seq data
 }
 \examples{
 

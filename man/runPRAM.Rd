@@ -36,6 +36,9 @@ for all training transcripts.  This file is required to have 'exon'
 in the feature column (the 3rd column) and 'transcript_id' entry in
 the attribute column (the 9th column).}
 }
+\description{
+Predict intergenic transcript models from RNA-seq and screen them by ChIP-seq
+}
 \examples{
 
 in_gtf = system.file('extdata/demo/in.gtf', package='pram')

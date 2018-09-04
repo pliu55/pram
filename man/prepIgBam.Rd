@@ -27,6 +27,9 @@ Default: 10}
 to report per each alignment.
 Default: 10}
 }
+\description{
+Extract alignments in intergenic regions from BAM files
+}
 \examples{
 
 finbam = system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam',

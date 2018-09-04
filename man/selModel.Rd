@@ -28,6 +28,9 @@ GTF file's column 9 to be saved in the output GTF file.
 'transcript_id' will always be saved.
 Default: c( 'transcript_id' )}
 }
+\description{
+Select transcript models
+}
 \examples{
 
 fin_gtf = system.file('extdata/gtf/selModel_in.gtf', package='pram')

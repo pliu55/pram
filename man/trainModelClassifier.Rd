@@ -4,8 +4,8 @@
 \alias{trainModelClassifier}
 \title{Train a random forest classifier to filter transcript models}
 \usage{
-trainModelClassifier(fbeds, ftpms, fgtf, tmpdir = NULL, expr_min_tpm = 1,
-  cv_n_folds = 10, nthreads = 1)
+trainModelClassifier(fbeds, ftpms, fgtf, tmpdir = NULL,
+  expr_min_tpm = 1, cv_n_folds = 10, nthreads = 1)
 }
 \arguments{
 \item{fgtf}{A string of a GTF file defining the genomic coordinates for

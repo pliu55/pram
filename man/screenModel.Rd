@@ -62,6 +62,10 @@ Default: 10}
 An ideal number would be equal to the maximum one of
 cv_n_folds and number of input BED files. Default: 1}
 }
+\description{
+Screen transcript models by a random forest classifier trained on
+        known transcripts
+}
 \examples{
 
 fbeds = c( system.file('extdata/bed/GM12878POLR2AphosphoS5Rep1.bed',
