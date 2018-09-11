@@ -7,12 +7,6 @@ Table of Contents
 * [Introduction](#Introduction)
 * [Installation](#Installation)
 * [Quick start](#Quick-start)
-
-<!--
-  * [Predict transcript models only](#predict-only)
-  * [Predict transcript models and screen them by ChIP-seq](#predict-screen)
--->
-
   * [Examples](#Examples)
 * [Reference](#Reference)
 * [Contact](#Contact)
