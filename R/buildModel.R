@@ -28,6 +28,9 @@
 #'                 saving temporary files. If not tmpdir is give, PRAM will
 #'                 use R's tempdir().
 #'
+#' @param  keep_tmpdir  Whether to keep temporary files afterwards.
+#'                      Default: False
+#'
 #' @param  cufflinks  Cufflinks executable.  Required by mode 'plcf',
 #'                    'cfmg', and 'cf'.  For mode 'cfmg', executable files of
 #'                    Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
@@ -68,7 +71,7 @@
 #'
 #'
 buildModel <- function(in_bamv, out_gtf, method='plcf', nthreads=1, tmpdir=NULL,
-                       cufflinks='', stringtie='', taco='',
+                       keep_tmpdir=False, cufflinks='', stringtie='', taco='',
                        cufflinks_ref_fa='') {
     finbamv = in_bamv
     foutgtf = out_gtf
@@ -113,6 +116,10 @@ buildModel <- function(in_bamv, out_gtf, method='plcf', nthreads=1, tmpdir=NULL,
     ## - strand is not '+' or '-'
     ## - strand does not match the one where bam was derived
     outputCorrectStrandModel(prm)
+
+    if ( ! keep_tmpdir ) {
+        unlink(tmpdir(prm), recursive=T, force=T)
+    }
 }
 
 

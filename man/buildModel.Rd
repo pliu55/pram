@@ -5,8 +5,8 @@
 \title{Build transcript models from aligned RNA-seq data}
 \usage{
 buildModel(in_bamv, out_gtf, method = "plcf", nthreads = 1,
-  tmpdir = NULL, cufflinks = "", stringtie = "", taco = "",
-  cufflinks_ref_fa = "")
+  tmpdir = NULL, keep_tmpdir = F, cufflinks = "", stringtie = "",
+  taco = "", cufflinks_ref_fa = "")
 }
 \arguments{
 \item{in_bamv}{A character vector of input BAM file(s). If mode 'cf'
@@ -36,6 +36,9 @@ Default: 1}
 \item{tmpdir}{A character string defining the full name of a folder for
 saving temporary files. If not tmpdir is give, PRAM will
 use R's tempdir().}
+
+\item{keep_tmpdir}{Whether to keep temporary files afterwards.
+Default: False}
 
 \item{cufflinks}{Cufflinks executable.  Required by mode 'plcf',
 'cfmg', and 'cf'.  For mode 'cfmg', executable files of
