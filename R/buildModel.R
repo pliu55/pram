@@ -71,7 +71,7 @@
 #'
 #'
 buildModel <- function(in_bamv, out_gtf, method='plcf', nthreads=1, tmpdir=NULL,
-                       keep_tmpdir=False, cufflinks='', stringtie='', taco='',
+                       keep_tmpdir=FALSE, cufflinks='', stringtie='', taco='',
                        cufflinks_ref_fa='') {
     finbamv = in_bamv
     foutgtf = out_gtf
