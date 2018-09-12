@@ -26,7 +26,6 @@ Collate:
     'evalModel.R'
     'prepIgBam.R'
     'runPRAM.R'
-    'screenModel.R'
     'selModel.R'
     'util.R'
 VignetteBuilder: knitr
