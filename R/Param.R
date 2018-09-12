@@ -290,7 +290,7 @@ setMethod('checkCufflinksBin', 'Param',
                                         gsub('.tar.gz', '', basename(url)), '/',
                                         'cufflinks')
             if ( ! file.exists(temp_cufflinks_bin) ) {
-                cat('Cufflinks not found: ', cufflinks_bin, "\n",
+                cat("\nCufflinks not found: ", cufflinks_bin, "\n",
                     'Downloading it from ', url, "\n")
                 ex_dir = downloadAndUntar(url, tempdir())
                 cufflinks(prm) = paste0(ex_dir, '/cufflinks')
@@ -327,7 +327,7 @@ setMethod('checkCuffmergeRequiredBins', 'Param',
 
         if ( to_dl ) {
             url = os2cufflinks_url(prm)[[getOS()]]
-            cat("Not found: Cuffmerge\n",
+            cat("\nNot found: Cuffmerge\n",
                 'Downloading it from ', url, "\n")
             ex_dir = downloadAndUntar(url, tempdir())
             cufflinks(prm) = paste0(ex_dir, '/cufflinks')
@@ -351,7 +351,7 @@ setMethod('checkStringTieBin', 'Param',
                                         gsub('.tar.gz', '', basename(url)), '/',
                                         'stringtie')
             if ( ! file.exists(temp_stringtie_bin) ) {
-                cat('StringTie not found: ', stringtie_bin, "\n",
+                cat("\nStringTie not found: ", stringtie_bin, "\n",
                     'Downloading it from ', url, "\n")
                 ex_dir = downloadAndUntar(url, tempdir())
                 stringtie(prm) = paste0(ex_dir, '/stringtie')
@@ -377,7 +377,7 @@ setMethod('checkTacoBin', 'Param',
                                    gsub('.tar.gz', '', basename(url)), '/',
                                    'taco_run')
             if ( ! file.exists(temp_taco_bin) ) {
-                cat('TACO not found: ', taco_bin, "\n",
+                cat("\nTACO not found: ", taco_bin, "\n",
                     'Downloading it from ', url, "\n")
                 ex_dir = downloadAndUntar(url, tempdir())
                 taco(prm) = paste0(ex_dir, '/taco_run')
