@@ -6,11 +6,11 @@ Description: Pooling aligned RNA-seq fragments to assemble transcript models.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.4.1)
+Depends: R (>= 3.5.1)
 Imports: methods, 
          parallel, 
-         data.table   (>= 1.10.4), 
-         Rsamtools    (>= 1.28.0),
+         data.table   (>= 1.11.4), 
+         Rsamtools    (>= 1.32.2),
 RoxygenNote: 6.1.0
 Suggests: 
     testthat,
