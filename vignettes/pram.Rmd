@@ -24,13 +24,13 @@ knitr::opts_chunk$set(
 
 Pooling RNA-seq and Assembling Models (__PRAM__) is an __R__ package that 
 utilizes multiple RNA-seq 
-datasets to predict transcript models.  The workflow of PRAM contains five 
+datasets to predict transcript models.  The workflow of PRAM contains four
 steps, which is shown in 
 the figure below with function names and associated key parameters.  In later
 sections of this vignette, we will describe each function in details.
 
-```{r, fig.cap='PRAM workflow', out.width='579px', out.height='324px', echo=F}
-knitr::include_graphics("mainPRAMWorkflow.jpg")
+```{r, fig.cap='PRAM workflow', out.width='339px', out.height='333px', echo=F}
+knitr::include_graphics("workflow_noScreen.jpg")
 ```
 
 ## Installation
@@ -50,7 +50,9 @@ devtools::install_github('https://github.com/pliu55/pram')
 ## Quick start
 PRAM provides a function `runPRAM()` to let you run through the whole workflow.
 
+<!--
 ### Predict transcript models only
+-->
 For a given gene annotation and RNA-seq alignments, you can predict transcript
 models in intergenic genomic regions:
 ```
@@ -66,7 +68,7 @@ runPRAM(in_gtf, in_bamv, out_gtf)
               'fr-firststrand' by Cufflinks definition.
 - `out_gtf`:  an output GTF file of predicted transcript models
 
-
+<!--
 ### Predict transcript models and screen them by ChIP-seq
 If you are interested to predict intergenic transcripts for a particular cell
 or tissue type, you can use epigenetic ChIP-seq 
@@ -83,6 +85,7 @@ runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
                     transcripts
 - `training_gtf`:  A GTF file defining genomic coordinates of known
                    transcripts 
+-->
 
 ### Examples
 PRAM has included input examples files in its `extdata/demo/` 
@@ -94,9 +97,11 @@ Table: `runPRAM()`'s input example files.
 |:--------------:|:-------------|
 | `in_gtf`       | in.gtf       |
 | `in_bamv`      | SZP.bam, TLC.bam   |
+<!--
 | `in_bedv`      | H3K79me2.bed.gz, POLR2.bed.gz   |
 | `training_tpms`| AED1.isoforms.results, AED2.isoforms.results   |
 | `training_gtf` | training.gtf |
+-->
 
 You can access example files by `system.file()` in __R__, e.g. for the 
 argument `in_gtf`, you can access its example file by
@@ -105,10 +110,12 @@ system.file('extdata/demo/in.gtf', package='pram')
 ```
 
 Below shows usage of `runPRAM()` with example input files: 
-```
+<!--
 ##
 ## Predict transcript models only
 ##
+-->
+```
 in_gtf = system.file('extdata/demo/in.gtf', package='pram')
 
 in_bamv = c( system.file('extdata/demo/SZP.bam', package='pram'),
@@ -118,6 +125,9 @@ pred_out_gtf = tempfile(fileext='.gtf')
 
 runPRAM(in_gtf, in_bamv, pred_out_gtf)
 
+```
+
+<!--
 ##
 ## Predict transcript models and screen them by ChIP-seq data
 ##
@@ -132,7 +142,7 @@ training_gtf = system.file('extdata/demo/training.gtf', package='pram')
 screen_out_gtf = tempfile(fileext='.gtf')
 
 runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms, training_gtf)
-```
+-->
 
 
 ## Define intergenic genomic ranges: `defIgRanges()`
@@ -278,7 +288,7 @@ fout_gtf = tempfile(fileext='.gtf')
 selModel(fin_gtf, fout_gtf)
 ```
 
-
+<!--
 ## Screen transcript models: `screenModel()`
 If you were interested in identifying novel transcripts for a particular cell
 or tissue type, `screenModel()` will let you achieve it by screening models
@@ -330,3 +340,4 @@ fgtf_out = tempfile(fileext='.gtf')
 
 screenModel(fbeds, ftpms, fgtf_training, fgtf_testing, fgtf_out)
 ```
+-->

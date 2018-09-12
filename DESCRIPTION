@@ -11,9 +11,6 @@ Imports: methods,
          parallel, 
          data.table   (>= 1.10.4), 
          Rsamtools    (>= 1.28.0),
-         ROCR         (>= 1.0.7),
-         caret        (>= 6.0.77),
-         randomForest (>= 4.6.12)
 RoxygenNote: 6.1.0
 Suggests: 
     testthat,
