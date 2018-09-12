@@ -25,7 +25,7 @@ describe each function in details.
 <!--
 ![alt text](https://github.com/pliu55/pram/blob/dev/vignettes/workflow_noScreen.jpg | width=333)
 -->
-<img src="https://github.com/pliu55/pram/blob/dev/vignettes/workflow_noScreen.jpg" alt="alt text" width="400" height="407">
+<img src="https://github.com/pliu55/pram/blob/dev/vignettes/workflow_noScreen.jpg" alt="alt text" width="400" height="407" align='middle'>
 
 ## <a name='Installation'></a> Installation
 
