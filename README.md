@@ -40,7 +40,7 @@ runs ok
 -->
 
 ```
-devtools::install_github('https://github.com/pliu55/pram')
+devtools::install_github('pliu55/pram')
 ```
 
 ## <a name='Quick-start'></a>Quick start
