@@ -19,24 +19,21 @@ Pooling RNA-seq and Assembling Models (__PRAM__) is an __R__ package that
 utilizes multiple RNA-seq datasets to predict transcript models. The workflow 
 of PRAM contains four steps, which is shown in 
 the figure below with function names and associated key parameters.  PRAM has a
-[vignette](https://github.com/pliu55/pram/blob/master/vignettes/pram.Rmd) that 
-describe each function in details.
+[vignette](vignettes/pram.Rmd) that describes each function in details.
 
-<!--
-![alt text](https://github.com/pliu55/pram/blob/dev/vignettes/workflow_noScreen.jpg | width=333)
--->
 <p align='center'>
-  <img src="https://github.com/pliu55/pram/blob/dev/vignettes/workflow_noScreen.jpg" alt="PRAM workflow" width="400" height="407">
+  <img src="https://github.com/pliu55/pram/blob/master/vignettes/workflow_noScreen.jpg" alt="PRAM workflow" width="400" height="407">
 </p>
 
 ## <a name='Installation'></a> Installation
 
-Use the following __R__ command on __Linux__ 
+Use the following __R__ command on __Linux__ or __macOS__
 
 <!--
-Cufflinks MacOS binary seems to have some issues
-it will report segmentation fault for the same bam file, which Linux Cufflinks
-runs ok
+- Cufflinks v2.2.1 macOS binary have some issues
+- it will report segmentation fault for the same bam file, which Linux 
+  Cufflinks runs ok
+- Have to use Cufflinks v2.1.1 for macOS instead
 -->
 
 ```
@@ -147,5 +144,5 @@ PRAM identifies novel hematopoietic transcripts. Peng Liu, Alexandra A. Soukup, 
 
 ## <a name="Contact"></a> Contact
 
-Got a question? Please report it at [Issues tab](https://github.com/pliu55/pram/issues) in this repository.
+Got a question? Please report it at [issues tab](https://github.com/pliu55/pram/issues) in this repository.
 
