@@ -22,7 +22,7 @@ the figure below with function names and associated key parameters.  PRAM has a
 [vignette](vignettes/pram.Rmd) that describes each function in details.
 
 <p align='center'>
-  <img src="https://github.com/pliu55/pram/blob/master/vignettes/workflow_noScreen.jpg" alt="PRAM workflow" width="400" height="407">
+    <img src="vignettes/workflow_noScreen.jpg" width="400" height="407">
 </p>
 
 ## <a name='Installation'></a> Installation
