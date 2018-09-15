@@ -144,5 +144,5 @@ PRAM identifies novel hematopoietic transcripts. Peng Liu, Alexandra A. Soukup, 
 
 ## <a name="Contact"></a> Contact
 
-Got a question? Please report it at [issues tab](https://github.com/pliu55/pram/issues) in this repository.
+Got a question? Please report it at the [issues tab](https://github.com/pliu55/pram/issues) in this repository.
 
