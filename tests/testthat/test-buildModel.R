@@ -50,7 +50,7 @@ main <- function() {
     testBuildByPLCF(fbams, outdir, nthr, cufflinks)
     testBuildByCFMG(fbams, outdir, nthr, cufflinks)
 
-        testBuildByCFTC(fbams, outdir, nthr, cufflinks, taco)
+    testBuildByCFTC(fbams, outdir, nthr, cufflinks, taco)
     for ( i in 1:length(fbams) ) {
         testBuildByST(fbams[i], fout_st_gtfs[i], nthr, stringtie)
     }
