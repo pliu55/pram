@@ -62,7 +62,7 @@ Param = setClass('Param',
         OS2CUFFLINKS_URL = list(
             'LINUX' = 'http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz',
 
-            'OSX' = 'http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.OSX_x86_64.tar.gz' ),
+            'OSX' = 'http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.1.1.OSX_x86_64.tar.gz' ),
 
         OS2STRINGTIE_URL = list(
             'LINUX' = 'http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.Linux_x86_64.tar.gz',
