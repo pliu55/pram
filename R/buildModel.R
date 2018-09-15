@@ -175,6 +175,8 @@ filterBamByChromOri <- function(fuserbam, fchromoribam, chrom, strand, prm) {
     grs = GRanges(paste0(chrom, ':1-', maxchromlen(prm)))
     fuserbai = paste0(fuserbam, '.bai')
     if ( ! file.exists(fuserbai) ) indexBam(fuserbam)
+
+    ## Rsamtools version < 1.32.2 will give warnings on MacOS when reading tag
     mate1st = scanBam(fuserbam, param=ScanBamParam(flag=flag1st, tag=c('HI'),
                                                    what=c('qname'), which=grs))
     seldt = data.table()
