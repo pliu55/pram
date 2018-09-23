@@ -36,7 +36,7 @@ Use the following __R__ command on __Linux__ or __macOS__
 - Have to use Cufflinks v2.1.1 for macOS instead
 -->
 
-```
+```R
 devtools::install_github('pliu55/pram')
 ```
 
@@ -50,7 +50,8 @@ PRAM provides a function `runPRAM()` to let you run through the whole workflow.
 
 For a given gene annotation and RNA-seq alignments, you can predict transcript
 models in intergenic genomic regions:
-```
+
+```R
 runPRAM(in_gtf, in_bamv, out_gtf)
 ```
 
@@ -88,9 +89,9 @@ PRAM has included input examples files in its `extdata/demo/`
 folder.  The table below provides a quick summary of all the example files.
 
 | input argument | file name(s) |
-|:--------------:|:-------------|
-| `in_gtf`       | in.gtf       |
-| `in_bamv`      | SZP.bam, TLC.bam   |
+|:--------------:|--------------|
+| `in_gtf`       | [in.gtf](inst/extdata/demo/in.gtf)       |
+| `in_bamv`      | [SZP.bam](inst/extdata/demo/SZP.bam), [TLC.bam](inst/extdata/demo.TLC.bam)   |
 <!--
 | `in_bedv`      | H3K79me2.bed.gz, POLR2.bed.gz   |
 | `training_tpms`| AED1.isoforms.results, AED2.isoforms.results   |
@@ -99,7 +100,8 @@ folder.  The table below provides a quick summary of all the example files.
 
 You can access example files by `system.file()` in __R__, e.g. for the 
 argument `in_gtf`, you can access its example file by
-```
+
+```R
 system.file('extdata/demo/in.gtf', package='pram')
 ```
 
@@ -109,7 +111,8 @@ Below shows usage of `runPRAM()` with example input files:
 ## Predict transcript models only
 ##
 -->
-```
+
+```R
 in_gtf = system.file('extdata/demo/in.gtf', package='pram')
 
 in_bamv = c( system.file('extdata/demo/SZP.bam', package='pram'),
@@ -141,6 +144,9 @@ runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms, training_gtf)
 
 PRAM identifies novel hematopoietic transcripts. Peng Liu, Alexandra A. Soukup, Emery H. Bresnick, Colin N. Dewey, and Sündüz Keleş. Manuscript in preparation.
 
+For key results reported in the PRAM manuscript and scripts for 
+reproducibility, please check out 
+[this GitHub repository](https://github.com/pliu55/pram_paper)
 
 ## <a name="Contact"></a> Contact
 
