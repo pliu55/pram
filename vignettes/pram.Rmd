@@ -43,7 +43,7 @@ it will report segmentation fault for the same bam file, which Linux Cufflinks
 runs ok
 -->
 
-```
+```R
 devtools::install_github('pliu55/pram')
 ```
 
@@ -55,7 +55,8 @@ PRAM provides a function `runPRAM()` to let you run through the whole workflow.
 -->
 For a given gene annotation and RNA-seq alignments, you can predict transcript
 models in intergenic genomic regions:
-```
+
+```R
 runPRAM(in_gtf, in_bamv, out_gtf)
 ```
 
@@ -94,7 +95,7 @@ folder.  The table below provides a quick summary of all the example files.
 Table: `runPRAM()`'s input example files.
 
 | input argument | file name(s) |
-|:--------------:|:-------------|
+|:--------------:|:------------:|
 | `in_gtf`       | in.gtf       |
 | `in_bamv`      | SZP.bam, TLC.bam   |
 <!--
@@ -105,7 +106,8 @@ Table: `runPRAM()`'s input example files.
 
 You can access example files by `system.file()` in __R__, e.g. for the 
 argument `in_gtf`, you can access its example file by
-```
+
+```R
 system.file('extdata/demo/in.gtf', package='pram')
 ```
 
@@ -115,7 +117,8 @@ Below shows usage of `runPRAM()` with example input files:
 ## Predict transcript models only
 ##
 -->
-```
+
+```R
 in_gtf = system.file('extdata/demo/in.gtf', package='pram')
 
 in_bamv = c( system.file('extdata/demo/SZP.bam', package='pram'),
@@ -124,7 +127,6 @@ in_bamv = c( system.file('extdata/demo/SZP.bam', package='pram'),
 pred_out_gtf = tempfile(fileext='.gtf')
 
 runPRAM(in_gtf, in_bamv, pred_out_gtf)
-
 ```
 
 <!--
@@ -167,7 +169,7 @@ By default, `defIgRanges()` will define intergenic ranges as regions 10 kb away
 from any known genes.  You can change it by the `radius` argument.
 
 ### Example
-```
+```R
 defIgRanges( system.file('extdata/gtf/defIgRanges_in.gtf', package='pram'),
              genome = 'hg38' )
 ```
@@ -189,7 +191,7 @@ Three input arguments are required by `prepIgBam()`:
 - `foutbam`: an output BAM file.
 
 ### Example
-```
+```R
 finbam = system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam', package='pram')
 
 iggrs = GenomicRanges::GRanges('chr10:77236000-77247000:+')
@@ -254,7 +256,7 @@ Table: `buildModel()`-required software and recommended version
 
 
 ### Example
-```
+```R
 fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam', package='pram'),
            system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam', package='pram') )
 
@@ -283,7 +285,7 @@ By default: `selModel()` will select transcript models with ≥ 2 exons and
 the `min_n_exon` and `min_tr_len` arguments.
 
 ### Example
-```
+```R
 fin_gtf = system.file('extdata/gtf/selModel_in.gtf', package='pram')
 
 fout_gtf = tempfile(fileext='.gtf')
