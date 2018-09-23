@@ -89,9 +89,9 @@ PRAM has included input examples files in its `extdata/demo/`
 folder.  The table below provides a quick summary of all the example files.
 
 | input argument | file name(s) |
-|:--------------:|--------------|
+|:--------------:|:------------:|
 | `in_gtf`       | [in.gtf](inst/extdata/demo/in.gtf)       |
-| `in_bamv`      | [SZP.bam](inst/extdata/demo/SZP.bam), [TLC.bam](inst/extdata/demo.TLC.bam)   |
+| `in_bamv`      | [SZP.bam](inst/extdata/demo/SZP.bam), [TLC.bam](inst/extdata/demo/TLC.bam)   |
 <!--
 | `in_bedv`      | H3K79me2.bed.gz, POLR2.bed.gz   |
 | `training_tpms`| AED1.isoforms.results, AED2.isoforms.results   |
@@ -146,7 +146,7 @@ PRAM identifies novel hematopoietic transcripts. Peng Liu, Alexandra A. Soukup, 
 
 For key results reported in the PRAM manuscript and scripts for 
 reproducibility, please check out 
-[this GitHub repository](https://github.com/pliu55/pram_paper)
+[this GitHub repository](https://github.com/pliu55/pram_paper).
 
 ## <a name="Contact"></a> Contact
 
