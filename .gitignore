@@ -26,4 +26,4 @@ vignettes/*.html
 inst/doc
 *.bam.bai
 
-job.R
+install.R
