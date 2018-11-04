@@ -9,6 +9,7 @@ Table of Contents
 * [Quick start](#Quick-start)
   * [Examples](#Examples)
 * [Reference](#Reference)
+  * [Reported Results](#Reported-results)
 * [Contact](#Contact)
 
 * * *
@@ -144,6 +145,7 @@ runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms, training_gtf)
 
 PRAM identifies novel hematopoietic transcripts. Peng Liu, Alexandra A. Soukup, Emery H. Bresnick, Colin N. Dewey, and Sündüz Keleş. Manuscript in preparation.
 
+### <a name='Reported-results'></a> Reported Results
 For key results reported in the PRAM manuscript and scripts for 
 reproducibility, please check out 
 [this GitHub repository](https://github.com/pliu55/pram_paper).
