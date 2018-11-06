@@ -3,7 +3,10 @@ title: "Pooling RNA-seq and Assembling Models"
 author: "Peng Liu, Colin N. Dewey, and Sündüz Keleş"
 date: "`r Sys.Date()`"
 output: 
-    rmarkdown::html_vignette:
+  # rmarkdown::html_vignette:
+  #     toc: true
+  #     fig_caption: yes
+    rmarkdown::pdf_document:
         toc: true
         fig_caption: yes
 vignette: >
@@ -280,8 +283,8 @@ total length of exons and introns.
 - `fout_gtf`: output GTF file containing selected transcript models.
 
 
-By default: `selModel()` will select transcript models with ≥ 2 exons and 
-≥ 200 bp total length of exons and introns.  You can change the default using 
+By default: `selModel()` will select transcript models with >= 2 exons and 
+>= 200 bp total length of exons and introns.  You can change the default using 
 the `min_n_exon` and `min_tr_len` arguments.
 
 ### Example
