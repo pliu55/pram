@@ -6,9 +6,15 @@ output:
   # rmarkdown::html_vignette:
   #     toc: true
   #     fig_caption: yes
-    rmarkdown::pdf_document:
+  # rmarkdown::pdf_document:
+    BiocStyle::pdf_document:
         toc: true
+        toc_depth: 2
+        number_sections: true
         fig_caption: yes
+      # highlight: tango
+urlcolor: blue
+linkcolor: blue
 vignette: >
   %\VignetteIndexEntry{Pooling RNA-seq and Assembling Models}
   %\VignetteEngine{knitr::rmarkdown}
@@ -23,20 +29,21 @@ knitr::opts_chunk$set(
 ```
 
 
-## Introduction
+# Introduction
 
 Pooling RNA-seq and Assembling Models (__PRAM__) is an __R__ package that 
 utilizes multiple RNA-seq 
 datasets to predict transcript models.  The workflow of PRAM contains four
-steps, which is shown in 
-the figure below with function names and associated key parameters.  In later
+steps.  Figure 1 shows each step with function name and associated key 
+parameters.  In the later
 sections of this vignette, we will describe each function in details.
 
-```{r, fig.cap='PRAM workflow', out.width='339px', out.height='333px', echo=F}
+```{r, fig.cap='PRAM workflow', fig.align='center', out.width='237px', out.height='233px', echo=F}
 knitr::include_graphics("workflow_noScreen.jpg")
 ```
 
-## Installation
+
+# Installation
 
 Use the following __R__ command on __Linux__ or __macOS__
 
@@ -50,7 +57,7 @@ runs ok
 devtools::install_github('pliu55/pram')
 ```
 
-## Quick start
+# Quick start
 PRAM provides a function `runPRAM()` to let you run through the whole workflow.
 
 <!--
@@ -91,7 +98,7 @@ runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
                    transcripts 
 -->
 
-### Examples
+## Examples
 PRAM has included input examples files in its `extdata/demo/` 
 folder.  The table below provides a quick summary of all the example files.
 
@@ -150,7 +157,7 @@ runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms, training_gtf)
 -->
 
 
-## Define intergenic genomic ranges: `defIgRanges()`
+# Define intergenic genomic ranges: `defIgRanges()`
 To predict intergenic transcripts, we must first define
 intergenic regions by `defIgRanges()`.  This function requires a GTF file 
 containing known gene annotation supplied for its `in_gtf` argument. This GTF 
@@ -171,14 +178,14 @@ You can provide one of the following arguments:
 By default, `defIgRanges()` will define intergenic ranges as regions 10 kb away
 from any known genes.  You can change it by the `radius` argument.
 
-### Example
+## Example
 ```R
 defIgRanges( system.file('extdata/gtf/defIgRanges_in.gtf', package='pram'),
              genome = 'hg38' )
 ```
 
 
-## Prepare input RNA-seq alignments: `prepIgBam()`
+# Prepare input RNA-seq alignments: `prepIgBam()`
 Once intergenic regions were defined, `prepIgBam()` will extract corresponding
 RNA-seq alignments from input BAM files.  In this way, transcript models 
 predicted at later stage will solely from intergenic regions.  Also, with fewer
@@ -193,9 +200,10 @@ Three input arguments are required by `prepIgBam()`:
 - `iggrs`: a GRanges object to define intergenic regions.
 - `foutbam`: an output BAM file.
 
-### Example
+## Example
 ```R
-finbam = system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam', package='pram')
+finbam = system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam', 
+                     package='pram')
 
 iggrs = GenomicRanges::GRanges('chr10:77236000-77247000:+')
 
@@ -204,7 +212,7 @@ foutbam = tempfile(fileext='.bam')
 prepIgBam(finbam, iggrs, foutbam)
 ```
 
-## Build transcript models: `buildModel()`
+# Build transcript models: `buildModel()`
 `buildModel()` predict transcript models from RNA-seq BAM file(s).
 This function requires two arguments:
 
@@ -212,7 +220,7 @@ This function requires two arguments:
 - `out_gtf`: an output GTF file containing predicted transcript models
 
 
-### Transcript prediction methods
+## Transcript prediction methods
 `buildModel()` has implemented seven transcript prediction methods. You
 can specify it by the `method` argument with one of the keywords:
 __plcf__, __plst__, __cfmg__, __cftc__, __stmg__, __cf__, and __st__.
@@ -236,7 +244,7 @@ Table: Prediction steps of the seven `buildModel()` methods
 | __st__   | no  | no                 | StringTie       | no                |
 
 
-### Required external software
+## Required external software
 Depending on your specified prediction method, `buildModel()` requires 
 external software: Cufflinks, StringTie and/or TACO, to build and/or assemble 
 transcript 
@@ -258,10 +266,12 @@ Table: `buildModel()`-required software and recommended version
 | [TACO](https://tacorna.github.io) | [v0.7.0](https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz)  | [v0.7.0](https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz) | __cftc__ |
 
 
-### Example
+## Example
 ```R
-fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam', package='pram'),
-           system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam', package='pram') )
+fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam', 
+                       package='pram'),
+           system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam', 
+                       package='pram') )
 
 foutgtf = tempfile(fileext='.gtf')
 
@@ -269,7 +279,7 @@ buildModel(fbams, foutgtf, method='plst')
 ```
 
 
-## Select transcript models: `selModel()`
+# Select transcript models: `selModel()`
 Once transcript models were built, you may want to select a subset of them by
 their genomic features. `selModel()` was developed for this purpose. 
 It allows you to select transcript models by their total number of exons and 
@@ -283,11 +293,11 @@ total length of exons and introns.
 - `fout_gtf`: output GTF file containing selected transcript models.
 
 
-By default: `selModel()` will select transcript models with >= 2 exons and 
->= 200 bp total length of exons and introns.  You can change the default using 
+By default: `selModel()` will select transcript models with $\ge$ 2 exons and 
+$\ge$ 200 bp total length of exons and introns.  You can change the default using 
 the `min_n_exon` and `min_tr_len` arguments.
 
-### Example
+## Example
 ```R
 fin_gtf = system.file('extdata/gtf/selModel_in.gtf', package='pram')
 
