@@ -6,10 +6,10 @@ library(testthat)
 
 setwd('/ua/pliu/repe/pram/')
 
-# document()
-# install(quick=F, reload=T, build_vignettes=T, threads=4)
-# test()
+  document()
+  install(quick=F, reload=T, build_vignettes=T, threads=4)
+  test()
 
-build_vignettes()
+# build_vignettes()
 
 # test( filter = 'runPRAM' )

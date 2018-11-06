@@ -22,6 +22,10 @@ of PRAM contains four steps, which is shown in
 the figure below with function names and associated key parameters.  PRAM has a
 [vignette](inst/doc/pram.pdf) that describes each function in details.
 
+<!--
+GitHub no longer renders Rmd file, I have to use PDF to show vignette
+-->
+
 <p align='center'>
     <img src="vignettes/workflow_noScreen.jpg" width="400" height="407">
 </p>

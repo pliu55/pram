@@ -6,7 +6,7 @@ output:
   # rmarkdown::html_vignette:
   #     toc: true
   #     fig_caption: yes
-  # rmarkdown::pdf_document:
+  ## GitHub no longer renders Rmd file, I have to use PDF to show vignette
     BiocStyle::pdf_document:
         toc: true
         toc_depth: 2
