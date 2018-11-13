@@ -3,7 +3,7 @@ Title: Pooling RNA-seq for Assembling Models
 Version: 0.0.0.9000
 Authors@R: person("Peng", "Liu", email = "pliu55@wisc.edu", role = c("aut", "cre"))
 Description: Pooling aligned RNA-seq fragments to assemble transcript models.
-License: What license is it under?
+License: GNU General Public License v3
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.5.1)
@@ -30,3 +30,4 @@ Collate:
     'selModel.R'
     'util.R'
 VignetteBuilder: knitr
+biocViews: Software, Technology, Sequencing, RNASeq
