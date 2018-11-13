@@ -11,6 +11,7 @@ Table of Contents
 * [Reference](#Reference)
   * [Reported Results](#Reported-results)
 * [Contact](#Contact)
+* [License](#License)
 
 * * *
 
@@ -158,3 +159,6 @@ reproducibility, please check out
 
 Got a question? Please report it at the [issues tab](https://github.com/pliu55/pram/issues) in this repository.
 
+## <a name="license"></a> License
+
+PRAM is licensed under the [GNU General Public License v3](LICENSE).
