@@ -7,6 +7,12 @@ License: GNU General Public License v3
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.5.1),
+         BiocGenerics, 
+         GenomeInfoDb,
+         GenomicAlignments,
+         GenomicRanges,
+         IRanges,
+         S4Vectors,
          rtracklayer
 Imports: methods, 
          parallel, 
