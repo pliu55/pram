@@ -6,7 +6,8 @@ Description: Pooling aligned RNA-seq fragments to assemble transcript models.
 License: GNU General Public License v3
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.5.1)
+Depends: R (>= 3.5.1),
+         rtracklayer
 Imports: methods, 
          parallel, 
          data.table   (>= 1.11.4), 
