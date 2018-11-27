@@ -25,7 +25,9 @@
 #'
 #' pred_out_gtf = tempfile(fileext='.gtf')
 #'
+#' \donttest{
 #' runPRAM(in_gtf, in_bamv, pred_out_gtf)
+#' }
 #'
 #'
 ## in_bedv = c( system.file('extdata/demo/H3K79me2.bed.gz', package='pram'),
@@ -40,12 +42,15 @@
 ##
 ## screen_out_gtf = tempfile(fileext='.gtf')
 ##
+## \donttest{
 ## runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms,
 ##         training_gtf)
+## }
 ##
 ##
-runPRAM <- function(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms,
-                    training_gtf) {
+#runPRAM <- function(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms,
+#                    training_gtf) {
+runPRAM <- function(in_gtf, in_bamv, out_gtf) {
 
     chromgrs = getMaxChromGRangesFromBams(in_bamv)
 
@@ -64,11 +69,11 @@ runPRAM <- function(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms,
     selModel(fgtf_all_mdl, fgtf_sel_mdl, min_n_exon=2, min_tr_len=200,
              info_keys = c('transcript_id'))
 
-    if ( missing(in_bedv) | missing(training_tpms) | missing(training_gtf) ) {
-        file.copy(fgtf_sel_mdl, out_gtf, overwrite=T)
-    } else {
-        screenModel(in_bedv, training_tpms, training_gtf, fgtf_sel_mdl, out_gtf)
-    }
+  # if ( missing(in_bedv) | missing(training_tpms) | missing(training_gtf) ) {
+  #     file.copy(fgtf_sel_mdl, out_gtf, overwrite=T)
+  # } else {
+  #     screenModel(in_bedv, training_tpms, training_gtf, fgtf_sel_mdl, out_gtf)
+  # }
 }
 
 
