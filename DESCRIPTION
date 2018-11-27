@@ -7,17 +7,17 @@ License: GNU General Public License v3
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.5.1),
-         BiocGenerics, 
-         GenomeInfoDb,
-         GenomicAlignments,
-         GenomicRanges,
-         IRanges,
-         S4Vectors,
-         rtracklayer
+         data.table        (>= 1.11.4),
+         GenomicAlignments (>= 1.16.0)
 Imports: methods, 
          parallel, 
-         data.table   (>= 1.11.4), 
-         Rsamtools    (>= 1.32.2),
+         BiocGenerics,
+         GenomeInfoDb,
+         GenomicRanges,
+         IRanges,
+         Rsamtools,
+         S4Vectors,
+         rtracklayer       (>= 1.40.2)
 RoxygenNote: 6.1.0
 Suggests: 
     testthat,
