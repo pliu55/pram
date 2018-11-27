@@ -4,7 +4,7 @@
 \alias{runPRAM}
 \title{Predict intergenic transcript models from RNA-seq}
 \usage{
-runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
+runPRAM(in_gtf, in_bamv, out_gtf)
 }
 \arguments{
 \item{in_gtf}{An input GTF file for defining genomic coordinates of
@@ -32,7 +32,9 @@ in_bamv = c( system.file('extdata/demo/SZP.bam', package='pram'),
 
 pred_out_gtf = tempfile(fileext='.gtf')
 
+\donttest{
 runPRAM(in_gtf, in_bamv, pred_out_gtf)
+}
 
 
 }
