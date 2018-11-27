@@ -178,6 +178,8 @@ setMethod('initFromDataTable', c('GTF', 'data.table', 'vector'),
 #  @param fout a character object of GTF file name
 #  @param append a boolean to inidicate if to append to a GTF file or not
 #
+#' @importFrom utils write.table
+#
 setMethod('writeGTF',
     c('GTF', 'character', 'logical'),
     function(x, fout, append) {
