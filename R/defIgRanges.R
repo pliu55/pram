@@ -120,6 +120,7 @@ getChromGRanges <- function(genome, fchromsize, chroms) {
 
 
 #' @importFrom  data.table  data.table fread
+#' @importFrom  utils       read.table
 readChromSize <- function(fin) {
     dt = data.table(read.table(fin, header=F, sep="\t"))
 
