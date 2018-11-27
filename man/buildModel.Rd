@@ -75,7 +75,9 @@ fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam',
 
 foutgtf = tempfile(fileext='.gtf')
 
+\donttest{
 buildModel(fbams, foutgtf, method='plst')
+}
 
 
 }

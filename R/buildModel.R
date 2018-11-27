@@ -67,7 +67,9 @@
 #'
 #' foutgtf = tempfile(fileext='.gtf')
 #'
+#' \donttest{
 #' buildModel(fbams, foutgtf, method='plst')
+#' }
 #'
 #'
 buildModel <- function(in_bamv, out_gtf, method='plcf', nthreads=1, tmpdir=NULL,
