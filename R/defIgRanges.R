@@ -57,6 +57,7 @@
 #'
 defIgRanges <- function(in_gtf, chromgrs, genome=NULL, fchromsize=NULL,
                         radius=1e+4, feat='exon', chroms=NULL){
+    feature = chrom = gene_id = gn_start = gn_end = NULL
     fgtf = in_gtf
     if ( missing(chromgrs) ) {
         chromgrs = getChromGRanges(genome, fchromsize, chroms)
@@ -87,6 +88,7 @@ defIgRanges <- function(in_gtf, chromgrs, genome=NULL, fchromsize=NULL,
 
 
 getChromGRanges <- function(genome, fchromsize, chroms) {
+    chrom = NULL
     chromdt = NULL
     avail_genomes = c('hg19', 'hg38', 'mm10', 'mm9')
 
@@ -122,6 +124,8 @@ getChromGRanges <- function(genome, fchromsize, chroms) {
 #' @importFrom  data.table  data.table fread
 #' @importFrom  utils       read.table
 readChromSize <- function(fin) {
+    V1 = V2 = NULL
+    `.` = function(...) NULL
     dt = data.table(read.table(fin, header=F, sep="\t"))
 
     if ( nrow(dt) == 0 ) {

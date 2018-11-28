@@ -36,6 +36,7 @@ setMethod(
 
 
 renameGnTrID <- function(exondt, runid) {
+    ori_lab = ign = gene_id = itr = transcript_id = chrom = NULL
     exondt[, ori_lab := ifelse(strand == '+', 'plus',
                                ifelse(strand == '-', 'minus', NA) )]
     exondt[, ign := .GRP, by=gene_id]

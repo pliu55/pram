@@ -107,6 +107,7 @@ setMethod('getTr',   'Transcript', function(x) x@tr)
 #' @importFrom BiocGenerics end
 #
 getTrJncFromExon <- function(exondt) {
+    trid = chrom = NULL
     ## gaps() cannot be applied to GRangesList, have to use IRangesList instead
     exonirs = IRanges( start = exondt[, start],
                        end   = exondt[, end],
@@ -139,6 +140,7 @@ getTrJncFromExon <- function(exondt) {
 #          end, strand, number of exons, and transcript ID
 #
 getTrFromExon <- function(exondt, id_col_name='trid') {
+    chrom = NULL
     trdt = exondt[, list( chrom  = last(chrom),
                           start  = min(start),
                           end    = max(end),

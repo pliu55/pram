@@ -73,6 +73,7 @@ addOri <- function(iggrs) {
 #' @importFrom  S4Vectors   FilterRules
 #'
 extractBam <- function(finbam, iggrs, foutbam, prm) {
+    qname_HI = qname = HI = i = flag = to_select = rdid = NULL
     finbam_index = paste0(finbam, '.bai')
     if ( ! file.exists(finbam_index) ) indexBam(finbam)
 
@@ -123,6 +124,7 @@ extractBam <- function(finbam, iggrs, foutbam, prm) {
 #' @importFrom  GenomicAlignments  cigar
 #'
 selAlnByMateMaxNDup <- function(alns, max_uni_ndup, max_mul_ndup) {
+    flag = is_rd1 = is_rd2 = cigar1 = cigar2 = rdid = qname = HI = is_mul1 = is_mul2 = dupi = start1 = start2 = NULL
     alndt = data.table( qname = mcols(alns)$qname,
                         HI    = mcols(alns)$HI,
                         cigar = cigar(alns),

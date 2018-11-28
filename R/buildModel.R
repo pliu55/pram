@@ -171,6 +171,7 @@ splitUserBamByChromOri <- function(i, prm) {
 #' @importFrom  GenomicRanges  GRanges
 #'
 filterBamByChromOri <- function(fuserbam, fchromoribam, chrom, strand, prm) {
+    qname_HI = qname = HI = to_select = NULL
     fr1ststrand2mate2flag = fr1ststrand2mate2flag(prm)
     flag1st = fr1ststrand2mate2flag[[strand]][['1stmate']]
 
@@ -207,6 +208,8 @@ filterBamByChromOri <- function(fuserbam, fchromoribam, chrom, strand, prm) {
 #' @importFrom  Rsamtools   indexBam idxstatsBam
 #'
 genBamChromOri <- function(fbam)  {
+    fuserbam = mapped = chrom = ori = NULL
+    `.` = function(...) NULL
     fbai = paste0(fbam, '.bai')
     if ( ! file.exists(fbai) ) indexBam(fbam)
 
@@ -230,6 +233,8 @@ genBamChromOri <- function(fbam)  {
 #' @importFrom  tools  file_path_sans_ext
 #'
 defCSManager <- function(prm) {
+    fuserbam = tag = bamid = chrom = ori = NULL
+    `.` = function(...) NULL
     fuserbams = fuserbams(prm)
     nthr = nthreads(prm)
 
@@ -262,6 +267,8 @@ defCSManager <- function(prm) {
 #' @importFrom  tools  file_path_sans_ext
 #'
 def1StepManager <- function(prm) {
+    tag = chrom = fuserbam = ori = NULL
+    `.` = function(...) NULL
     fuserbams = fuserbams(prm)
     nthr = nthreads(prm)
 
@@ -294,6 +301,8 @@ def1StepManager <- function(prm) {
 #' @importFrom  tools  file_path_sans_ext
 #'
 def2StepManager <- function(prm) {
+    tag = chrom = fuserbam = mdlpref = mrgpref = mrgbase = ori = NULL
+    `.` = function(...) NULL
     fuserbams = fuserbams(prm)
     nthr = nthreads(prm)
 
@@ -334,6 +343,8 @@ def2StepManager <- function(prm) {
 
 
 outputCorrectStrandModel <- function(prm) {
+    ori = NULL
+    `.` = function(...) NULL
     dt        = managerdt(prm)
     nthr      = nthreads(prm)
     info_keys = gtfinfokeys(prm)
@@ -362,6 +373,7 @@ outputCorrectStrandModel <- function(prm) {
 
 
 getCorrectStrandExon <- function(fgtf, stranddt, info_keys, mode) {
+    feature = NULL
     ori = stranddt[ foutgtf == fgtf ]$ori
     outdt = data.table()
     if ( file.exists(fgtf) ) {
@@ -430,6 +442,7 @@ mergeModels <- function(method, prm) {
 
 
 mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
+    chrom = ori = NULL
     dt = managerdt(prm)[ chrom == in_chrom & ori == in_ori ]
     fmdlgtfs = unique(dt$fmdlgtf)
     fmrggtf  = unique(dt$fmrggtf)
@@ -478,6 +491,7 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
 
 
 renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
+    feature = strand_label = runid = chrom = transcript_id = gene_id = ign = itr = NULL
     gtf = new('GTF')
     info_keys = gtfinfokeys(prm)
     mode = mode(prm)
@@ -516,6 +530,8 @@ renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
 #' @importFrom  parallel       mcmapply
 #'
 modelByPoolingBams <- function(method, prm) {
+    chrom = ori = fmdlbam = NULL
+    `.` = function(...) NULL
     alldt = managerdt(prm)[, .(chrom, ori, fmdlbam)]
     setkey(alldt, NULL)
     dt = unique(alldt, by=c('chrom', 'ori', 'fmdlbam'))
@@ -536,6 +552,7 @@ modelByPoolingBams <- function(method, prm) {
 #' @importFrom  Rsamtools  mergeBam indexBam
 #'
 poolBamByChromOri <- function(in_chrom, in_ori, prm) {
+    chrom = ori = NULL
     managerdt = managerdt(prm)
     dt = managerdt[ chrom == in_chrom & ori == in_ori ]
 

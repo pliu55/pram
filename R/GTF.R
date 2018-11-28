@@ -183,6 +183,7 @@ setMethod('initFromDataTable', c('GTF', 'data.table', 'vector'),
 setMethod('writeGTF',
     c('GTF', 'character', 'logical'),
     function(x, fout, append) {
+        feature = irow = chrom = score = frame = NULL
         grdt = grangedt(x)
         outdt = data.table()
         if ( nrow(grdt) > 0 ) {

@@ -40,6 +40,7 @@ setMethod( 'evalModel',
 setMethod( 'evalModel',
            c('character', 'character'),
            function(model_exons, target_exons) {
+               feature = NULL
                mdlgtf = new('GTF')
                tgtgtf = new('GTF')
                info_keys = c('transcript_id')
@@ -82,6 +83,7 @@ setMethod( 'evalModel',
 setMethod( 'evalModel',
            c('character', 'data.table'),
            function(model_exons, target_exons) {
+               feature = NULL
                mdlgtf = new('GTF')
                info_keys = c('transcript_id')
                mdlgtf = initFromGTFFile(mdlgtf, model_exons,  info_keys)
@@ -97,6 +99,7 @@ setMethod( 'evalModel',
 #' @importFrom  data.table setnames
 #'
 evalModelByTr <- function(mdltr, tgttr) {
+    mdljncid = tgtjncid = NULL
     mdlexondt = getExon(mdltr)
     tgtexondt = getExon(tgttr)
 
@@ -129,6 +132,7 @@ evalModelByTr <- function(mdltr, tgttr) {
 #
 evalMdlJnc <- function(tgtjnc_in_mdldt, mdljnc_in_tgtdt, mdl_ol_tgtdt,
                        tgtjncdt) {
+    ntp = nfp = nfn = NULL
     tpfndt = calTpFn4Jnc(tgtjnc_in_mdldt, tgtjncdt)
     fpdt = calFp4Jnc(mdljnc_in_tgtdt, mdl_ol_tgtdt, tgtjncdt)
 
@@ -147,6 +151,7 @@ evalMdlJnc <- function(tgtjnc_in_mdldt, mdljnc_in_tgtdt, mdl_ol_tgtdt,
 #' @importFrom S4Vectors mcols
 #'
 findModelJncInTarget <- function(mdljncdt, tgtjncdt) {
+    queryHits = subjectHits = mdljncid = trid = NULL
     mdlgrs = makeGRangesFromDataFrame(mdljncdt, keep.extra.columns=T)
     tgtgrs = makeGRangesFromDataFrame(tgtjncdt, keep.extra.columns=T)
 
@@ -164,6 +169,7 @@ findModelJncInTarget <- function(mdljncdt, tgtjncdt) {
 #' @importFrom GenomicRanges findOverlaps
 #'
 findTargetJncInModel <- function(tgtjncdt, mdljncdt) {
+    queryHits = subjectHits = tgtjncid = mdlid = NULL
     mdlgrs = makeGRangesFromDataFrame(mdljncdt, keep.extra.columns=T)
     tgtgrs = makeGRangesFromDataFrame(tgtjncdt, keep.extra.columns=T)
 
@@ -181,6 +187,7 @@ findTargetJncInModel <- function(tgtjncdt, mdljncdt) {
 #' @importFrom GenomicRanges findOverlaps
 #'
 findMdlTrOLTgtTr <- function(mdlexondt, tgtexondt) {
+    queryHits = subjectHits = mdlid = nexon = trid = NULL
     mdldt = getTrFromExon(mdlexondt, id_col_name='trid')
     trdt  = getTrFromExon(tgtexondt, id_col_name='trid')
 
@@ -201,6 +208,7 @@ findMdlTrOLTgtTr <- function(mdlexondt, tgtexondt) {
 
 
 calTpFn4Jnc <- function(tgtjnc_in_mdldt, tgtjncdt) {
+    trid = mdlid = ijnc = nprd = n_not_prd = njnc = nmdljnc = NULL
     tgtdt = unique(tgtjncdt, by=c('trid', 'njnc'))
     dt = subset(tgtjnc_in_mdldt, (trid %in% tgtdt[, trid]) & (! is.na(mdlid)))
 
@@ -235,6 +243,8 @@ calTpFn4Jnc <- function(tgtjnc_in_mdldt, tgtjncdt) {
 
 
 calFp4Jnc <- function(mdljnc_in_tgtdt, mdl_ol_tgtdt, tgtjncdt) {
+    trid = ijnc = nprd = n_not_prd = nexon = mdlid = NULL
+
     tgtdt = unique(tgtjncdt, by=c('trid', 'njnc'))
 
     indt = subset(mdljnc_in_tgtdt, trid %in% tgtdt[, trid])
@@ -246,9 +256,9 @@ calFp4Jnc <- function(mdljnc_in_tgtdt, mdl_ol_tgtdt, tgtjncdt) {
     indi_prddt = merge(oldt, indidt, by='mdlid', all.x=T)
     indi_prddt[, nprd := ifelse(is.na(nprd), 0, nprd)]
     indi_prddt[, n_not_prd := ifelse(nexon == 1, 0, nexon - 1 - nprd)]
-    if ( nrow(subset(indi_prddt, n_not_prd < 0)) > 0 ) {
-        cat('error: n_not_prd < 0:', in_method, "\n")
-    }
+  # if ( nrow(subset(indi_prddt, n_not_prd < 0)) > 0 ) {
+  #     cat('error: n_not_prd < 0:', in_method, "\n")
+  # }
     indi_fp = sum(indi_prddt[, n_not_prd])
 
 

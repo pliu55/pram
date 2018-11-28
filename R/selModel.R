@@ -32,6 +32,7 @@
 #'
 selModel <- function(fin_gtf, fout_gtf, min_n_exon=2, min_tr_len=200,
                      info_keys = c('transcript_id') ) {
+    feature = transcript_id = n_exon = tr_len = NULL
     in_gtf  = new('GTF')
     out_gtf = new('GTF')
     out_infokeys = unique(c('transcript_id', info_keys))
