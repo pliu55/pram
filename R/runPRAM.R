@@ -51,7 +51,7 @@
 #runPRAM <- function(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms,
 #                    training_gtf) {
 runPRAM <- function(in_gtf, in_bamv, out_gtf) {
-
+    foutbam = finbam = NULL
     chromgrs = getMaxChromGRangesFromBams(in_bamv)
 
     iggrs = defIgRanges(in_gtf, chromgrs)
@@ -69,6 +69,8 @@ runPRAM <- function(in_gtf, in_bamv, out_gtf) {
     selModel(fgtf_all_mdl, fgtf_sel_mdl, min_n_exon=2, min_tr_len=200,
              info_keys = c('transcript_id'))
 
+    file.copy(fgtf_sel_mdl, out_gtf, overwrite=T)
+
   # if ( missing(in_bedv) | missing(training_tpms) | missing(training_gtf) ) {
   #     file.copy(fgtf_sel_mdl, out_gtf, overwrite=T)
   # } else {
@@ -84,6 +86,7 @@ setGeneric( 'getMaxChromGRangesFromBams',
 
 setMethod('getMaxChromGRangesFromBams', 'vector',
 function(fbams) {
+    seqlength = NULL
     dt = rbindlist(lapply(fbams, getIdxStatsFromBam))
     maxdt = dt[, list(end = max(seqlength)), by=seqnames]
     maxdt[, start := 1]
