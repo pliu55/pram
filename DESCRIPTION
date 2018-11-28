@@ -3,38 +3,36 @@ Title: Pooling RNA-seq for Assembling Models
 Version: 0.0.0.9000
 Authors@R: person("Peng", "Liu", email = "pliu55@wisc.edu", role = c("aut", "cre"))
 Description: Pooling aligned RNA-seq fragments to assemble transcript models.
-License: GNU General Public License
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.5.1),
-         data.table        (>= 1.11.4),
-         GenomicAlignments (>= 1.16.0)
+Depends: R (>= 3.5.0)
 Imports: methods, 
          parallel, 
-         BiocGenerics,
-         GenomeInfoDb,
-         GenomicRanges,
-         IRanges,
-         Rsamtools,
-         S4Vectors,
-         rtracklayer       (>= 1.40.2)
+         data.table        (>= 1.11.4),
+         GenomicAlignments (>= 1.16.0),
+         rtracklayer       (>= 1.40.2),
+         BiocGenerics      (>= 0.26.0),
+         GenomeInfoDb      (>= 1.16.0),
+         GenomicRanges     (>= 1.32.4),
+         IRanges           (>= 2.14.10),
+         Rsamtools         (>= 1.32.2),
+         S4Vectors         (>= 0.18.3)
 RoxygenNote: 6.1.0
-Suggests: 
-    testthat,
-    BiocStyle,
-    knitr,
-    rmarkdown
-Collate:
-    'GTF.R'
-    'ModelGTF.R'
-    'Param.R'
-    'Transcript.R'
-    'buildModel.R'
-    'defIgRanges.R'
-    'evalModel.R'
-    'prepIgBam.R'
-    'runPRAM.R'
-    'selModel.R'
-    'util.R'
+Suggests: testthat,
+          BiocStyle,
+          knitr,
+          rmarkdown
+Collate: 'GTF.R'
+         'ModelGTF.R'
+         'Param.R'
+         'Transcript.R'
+         'buildModel.R'
+         'defIgRanges.R'
+         'evalModel.R'
+         'prepIgBam.R'
+         'runPRAM.R'
+         'selModel.R'
+         'util.R'
 VignetteBuilder: knitr
 biocViews: Software, Technology, Sequencing, RNASeq
