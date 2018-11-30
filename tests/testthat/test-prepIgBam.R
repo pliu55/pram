@@ -25,8 +25,8 @@ testExtractIgBam <- function(rnaseqid, iggrs, outdir) {
     prepIgBam(finbam, iggrs, foutbam)
 
     bamprm = ScanBamParam(what=c('flag', 'qname'), which=iggrs)
-    cmp_alns = readGAlignments(fcmpbam, use.names=F, param=bamprm)
-    out_alns = readGAlignments(foutbam, use.names=F, param=bamprm)
+    cmp_alns = readGAlignments(fcmpbam, use.names=FALSE, param=bamprm)
+    out_alns = readGAlignments(foutbam, use.names=FALSE, param=bamprm)
 
     test_that( paste0(foutbam, ' vs ', fcmpbam),
                expect_identical(cmp_alns, out_alns) )

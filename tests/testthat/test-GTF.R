@@ -9,7 +9,7 @@ gtf = GTF()
 gtf = initFromGTFFile(gtf, in_fgtf, in_infokeys, origin=in_origin)
 
 out_fgtf = 'tmp.gtf'
-writeGTF(gtf, out_fgtf, F)
+writeGTF(gtf, out_fgtf, FALSE)
 
 new_gtf = GTF()
 new_gtf = initFromGTFFile(new_gtf, out_fgtf, in_infokeys, origin=in_origin)

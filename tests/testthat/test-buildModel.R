@@ -77,8 +77,8 @@ testFilterBamByChromOri <- function(chrom, strand, outdir, prm) {
     fcmpbai = paste0(fcmp, '.bai')
     if ( ! file.exists(fcmpbai)) indexBam(fcmp)
 
-    cmp_alns = readGAlignments(fcmp, use.names=F, param=bamprm)
-    out_alns = readGAlignments(fout, use.names=F, param=bamprm)
+    cmp_alns = readGAlignments(fcmp, use.names=FALSE, param=bamprm)
+    out_alns = readGAlignments(fout, use.names=FALSE, param=bamprm)
 
     test_that( paste0('buildModel::testFilterBamByChromOri: ', chrom, strand),
                expect_identical(cmp_alns, out_alns) )

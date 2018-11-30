@@ -10,7 +10,7 @@ main <- function() {
 
 testBenchmark <- function() {
     ftgt = system.file('extdata/benchmark/tgt.tsv.gz', package='pram')
-    tgtdt = data.table(read.table(ftgt, header=T, sep="\t"))
+    tgtdt = data.table(read.table(ftgt, header=TRUE, sep="\t"))
 
     mode2results = list(
                   ##--- indi jnc ---##--- tr jnc ---##-------- nuc --------##
@@ -55,8 +55,8 @@ testEvalModelByGTF <- function(mode, mode2results, mdldtlist, tgtdt) {
     tgtgtf = initFromDataTable(tgtgtf, tgtdt, c('transcript_id'))
     fmdlgtf = paste0(tempdir(), '/', mode, '_mdl.gtf')
     ftgtgtf = paste0(tempdir(), '/', mode, '_tgt.gtf')
-    writeGTF(mdlgtf, fmdlgtf, append=F)
-    writeGTF(tgtgtf, ftgtgtf, append=F)
+    writeGTF(mdlgtf, fmdlgtf, append=FALSE)
+    writeGTF(tgtgtf, ftgtgtf, append=FALSE)
 
     evaldt = evalModel(fmdlgtf, ftgtgtf)
 
@@ -67,8 +67,8 @@ testEvalModelByGTF <- function(mode, mode2results, mdldtlist, tgtdt) {
 
 testEvalModelByGR <- function(mode, mode2results, mdldtlist, tgtdt) {
     mdldt = mdldtlist[[mode]]
-    mdlgrs = makeGRangesFromDataFrame(mdldt, keep.extra.columns=T)
-    tgtgrs = makeGRangesFromDataFrame(tgtdt, keep.extra.columns=T)
+    mdlgrs = makeGRangesFromDataFrame(mdldt, keep.extra.columns=TRUE)
+    tgtgrs = makeGRangesFromDataFrame(tgtdt, keep.extra.columns=TRUE)
 
     evaldt = evalModel(mdlgrs, tgtgrs)
 
@@ -89,7 +89,7 @@ testEvalModelByDT <- function(mode, mode2results, mdldtlist, tgtdt) {
 readModel <- function(mode) {
     fmdl = system.file(paste0('extdata/benchmark/', mode, '.tsv.gz'),
                        package='pram')
-    mdldt = data.table(read.table(fmdl, header=T, sep="\t"))
+    mdldt = data.table(read.table(fmdl, header=TRUE, sep="\t"))
 
     return(mdldt)
 }

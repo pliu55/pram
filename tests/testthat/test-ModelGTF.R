@@ -25,7 +25,8 @@ testSTMG <- function() {
     test_that( 'StringTieMerge GTF', {
         expect_equal(origin(gtf), origin)
         expect_equal(nrow(exondt), nlines)
-        expect_true(all(grepl('^stmg_minus_chr18', exondt[, gene_id], perl=T)))
+        expect_true(all(grepl('^stmg_minus_chr18', exondt[, gene_id], 
+                              perl=TRUE)))
     })
 }
 
@@ -44,7 +45,8 @@ testSTPL <- function() {
     test_that( 'StringTiePool GTF', {
         expect_equal(origin(gtf), origin)
         expect_equal(nrow(exondt), nlines)
-        expect_true(all(grepl('^stpl_minus_chr18', exondt[, gene_id], perl=T)))
+        expect_true(all(grepl('^stpl_minus_chr18', exondt[, gene_id], 
+                              perl=TRUE)))
     })
 }
 
@@ -63,7 +65,8 @@ testCFMG <- function() {
     test_that( 'CufflinksMerge GTF', {
         expect_equal(origin(gtf), origin)
         expect_equal(nrow(exondt), nlines)
-        expect_true(all(grepl('^cfmg_minus_chr18', exondt[, gene_id], perl=T)))
+        expect_true(all(grepl('^cfmg_minus_chr18', exondt[, gene_id], 
+                              perl=TRUE)))
     })
 }
 
@@ -83,7 +86,8 @@ testCFPL <- function() {
     test_that( 'CufflinksPool GTF', {
         expect_equal(origin(gtf), origin)
         expect_equal(nrow(exondt), nlines)
-        expect_true(all(grepl('^cfpl_minus_chr18', exondt[, gene_id], perl=T)))
+        expect_true(all(grepl('^cfpl_minus_chr18', exondt[, gene_id], 
+                              perl=TRUE)))
     })
 }
 
@@ -103,7 +107,8 @@ testTACO <- function() {
     test_that( 'TACO GTF', {
         expect_equal(origin(gtf), origin)
         expect_equal(nrow(exondt), nlines)
-        expect_true(all(grepl('^taco_minus_chr18', exondt[, gene_id], perl=T)))
+        expect_true(all(grepl('^taco_minus_chr18', exondt[, gene_id], 
+                              perl=TRUE)))
     })
 }
 
