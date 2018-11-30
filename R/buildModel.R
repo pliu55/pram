@@ -193,7 +193,7 @@ filterBamByChromOri <- function(fuserbam, fchromoribam, chrom, strand, prm) {
     filter_func = function(x) {
         dt = data.table(as.data.frame(x))
         dt[, qname_HI := paste0(qname, '_', HI)]
-        dt[, to_select := ifelse(qname_HI %in% seldt$qname_HI, T, F)]
+        dt[, to_select := ifelse(qname_HI %in% seldt$qname_HI, TRUE, FALSE)]
         return(dt$to_select)
     }
 
