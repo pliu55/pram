@@ -78,7 +78,7 @@ defIgRanges <- function(in_gtf, chromgrs, genome=NULL, fchromsize=NULL,
                  end    = gn_end + radius,
                  strand = '*' )]
 
-    gngrs = makeGRangesFromDataFrame(gndt, keep.extra.columns=F)
+    gngrs = makeGRangesFromDataFrame(gndt, keep.extra.columns=FALSE)
     gngrs = reduce(gngrs)
 
     iggrs = setdiff(chromgrs, gngrs)
@@ -115,7 +115,7 @@ getChromGRanges <- function(genome, fchromsize, chroms) {
         outdt = chromdt[ chrom %in% chroms ]
     }
     outdt[, chrom := as.character(chrom) ] ## avoid chrom w/ 0 length
-    outgrs = makeGRangesFromDataFrame(outdt, keep.extra.columns=F)
+    outgrs = makeGRangesFromDataFrame(outdt, keep.extra.columns=FALSE)
 
     return(outgrs)
 }
@@ -126,7 +126,7 @@ getChromGRanges <- function(genome, fchromsize, chroms) {
 readChromSize <- function(fin) {
     V1 = V2 = NULL
     `.` = function(...) NULL
-    dt = data.table(read.table(fin, header=F, sep="\t"))
+    dt = data.table(read.table(fin, header=FALSE, sep="\t"))
 
     if ( nrow(dt) == 0 ) {
         stop(paste0('Fail to read or file is empty: ', fin, "\n"))
