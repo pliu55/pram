@@ -46,8 +46,11 @@ Cuffmerge, Cuffcompare, and gtf_to_sam from the Cufflinks
 suite are assumed to be under the same folder as
 Cufflinks.
 All the executables are available to download for
-Linux \url{http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz}
-and MacOS \url{http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.OSX_x86_64.tar.gz}
+Linux \url{http://cole-trapnell-lab.github.io/cufflinks/
+assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz}
+and MacOS \url{http://cole-trapnell-lab.github.io/
+cufflinks/assets/downloads/
+cufflinks-2.2.1.OSX_x86_64.tar.gz}
 Default: ''}
 
 \item{stringtie}{StringTie executable file.  Required by mode
