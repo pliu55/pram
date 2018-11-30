@@ -498,7 +498,8 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
 
 
 renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
-    feature = strand_label = runid = chrom = transcript_id = gene_id = ign = itr = NULL
+    feature = strand_label = runid = chrom = transcript_id = gene_id = NULL
+    ign = itr = NULL
     gtf = new('GTF')
     info_keys = gtfinfokeys(prm)
     mode = mode(prm)

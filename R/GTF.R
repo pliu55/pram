@@ -15,8 +15,9 @@ setGeneric('infokeys', function(x) standardGeneric('infokeys'))
 setGeneric('grangedt', function(x) standardGeneric('grangedt'))
 setGeneric('writeGTF',
            function(x, fout, append) standardGeneric('writeGTF'))
-setGeneric('initFromGTFFile',
-           function(obj, fgtf, infokeys, ...) standardGeneric('initFromGTFFile'))
+setGeneric(
+    'initFromGTFFile',
+        function(obj, fgtf, infokeys, ...) standardGeneric('initFromGTFFile'))
 setGeneric('initFromGRanges',
            function(obj, grs) standardGeneric('initFromGRanges'))
 setGeneric('initFromDataTable', function(obj, dt, infokeys, ...)
@@ -67,7 +68,8 @@ setMethod(
 #
 #  @param obj a GTF object to be initialized
 #  @param fgtf file name with full path to a GTF file
-#  @param infokeys a vector of characters to define to-be-extracted entries in GTF file's column 9
+#  @param infokeys a vector of characters to define to-be-extracted entries in 
+#                  GTF file's column 9
 #
 #' @importFrom data.table  data.table fread setnames
 #' @importFrom rtracklayer readGFF

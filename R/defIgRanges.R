@@ -22,7 +22,8 @@
 #' @param  fchromsize  Name of a file defining chromosome sizes. Will be used
 #'                     when `chromgrs` and `genome` are missing.
 #'                     It can be downloaded from
-#'                     UCSC, e.g. for hg19, http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/chromInfo.txt.gz
+#'                     UCSC, e.g. for hg19, http://hgdownload.cse.ucsc.edu/
+#'                     goldenpath/hg19/database/chromInfo.txt.gz
 #'                     Required to have at least two tab-delimited columns
 #'                     without any header:
 #'                     \enumerate{

@@ -55,24 +55,29 @@ Param = setClass('Param',
     ),
 
     prototype = list(
-       #STAR_URL = 'https://github.com/alexdobin/STAR/archive/STAR_2.4.2a.tar.gz',
-
-       #RSEM_URL = 'https://github.com/deweylab/RSEM/archive/v1.3.0.tar.gz',
-
         OS2CUFFLINKS_URL = list(
-            'LINUX' = 'http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz',
+            'LINUX' = paste0('http://cole-trapnell-lab.github.io/cufflinks/',
+                      'assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz'),
 
-            'OSX' = 'http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.1.1.OSX_x86_64.tar.gz' ),
+            'OSX' = paste0('http://cole-trapnell-lab.github.io/cufflinks/',
+                      'assets/downloads/cufflinks-2.1.1.OSX_x86_64.tar.gz') 
+        ),
 
         OS2STRINGTIE_URL = list(
-            'LINUX' = 'http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.Linux_x86_64.tar.gz',
+            'LINUX' = paste0('http://ccb.jhu.edu/software/stringtie/dl/',
+                             'stringtie-1.3.3b.Linux_x86_64.tar.gz'),
 
-            'OSX' = 'http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.OSX_x86_64.tar.gz' ),
+            'OSX' = paste0('http://ccb.jhu.edu/software/stringtie/dl/', 
+                           'stringtie-1.3.3b.OSX_x86_64.tar.gz')
+        ),
 
         OS2TACO_URL = list(
-            'LINUX' = 'https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz',
+            'LINUX' = paste0('https://github.com/tacorna/taco/releases/',
+                            'download/v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz'),
 
-            'OSX' = 'https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz' ),
+            'OSX' = paste0('https://github.com/tacorna/taco/releases/', 
+                           'download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz') 
+        ),
 
 
         RANDOM_SEED = 88888888,
