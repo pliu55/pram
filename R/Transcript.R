@@ -123,7 +123,7 @@ getTrJncFromExon <- function(exondt) {
                         strand = exondt[, strand],
                         trid   = exondt[, trid] )
     uni_strdt = unique(strdt, by=c('strand', 'trid'))
-    outdt = merge(jncdt, uni_strdt, by='trid', all.x=T)
+    outdt = merge(jncdt, uni_strdt, by='trid', all.x=TRUE)
     setcolorder(outdt, c('chrom', 'start', 'end', 'strand', 'trid', 'njnc',
                          'ijnc'))
     return(outdt)
