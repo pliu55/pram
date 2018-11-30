@@ -11,9 +11,9 @@ getOS <- function() {
             os = "LINUX"
         }
     } else {
-        if ( grepl("^darwin", R.version$os, perl=T) ) {
+        if ( grepl("^darwin", R.version$os, perl=TRUE) ) {
             os = "OSX"
-        } else if ( grepl("linux-gnu", R.version$os, perl=T) ) {
+        } else if ( grepl("linux-gnu", R.version$os, perl=TRUE) ) {
             os = "LINUX"
         }
     }
@@ -70,10 +70,10 @@ getUniChromOriDt <- function(grs) {
 downloadAndUntar <- function(url, dldir) {
     tgz_name = basename(url)
     ftgz_dest = paste0(dldir, '/', tgz_name)
-    download.file(url, ftgz_dest, quiet=F)
+    download.file(url, ftgz_dest, quiet=FALSE)
 
     untar(ftgz_dest, exdir=dldir)
-    ex_dir = paste0(dldir, '/', gsub('.tar.gz', '', tgz_name, fixed=T))
+    ex_dir = paste0(dldir, '/', gsub('.tar.gz', '', tgz_name, fixed=TRUE))
 
     return(ex_dir)
 }
