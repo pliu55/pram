@@ -144,7 +144,7 @@ selAlnByMateMaxNDup <- function(alns, max_uni_ndup, max_mul_ndup) {
     rd1dt[, `:=`( is_rd1 = NULL, is_rd2 = NULL, flag = NULL )]
     rd2dt[, `:=`( is_rd1 = NULL, is_rd2 = NULL, flag = NULL )]
 
-    all_matedt = merge(rd1dt, rd2dt, by=c('qname', 'HI'), all=T)
+    all_matedt = merge(rd1dt, rd2dt, by=c('qname', 'HI'), all=TRUE)
 
     matedt = subset(all_matedt, (! is.na(cigar1)) & (! is.na(cigar2)))
     matedt[, rdid := paste0(qname, '_', HI)]
@@ -177,8 +177,8 @@ selAlnByMateMaxNDup <- function(alns, max_uni_ndup, max_mul_ndup) {
 selAlnInGRanges <- function(iggrs, finbam, flag_mate) {
     bamprm = ScanBamParam(flag=flag_mate, tag=c('HI'), what=c('flag', 'qname'),
                           which=iggrs)
-    alns = readGAlignments(finbam, use.names=F, param=bamprm)
-    olalns = subsetByOverlaps(alns, iggrs, type='within', ignore.strand=T)
+    alns = readGAlignments(finbam, use.names=FALSE, param=bamprm)
+    olalns = subsetByOverlaps(alns, iggrs, type='within', ignore.strand=TRUE)
 
     return(olalns)
 }
