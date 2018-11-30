@@ -1,3 +1,4 @@
-BiocGenerics:::testPackage( "pram", 
-                            subdir='testthat', 
-                            pattern='^test\\-.*\\.R$')
+library(testthat)
+library(pram)
+
+test_check('pram')
