@@ -52,5 +52,5 @@ selModel <- function(fin_gtf, fout_gtf, min_n_exon=2, min_tr_len=200,
     infokeys(out_gtf) = out_infokeys
     grangedt(out_gtf) = sel_grdt
 
-    writeGTF(out_gtf, fout_gtf, append=F)
+    writeGTF(out_gtf, fout_gtf, append=FALSE)
 }
