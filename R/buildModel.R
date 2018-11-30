@@ -120,7 +120,7 @@ buildModel <- function(in_bamv, out_gtf, method='plcf', nthreads=1, tmpdir=NULL,
     outputCorrectStrandModel(prm)
 
     if ( ! keep_tmpdir ) {
-        unlink(tmpdir(prm), recursive=T, force=T)
+        unlink(tmpdir(prm), recursive=TRUE, force=TRUE)
     }
 }
 
@@ -134,7 +134,7 @@ createTmpdir <- function(tmpdir, mode) {
                             sample.int(999999, size=1), '/')
     }
 
-    dir.create(sub_tmpdir, recursive=T)
+    dir.create(sub_tmpdir, recursive=TRUE)
 
     return(sub_tmpdir)
 }
@@ -368,7 +368,7 @@ outputCorrectStrandModel <- function(prm) {
     infokeys(gtf) = info_keys
     grangedt(gtf) = grdt
 
-    writeGTF(gtf, foutgtf, append=F)
+    writeGTF(gtf, foutgtf, append=FALSE)
 }
 
 
@@ -452,16 +452,16 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
     fmrg_out = unique(dt$fmrg_out)
     fmrg_err = unique(dt$fmrg_err)
 
-    if ( file.exists(mrgdir) ) unlink(mrgdir, recursive=T, force=T)
+    if ( file.exists(mrgdir) ) unlink(mrgdir, recursive=TRUE, force=TRUE)
 
     ## taco does not work on an existing directory
     if ( method %in% c( 'cuffmerge', 'stringtiemerge' ) ) {
-        dir.create(mrgdir, recursive=T)
+        dir.create(mrgdir, recursive=TRUE)
         setwd(mrgdir)
     }
 
     sel = sapply(fmdlgtfs, function(x) length(grep('^#', readLines(x),
-                                                   perl=T, invert=T)) > 0 )
+                                                   perl=TRUE, invert=TRUE)) > 0)
 
     fsel_mdlgtfs = fmdlgtfs[sel]
 
@@ -503,14 +503,14 @@ renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
     grdt[, runid := paste0(mode, '_', chrom, '_', strand_label)]
 
     if ( mode == 'cfmg' ) {
-        grdt[, `:=`( itr = tstrsplit(transcript_id, '_', fixed=T)[[2]],
-                     ign = tstrsplit(gene_id,       '_', fixed=T)[[2]] )]
+        grdt[, `:=`( itr = tstrsplit(transcript_id, '_', fixed=TRUE)[[2]],
+                     ign = tstrsplit(gene_id,       '_', fixed=TRUE)[[2]] )]
     } else if ( mode == 'stmg' ) {
-        grdt[, `:=`( itr = tstrsplit(transcript_id, '.', fixed=T)[[3]],
-                     ign = tstrsplit(gene_id,       '.', fixed=T)[[2]] )]
+        grdt[, `:=`( itr = tstrsplit(transcript_id, '.', fixed=TRUE)[[3]],
+                     ign = tstrsplit(gene_id,       '.', fixed=TRUE)[[2]] )]
     } else if ( mode == 'cftc' ) {
-        grdt[, `:=`( itr = tstrsplit(transcript_id, 'TU', fixed=T)[[2]],
-                     ign = tstrsplit(gene_id,       'G',  fixed=T)[[2]] )]
+        grdt[, `:=`( itr = tstrsplit(transcript_id, 'TU', fixed=TRUE)[[2]],
+                     ign = tstrsplit(gene_id,       'G',  fixed=TRUE)[[2]] )]
     }
 
     grdt[, `:=`( trid = paste0(runid, '.', as.integer(ign), '.',
@@ -523,7 +523,7 @@ renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
 
     outgtf = new('GTF')
     outgtf = initFromDataTable(outgtf, grdt, info_keys, origin=mode)
-    writeGTF(outgtf, foutgtf, append=F)
+    writeGTF(outgtf, foutgtf, append=FALSE)
 }
 
 
@@ -559,7 +559,7 @@ poolBamByChromOri <- function(in_chrom, in_ori, prm) {
     fchromoribams = dt$fchromoribam
     fmdlbam = unique(dt$fmdlbam)
 
-    mergeBam(fchromoribams, fmdlbam, overwrite=T)
+    mergeBam(fchromoribams, fmdlbam, overwrite=TRUE)
     indexBam(fmdlbam)
 }
 
@@ -585,8 +585,8 @@ modelByChromOriBam <- function(in_fmdlbam, method, prm) {
     fmdlgtf = unique(dt$fmdlgtf)
     tag     = unique(dt$tag)
 
-    if ( file.exists(mdldir) ) unlink(mdldir, recursive=T, force=T)
-    dir.create(mdldir, recursive=T)
+    if ( file.exists(mdldir) ) unlink(mdldir, recursive=TRUE, force=TRUE)
+    dir.create(mdldir, recursive=TRUE)
     setwd(mdldir)
 
     fout = paste0(mdldir, 'run.out')
