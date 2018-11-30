@@ -19,7 +19,7 @@
 #'                            to report per each alignment.
 #'                            Default: 10
 #'
-#' @return NULL
+#' @return None
 #'
 #' @export
 #'

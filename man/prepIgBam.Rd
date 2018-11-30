@@ -27,6 +27,9 @@ Default: 10}
 to report per each alignment.
 Default: 10}
 }
+\value{
+None
+}
 \description{
 Extract alignments in intergenic regions from BAM files
 }

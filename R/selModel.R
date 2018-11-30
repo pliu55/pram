@@ -20,6 +20,8 @@
 #'                    'transcript_id' will always be saved.
 #'                    Default: c( 'transcript_id' )
 #'
+#' @return  None
+#'
 #' @export
 #'
 #' @examples

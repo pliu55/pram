@@ -20,6 +20,9 @@ coordinate, i.e., 'fr-firststrand' by Cufflinks's definition.}
 
 \item{out_gtf}{An output GTF file of predicted transcript models}
 }
+\value{
+None
+}
 \description{
 Predict intergenic transcript models from RNA-seq
 }

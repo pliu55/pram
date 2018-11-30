@@ -28,6 +28,9 @@ GTF file's column 9 to be saved in the output GTF file.
 'transcript_id' will always be saved.
 Default: c( 'transcript_id' )}
 }
+\value{
+None
+}
 \description{
 Select transcript models
 }

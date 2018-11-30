@@ -57,7 +57,7 @@
 #'                           '--ref-sequence' options.
 #'                           Default: ''
 #'
-#' @return  NULL
+#' @return None 
 #'
 #' @export
 #'

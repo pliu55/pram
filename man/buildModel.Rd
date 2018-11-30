@@ -66,6 +66,9 @@ supplied, will be used for cufflinks's
 '--ref-sequence' options.
 Default: ''}
 }
+\value{
+None
+}
 \description{
 Build transcript models from aligned RNA-seq data
 }

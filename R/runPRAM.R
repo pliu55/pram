@@ -10,7 +10,7 @@
 ## @inheritParams screenModel
 ##                to inherit `in_bedv`, `training_gtf`, and `training_tpms`
 #'
-#' @return  NULL
+#' @return  None
 #'
 #' @importFrom  tools  file_path_sans_ext
 #'
