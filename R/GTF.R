@@ -93,33 +93,6 @@ setMethod(
         }
         setnames(dt, c('seqid', 'type'), c('chrom', 'feature'))
 
-       #lines = readLines(fgtf)
-       #nskip = 0
-       #for ( line in lines ) {
-       #    if ( ! grepl('^#', line, perl=T) ) break
-       #    nskip = nskip + 1
-       #}
-
-       #dt = data.table()
-       #if ( (length(lines) > 0) & (nskip < length(lines)) ) {
-       #    dt = fread(fgtf, header=F, sep="\t", showProgress=F, skip=nskip,
-       #               colClasses=c('character', 'NULL', 'character',
-       #                            rep('integer', 2), 'NULL', 'character',
-       #                            'NULL', 'character'))
-       #    setnames(dt, 1:6,
-       #             c('chrom', 'feature', 'start', 'end', 'strand', 'info'))
-
-       #    if ( length(infokeys) > 0 ) {
-       #        for ( infokey in infokeys ) {
-       #            dt[, eval(infokey) :=
-       #                gsub(paste0('.*', infokey, ' ([^;]+);.*'),
-       #                     '\\1', info, perl=T) ]
-       #            dt[, eval(infokey) := gsub('"', '', get(infokey), fixed=T)]
-       #        }
-       #    }
-       #    dt[, info := NULL ]
-       #}
-
         obj@grangedt = dt
 
         return(obj)
@@ -211,9 +184,9 @@ setMethod('writeGTF',
         }
 
         outdir = dirname(fout)
-        if ( ! file.exists(outdir) ) dir.create(outdir, recursive=T)
-        write.table(outdt, fout, quote=F, sep="\t", col.names=F, row.names=F,
-                    append=append)
+        if ( ! file.exists(outdir) ) dir.create(outdir, recursive=TRUE)
+        write.table(outdt, fout, quote=FALSE, sep="\t", col.names=FALSE, 
+                    row.names=FALSE, append=append)
     }
 )
 
