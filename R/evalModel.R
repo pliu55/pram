@@ -136,7 +136,7 @@ evalMdlJnc <- function(tgtjnc_in_mdldt, mdljnc_in_tgtdt, mdl_ol_tgtdt,
     tpfndt = calTpFn4Jnc(tgtjnc_in_mdldt, tgtjncdt)
     fpdt = calFp4Jnc(mdljnc_in_tgtdt, mdl_ol_tgtdt, tgtjncdt)
 
-    dt = merge(tpfndt, fpdt, by='feat', all=T)
+    dt = merge(tpfndt, fpdt, by='feat', all=TRUE)
     dt[, `:=`( precision = ntp/(ntp + nfp),
                recall    = ntp/(ntp + nfn) )]
 
@@ -152,14 +152,14 @@ evalMdlJnc <- function(tgtjnc_in_mdldt, mdljnc_in_tgtdt, mdl_ol_tgtdt,
 #'
 findModelJncInTarget <- function(mdljncdt, tgtjncdt) {
     queryHits = subjectHits = mdljncid = trid = NULL
-    mdlgrs = makeGRangesFromDataFrame(mdljncdt, keep.extra.columns=T)
-    tgtgrs = makeGRangesFromDataFrame(tgtjncdt, keep.extra.columns=T)
+    mdlgrs = makeGRangesFromDataFrame(mdljncdt, keep.extra.columns=TRUE)
+    tgtgrs = makeGRangesFromDataFrame(tgtjncdt, keep.extra.columns=TRUE)
 
-    ol = findOverlaps(mdlgrs, tgtgrs, type='equal', ignore.strand=F)
+    ol = findOverlaps(mdlgrs, tgtgrs, type='equal', ignore.strand=FALSE)
     oldt = data.table(as.data.frame(ol))
     oldt[, `:=`( mdljncid = mcols(mdlgrs)$mdljncid[queryHits],
                  trid     = mcols(tgtgrs)$trid[subjectHits] )]
-    dt = merge(mdljncdt, oldt[, list(mdljncid, trid)], by='mdljncid', all=T)
+    dt = merge(mdljncdt, oldt[, list(mdljncid, trid)], by='mdljncid', all=TRUE)
     dt[, mdljncid := NULL]
     return(dt)
 }
@@ -170,14 +170,14 @@ findModelJncInTarget <- function(mdljncdt, tgtjncdt) {
 #'
 findTargetJncInModel <- function(tgtjncdt, mdljncdt) {
     queryHits = subjectHits = tgtjncid = mdlid = NULL
-    mdlgrs = makeGRangesFromDataFrame(mdljncdt, keep.extra.columns=T)
-    tgtgrs = makeGRangesFromDataFrame(tgtjncdt, keep.extra.columns=T)
+    mdlgrs = makeGRangesFromDataFrame(mdljncdt, keep.extra.columns=TRUE)
+    tgtgrs = makeGRangesFromDataFrame(tgtjncdt, keep.extra.columns=TRUE)
 
-    ol = findOverlaps(tgtgrs, mdlgrs, type='equal', ignore.strand=F)
+    ol = findOverlaps(tgtgrs, mdlgrs, type='equal', ignore.strand=FALSE)
     oldt = data.table(as.data.frame(ol))
     oldt[, `:=`( tgtjncid = mcols(tgtgrs)$tgtjncid[queryHits],
                  mdlid    = mcols(mdlgrs)$mdlid[subjectHits] )]
-    dt = merge(tgtjncdt, oldt[, list(tgtjncid, mdlid)], by='tgtjncid', all=T)
+    dt = merge(tgtjncdt, oldt[, list(tgtjncid, mdlid)], by='tgtjncid', all=TRUE)
     dt[, tgtjncid := NULL]
     return(dt)
 }
@@ -193,15 +193,15 @@ findMdlTrOLTgtTr <- function(mdlexondt, tgtexondt) {
 
     setnames(mdldt, 'trid', 'mdlid')
 
-    mdlgrs = makeGRangesFromDataFrame(mdldt, keep.extra.columns=T)
-    trgrs  = makeGRangesFromDataFrame(trdt, keep.extra.columns=T)
+    mdlgrs = makeGRangesFromDataFrame(mdldt, keep.extra.columns=TRUE)
+    trgrs  = makeGRangesFromDataFrame(trdt, keep.extra.columns=TRUE)
 
-    ol = findOverlaps(mdlgrs, trgrs, type='any', ignore.strand=F)
+    ol = findOverlaps(mdlgrs, trgrs, type='any', ignore.strand=FALSE)
     oldt = data.table(as.data.frame(ol))
     oldt[, `:=`( mdlid = mcols(mdlgrs)$mdlid[queryHits],
                  trid  = mcols(trgrs)$trid[subjectHits] )]
     outdt = merge(mdldt[, list(mdlid, nexon)], oldt[, list(mdlid, trid)],
-                  by='mdlid', all.x=T)
+                  by='mdlid', all.x=TRUE)
 
     return(outdt)
 }
@@ -216,7 +216,7 @@ calTpFn4Jnc <- function(tgtjnc_in_mdldt, tgtjncdt) {
     ## - TP: number of target junctions exists in any model
     ## - FN: number of target junctions does not exist in any model
     indidt = dt[, list(nprd = length(unique(ijnc))), by=trid]
-    indi_prddt = merge(tgtdt, indidt, by='trid', all.x=T)
+    indi_prddt = merge(tgtdt, indidt, by='trid', all.x=TRUE)
     indi_prddt[, nprd := ifelse(is.na(nprd), 0, nprd)]
     indi_prddt[, n_not_prd := njnc - nprd]
     indi_tp = sum(indi_prddt[, nprd])
@@ -253,7 +253,7 @@ calFp4Jnc <- function(mdljnc_in_tgtdt, mdl_ol_tgtdt, tgtjncdt) {
     ## at individual junction level
     ## FP: number of model junctions not existing in model's overlapping target
     indidt = indt[, list(nprd = length(unique(ijnc))), by=mdlid]
-    indi_prddt = merge(oldt, indidt, by='mdlid', all.x=T)
+    indi_prddt = merge(oldt, indidt, by='mdlid', all.x=TRUE)
     indi_prddt[, nprd := ifelse(is.na(nprd), 0, nprd)]
     indi_prddt[, n_not_prd := ifelse(nexon == 1, 0, nexon - 1 - nprd)]
   # if ( nrow(subset(indi_prddt, n_not_prd < 0)) > 0 ) {
@@ -285,10 +285,10 @@ calFp4Jnc <- function(mdljnc_in_tgtdt, mdl_ol_tgtdt, tgtjncdt) {
 #' @importFrom IRanges width
 #'
 evalMdlExonNuc <- function(mdldt, tgtdt) {
-    mdlgrs = makeGRangesFromDataFrame(mdldt, keep.extra.columns=T)
-    tgtgrs = makeGRangesFromDataFrame(tgtdt, keep.extra.columns=T)
+    mdlgrs = makeGRangesFromDataFrame(mdldt, keep.extra.columns=TRUE)
+    tgtgrs = makeGRangesFromDataFrame(tgtdt, keep.extra.columns=TRUE)
 
-    olgrs = intersect(mdlgrs, tgtgrs, ignore.strand=F)
+    olgrs = intersect(mdlgrs, tgtgrs, ignore.strand=FALSE)
 
     # - TP: number of target nucleotides exists in any model
     # - FN: number of target nucleotides does not exist in any model
