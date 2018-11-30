@@ -104,7 +104,7 @@ extractBam <- function(finbam, iggrs, foutbam, prm) {
         ## splice reads may be selected twice, need to only select them once
         dt[, i := seq_len(.N), by=list(qname, flag, HI)]
         dt[, to_select := ifelse((qname_HI %in% sel_alndt[, rdid]) & (i==1),
-                                 T, F)]
+                                 TRUE, FALSE)]
         return(dt[, to_select])
     }
 
@@ -131,9 +131,9 @@ selAlnByMateMaxNDup <- function(alns, max_uni_ndup, max_mul_ndup) {
                         start = start(alns),
                         flag  = mcols(alns)$flag )
 
-    alndt[, `:=`( is_mul = ifelse(bitwAnd(flag, 0x100) > 0, T, F),
-                  is_rd1 = ifelse(bitwAnd(flag, 0x40)  > 0, T, F),
-                  is_rd2 = ifelse(bitwAnd(flag, 0x80)  > 0, T, F))]
+    alndt[, `:=`( is_mul = ifelse(bitwAnd(flag, 0x100) > 0, TRUE, FALSE),
+                  is_rd1 = ifelse(bitwAnd(flag, 0x40)  > 0, TRUE, FALSE),
+                  is_rd2 = ifelse(bitwAnd(flag, 0x80)  > 0, TRUE, FALSE))]
 
     rd1dt = subset(alndt, is_rd1)
     rd2dt = subset(alndt, is_rd2)
