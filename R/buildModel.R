@@ -188,7 +188,7 @@ filterBamByChromOri <- function(fuserbam, fchromoribam, chrom, strand, prm) {
 
     ## Rsamtools version < 1.32.2 will give warnings on MacOS when reading tag
     mate1st = scanBam(fuserbam, param=ScanBamParam(flag=flag1st, tag=c('HI'),
-                                                   what=c('qname'), which=grs))
+        what=c('qname'), which=grs))
     seldt = data.table()
     if ( length(mate1st[[1]]$qname) > 0 ) {
         seldt = data.table( qname = mate1st[[1]]$qname,
@@ -207,7 +207,7 @@ filterBamByChromOri <- function(fuserbam, fchromoribam, chrom, strand, prm) {
     filter_rules = FilterRules(list(tmp=filter_func))
     inbam = BamFile(fuserbam, yieldSize=maxyieldsize(prm))
     filterBam(inbam, fchromoribam, filter=filter_rules,
-              param=ScanBamParam(what=c('qname'), tag=c('HI'), which=grs))
+        param=ScanBamParam(what=c('qname'), tag=c('HI'), which=grs))
 }
 
 
@@ -252,16 +252,18 @@ defCSManager <- function(prm) {
         dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
     }
 
-    dt[, `:=`( mode  = mode(prm),
-               bamid = file_path_sans_ext(basename(fuserbam)) )]
+    dt[, `:=`( 
+        mode  = mode(prm),
+        bamid = file_path_sans_ext(basename(fuserbam)) )]
 
     dt[, tag := paste0(bamid, '_', chrom, '_', strand) ]
 
-    dt[, `:=`( fchromoribam = paste0(tmpdir(prm), tag, '.bam'),
-               fmdlbam      = paste0(tmpdir(prm), tag, '.bam'),
-               mdldir       = paste0(tmpdir(prm), tag, '/'),
-               fmdlgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
-               foutgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
+    dt[, `:=`( 
+        fchromoribam = paste0(tmpdir(prm), tag, '.bam'),
+        fmdlbam      = paste0(tmpdir(prm), tag, '.bam'),
+        mdldir       = paste0(tmpdir(prm), tag, '/'),
+        fmdlgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
+        foutgtf      = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
@@ -289,13 +291,15 @@ def1StepManager <- function(prm) {
     dt[, mode := mode(prm) ]
     dt[, tag := paste0(mode, '_', chrom, '_', strand) ]
 
-    dt[, `:=`( fchromoribam = paste0(tmpdir(prm),
-                                     file_path_sans_ext(basename(fuserbam)),
-                                     '.', tag, '.bam'),
-               fmdlbam = paste0(tmpdir(prm), tag, '.bam'),
-               mdldir  = paste0(tmpdir(prm), tag, '/'),
-               fmdlgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
-               foutgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
+    dt[, `:=`( 
+        fchromoribam = paste0(
+            tmpdir(prm),
+            file_path_sans_ext(basename(fuserbam)),
+            '.', tag, '.bam'),
+        fmdlbam = paste0(tmpdir(prm), tag, '.bam'),
+        mdldir  = paste0(tmpdir(prm), tag, '/'),
+        fmdlgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf'),
+        foutgtf = paste0(tmpdir(prm), tag, '/transcripts.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     chromoridt(prm) = unique(all_chromoridt, by=c('chrom', 'ori'))
@@ -322,23 +326,26 @@ def2StepManager <- function(prm) {
 
     dt[, mode := mode(prm) ]
     dt[, tag := paste0(mode, '_', chrom, '_', strand)]
-    dt[, `:=`( mdlpref = paste0(tmpdir(prm),
-                                file_path_sans_ext(basename(fuserbam)),
-                                '_', tag),
-               mrgpref = paste0(tmpdir(prm), tag),
-               mrgbase = ifelse(mode %in% c('cfmg', 'stmg'), 'merged',
+    dt[, `:=`( 
+        mdlpref = paste0(
+            tmpdir(prm),
+            file_path_sans_ext(basename(fuserbam)),
+            '_', tag),
+        mrgpref = paste0(tmpdir(prm), tag),
+        mrgbase = ifelse(mode %in% c('cfmg', 'stmg'), 'merged',
                                 ifelse(mode == 'cftc', 'assembly', NA)) )]
 
-    dt[, `:=`( fchromoribam = paste0(mdlpref, '.bam'),
-               fmdlbam      = paste0(mdlpref, '.bam'),
-               mdldir       = paste0(mdlpref, '/'),
-               fmdlgtf      = paste0(mdlpref, '/transcripts.gtf'),
-               fmrglist = paste0(mrgpref, '_gtfs.list'),
-               fmrg_out = paste0(mrgpref, '_run.out'),
-               fmrg_err = paste0(mrgpref, '_run.err'),
-               mrgdir   = paste0(mrgpref, '/'),
-               fmrggtf  = paste0(mrgpref, '/', mrgbase, '.gtf'),
-               foutgtf  = paste0(mrgpref, '/pram_out.gtf') )]
+    dt[, `:=`( 
+        fchromoribam = paste0(mdlpref, '.bam'),
+        fmdlbam      = paste0(mdlpref, '.bam'),
+        mdldir       = paste0(mdlpref, '/'),
+        fmdlgtf      = paste0(mdlpref, '/transcripts.gtf'),
+        fmrglist = paste0(mrgpref, '_gtfs.list'),
+        fmrg_out = paste0(mrgpref, '_run.out'),
+        fmrg_err = paste0(mrgpref, '_run.err'),
+        mrgdir   = paste0(mrgpref, '/'),
+        fmrggtf  = paste0(mrgpref, '/', mrgbase, '.gtf'),
+        foutgtf  = paste0(mrgpref, '/pram_out.gtf') )]
 
     all_chromoridt = dt[, .(chrom, ori)]
     setkey(all_chromoridt, NULL)
@@ -363,10 +370,10 @@ outputCorrectStrandModel <- function(prm) {
     grdt = data.table()
     if ( nthr == 1 ) {
         grdt = rbindlist(lapply(stranddt$foutgtf, getCorrectStrandExon,
-                                stranddt, info_keys, mode))
+            stranddt, info_keys, mode))
     } else if ( nthr > 1 ) {
         grdt = rbindlist(mclapply(stranddt$foutgtf, getCorrectStrandExon,
-                                  stranddt, info_keys, mode, mc.cores=nthr))
+            stranddt, info_keys, mode, mc.cores=nthr))
     }
 
     gtf = new('GTF')
@@ -440,10 +447,10 @@ mergeModels <- function(method, prm) {
 
     if ( nthr == 1 ) {
         mapply(mergeModelsByChromOri, dt$chrom, dt$ori,
-               MoreArgs=list(method=method, prm=prm))
+            MoreArgs=list(method=method, prm=prm))
     } else {
         mcmapply(mergeModelsByChromOri, dt$chrom, dt$ori,
-                 MoreArgs=list(method=method, prm=prm), mc.cores=nthr)
+            MoreArgs=list(method=method, prm=prm), mc.cores=nthr)
     }
 }
 
@@ -467,8 +474,9 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
         setwd(mrgdir)
     }
 
-    sel = sapply(fmdlgtfs, function(x) length(grep('^#', readLines(x),
-                                                   perl=TRUE, invert=TRUE)) > 0)
+    sel = sapply(fmdlgtfs, 
+        function(x) 
+            length(grep('^#', readLines(x), perl=TRUE, invert=TRUE)) > 0)
 
     fsel_mdlgtfs = fmdlgtfs[sel]
 
@@ -483,8 +491,8 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
         args = func(fmrglist, mrgdir, fmrggtf, prm)
 
         if ( method == 'cuffmerge' ) {
-            Sys.setenv(PATH=paste0(dirname(cufflinks(prm)), ':',
-                                   Sys.getenv('PATH')))
+            Sys.setenv(
+                PATH=paste0(dirname(cufflinks(prm)), ':', Sys.getenv('PATH')))
         }
         system2('nohup', args=args, stdout=fmrg_out, stderr=fmrg_err)
 
@@ -506,27 +514,30 @@ renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
     gtf = initFromGTFFile(gtf, fingtf, info_keys, origin=mode)
     grdt = grangedt(gtf)[ feature == 'exon' ]
 
-    grdt[, strand_label := ifelse(strand == '+', 'plus',
-                                  ifelse(strand == '-', 'minus', NA))]
+    grdt[, strand_label := 
+        ifelse(strand == '+', 'plus', ifelse(strand == '-', 'minus', NA))]
     grdt[, runid := paste0(mode, '_', chrom, '_', strand_label)]
 
     if ( mode == 'cfmg' ) {
-        grdt[, `:=`( itr = tstrsplit(transcript_id, '_', fixed=TRUE)[[2]],
-                     ign = tstrsplit(gene_id,       '_', fixed=TRUE)[[2]] )]
+        grdt[, `:=`( 
+            itr = tstrsplit(transcript_id, '_', fixed=TRUE)[[2]],
+            ign = tstrsplit(gene_id,       '_', fixed=TRUE)[[2]] )]
     } else if ( mode == 'stmg' ) {
-        grdt[, `:=`( itr = tstrsplit(transcript_id, '.', fixed=TRUE)[[3]],
-                     ign = tstrsplit(gene_id,       '.', fixed=TRUE)[[2]] )]
+        grdt[, `:=`( 
+            itr = tstrsplit(transcript_id, '.', fixed=TRUE)[[3]],
+            ign = tstrsplit(gene_id,       '.', fixed=TRUE)[[2]] )]
     } else if ( mode == 'cftc' ) {
-        grdt[, `:=`( itr = tstrsplit(transcript_id, 'TU', fixed=TRUE)[[2]],
-                     ign = tstrsplit(gene_id,       'G',  fixed=TRUE)[[2]] )]
+        grdt[, `:=`( 
+            itr = tstrsplit(transcript_id, 'TU', fixed=TRUE)[[2]],
+            ign = tstrsplit(gene_id,       'G',  fixed=TRUE)[[2]] )]
     }
 
-    grdt[, `:=`( trid = paste0(runid, '.', as.integer(ign), '.',
-                               as.integer(itr)),
-                 gnid = paste0(runid, '.', as.integer(ign)) )]
+    grdt[, `:=`( 
+        trid = paste0(runid, '.', as.integer(ign), '.', as.integer(itr)),
+        gnid = paste0(runid, '.', as.integer(ign)) )]
 
     grdt[, c('gene_id', 'transcript_id', 'strand_label', 'runid', 'itr',
-             'ign') := NULL]
+        'ign') := NULL]
     setnames(grdt, c('trid', 'gnid'), c('transcript_id', 'gene_id'))
 
     outgtf = new('GTF')
@@ -551,7 +562,7 @@ modelByPoolingBams <- function(method, prm) {
         lapply(dt$fmdlbam, modelByChromOriBam, method, prm)
     } else if ( nthr > 1 ) {
         mcmapply(poolBamByChromOri, dt$chrom, dt$ori, MoreArgs=list(prm=prm),
-                 mc.cores=nthr)
+            mc.cores=nthr)
         mclapply(dt$fmdlbam, modelByChromOriBam, method, prm, mc.cores=nthr)
     }
 }
@@ -611,85 +622,94 @@ modelByChromOriBam <- function(in_fmdlbam, method, prm) {
 
 
 getCufflinksArgs <- function(outdir, tag, finbam, fout_gtf, prm) {
-    args = c( cufflinks(prm),
-              '-o', outdir,
-              '-p 1' )
+    args = c( 
+        cufflinks(prm),
+        '-o', outdir,
+        '-p 1' )
 
     if ( cufflinksreffa(prm) != '' ) {
-        args = c( args,
-                  '--frag-bias-correct', cufflinksreffa(prm) )
+        args = c( 
+            args,
+            '--frag-bias-correct', cufflinksreffa(prm) )
     }
 
-    args = c( args,
-              '--multi-read-correct',
+    args = c( 
+        args,
+        '--multi-read-correct',
 
-              '--library-type', cufflinkslibtype(prm),
-              '--min-isoform-fraction',    minisoformfraction(prm),
-              '--max-multiread-fraction',  maxmultireadfraction(prm),
-              '--min-frags-per-transfrag', minfragspertransfrag(prm),
-              '--label', tag,
-              '--quiet',
-              '--no-update-check', finbam)
+        '--library-type', cufflinkslibtype(prm),
+        '--min-isoform-fraction',    minisoformfraction(prm),
+        '--max-multiread-fraction',  maxmultireadfraction(prm),
+        '--min-frags-per-transfrag', minfragspertransfrag(prm),
+        '--label', tag,
+        '--quiet',
+        '--no-update-check', finbam)
 
     return(args)
 }
 
 
 getStringTieArgs <- function(outdir, tag, finbam, fout_gtf, prm) {
-    args = c( stringtie(prm),
-              finbam,
-              '-o', fout_gtf,
-              stringtielibtype(prm),
-              '-l', tag,
-              '-f', minisoformfraction(prm),
-              '-M', maxmultireadfraction(prm),
-              '-c', minfragspertransfrag(prm),
-              '-p 1' )
+    args = c( 
+        stringtie(prm),
+        finbam,
+        '-o', fout_gtf,
+        stringtielibtype(prm),
+        '-l', tag,
+        '-f', minisoformfraction(prm),
+        '-M', maxmultireadfraction(prm),
+        '-c', minfragspertransfrag(prm),
+        '-p 1' )
 
     return(args)
 }
 
 
 getCuffmergeArgs <- function(fin_gtfs, outdir, fout_gtf, prm) {
-    args = c( paste0(dirname(cufflinks(prm)), '/cuffmerge'),
-              '-o', outdir )
+    args = c( 
+        paste0(dirname(cufflinks(prm)), '/cuffmerge'),
+        '-o', outdir )
 
     if ( cufflinksreffa(prm) != '' ) {
-        args = c( args,
-                  '--ref-sequence', cufflinksreffa(prm) )
+        args = c( 
+            args,
+            '--ref-sequence', cufflinksreffa(prm) )
 
     }
 
-    args = c( args,
-              '--min-isoform-fraction', minisoformfraction(prm),
-              '--num-threads 1',
-              fin_gtfs )
+    args = c( 
+        args,
+        '--min-isoform-fraction', minisoformfraction(prm),
+        '--num-threads 1',
+        fin_gtfs )
 
     return(args)
 }
 
 
 getStringTieMergeArgs <- function(fin_gtfs, outdir, fout_gtf, prm) {
-    args = c( stringtie(prm),
-              '--merge',
-              '-o', fout_gtf,
-              '-F', mintrfpkmtoinclude(prm),
-              '-T', mintrtpmtoinclude(prm),
-              '-f', minisoformfraction(prm),
-              fin_gtfs )
+    args = c( 
+        stringtie(prm),
+        '--merge',
+        '-o', fout_gtf,
+        '-F', mintrfpkmtoinclude(prm),
+        '-T', mintrtpmtoinclude(prm),
+        '-f', minisoformfraction(prm),
+        fin_gtfs )
 
     return(args)
 }
 
 
 getTacoArgs <- function(fin_gtfs, outdir, fout_gtf, prm) {
-    args = c( taco(prm),
-              '--output-dir', outdir,
-              '--num-processes 1',
-              '--filter-min-expr', mintrtpmtoinclude(prm),
-              '--isoform-frac',    minisoformfraction(prm),
-              '--no-assemble-unstranded',
-              fin_gtfs )
+    args = c( 
+        taco(prm),
+        '--output-dir', outdir,
+        '--num-processes 1',
+        '--filter-min-expr', mintrtpmtoinclude(prm),
+        '--isoform-frac',    minisoformfraction(prm),
+        '--no-assemble-unstranded',
+        fin_gtfs )
 
     return(args)
 }
@@ -707,8 +727,9 @@ checkArgs <- function(prm) {
         prm = checkTacoBin(prm)
         prm = checkCufflinksBin(prm)
     } else {
-        msg = paste0('mode "', mode, '" is not implemented. Must be one of ',
-                     "[plcf, plst, cfmg, stmg, cftc, cf, st]\n")
+        msg = paste0(
+            'mode "', mode, '" is not implemented. Must be one of ',
+            "[plcf, plst, cfmg, stmg, cftc, cf, st]\n")
         stop(msg)
     }
 
@@ -719,8 +740,9 @@ checkArgs <- function(prm) {
     }
 
     if ( (mode %in% c( 'cf', 'st' )) & (length(fuserbams(prm)) > 1) ) {
-        msg = paste0('length(finbamv) > 1. Only one input bam file is allowed ',
-                     'for mode "', mode, '"\n')
+        msg = paste0(
+            'length(finbamv) > 1. Only one input bam file is allowed ',
+            'for mode "', mode, '"\n')
         stop(msg)
     }
     return(prm)
