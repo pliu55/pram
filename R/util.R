@@ -56,8 +56,9 @@ convertStrand2Ori <- function(strand) {
 #' @importFrom  BiocGenerics  strand
 #'
 getUniChromOriDt <- function(grs) {
-    dt = data.table( chrom = as.character(seqnames(grs)),
-                     ori   = as.character(strand(grs)) )
+    dt = data.table( 
+        chrom = as.character(seqnames(grs)),
+        ori   = as.character(strand(grs)) )
     setkey(dt, NULL)
     unidt = unique(dt, by=c('chrom', 'ori'))
 
@@ -82,6 +83,6 @@ downloadAndUntar <- function(url, dldir) {
 ## file.exists cannot give T/F for character(0)
 isFileExisted <- function(file) {
     is_existed = ifelse( identical(file, character(0)), FALSE,
-                         ifelse( ! file.exists(file), FALSE, TRUE))
+        ifelse( ! file.exists(file), FALSE, TRUE))
     return(is_existed)
 }
