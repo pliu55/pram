@@ -36,7 +36,7 @@
 #'
 #'
 prepIgBam <- function(finbam, iggrs, foutbam,
-                      max_uni_n_dup_aln=10, max_mul_n_dup_aln=10) {
+    max_uni_n_dup_aln=10, max_mul_n_dup_aln=10) {
 
     prm = new('Param')
     maxunindupaln(prm) = max_uni_n_dup_aln
@@ -51,10 +51,10 @@ prepIgBam <- function(finbam, iggrs, foutbam,
 #' @importFrom  BiocGenerics  strand strand<-
 #'
 addOri <- function(iggrs) {
-    w_ori_iggrs  = iggrs[ ( strand(iggrs) == '+' ) |
-                          ( strand(iggrs) == '-' ) ]
-    no_ori_iggrs = iggrs[ ( strand(iggrs) != '+' ) &
-                          ( strand(iggrs) != '-' ) ]
+    w_ori_iggrs  = iggrs[ 
+        ( strand(iggrs) == '+' ) | ( strand(iggrs) == '-' ) ]
+    no_ori_iggrs = iggrs[ 
+        ( strand(iggrs) != '+' ) & ( strand(iggrs) != '-' ) ]
 
     plus_iggrs  = copy(no_ori_iggrs)
     minus_iggrs = copy(no_ori_iggrs)
@@ -103,8 +103,8 @@ extractBam <- function(finbam, iggrs, foutbam, prm) {
         dt[, qname_HI := paste0(qname, '_', HI)]
         ## splice reads may be selected twice, need to only select them once
         dt[, i := seq_len(.N), by=list(qname, flag, HI)]
-        dt[, to_select := ifelse((qname_HI %in% sel_alndt[, rdid]) & (i==1),
-                                 TRUE, FALSE)]
+        dt[, to_select := ifelse(
+            (qname_HI %in% sel_alndt[, rdid]) & (i==1), TRUE, FALSE)]
         return(dt[, to_select])
     }
 
@@ -112,9 +112,9 @@ extractBam <- function(finbam, iggrs, foutbam, prm) {
 
     inbam = BamFile(finbam, yieldSize=maxyieldsize(prm))
 
-    filterBam(inbam, foutbam, filter=filter_rules,
-              param=ScanBamParam(what=c('qname', 'flag'), tag=c('HI'),
-                                 which=iggrs))
+    filterBam(
+        inbam, foutbam, filter=filter_rules,
+        param=ScanBamParam(what=c('qname', 'flag'), tag=c('HI'), which=iggrs))
 }
 
 
@@ -131,9 +131,10 @@ selAlnByMateMaxNDup <- function(alns, max_uni_ndup, max_mul_ndup) {
                         start = start(alns),
                         flag  = mcols(alns)$flag )
 
-    alndt[, `:=`( is_mul = ifelse(bitwAnd(flag, 0x100) > 0, TRUE, FALSE),
-                  is_rd1 = ifelse(bitwAnd(flag, 0x40)  > 0, TRUE, FALSE),
-                  is_rd2 = ifelse(bitwAnd(flag, 0x80)  > 0, TRUE, FALSE))]
+    alndt[, `:=`( 
+        is_mul = ifelse(bitwAnd(flag, 0x100) > 0, TRUE, FALSE),
+        is_rd1 = ifelse(bitwAnd(flag, 0x40)  > 0, TRUE, FALSE),
+        is_rd2 = ifelse(bitwAnd(flag, 0x80)  > 0, TRUE, FALSE))]
 
     rd1dt = subset(alndt, is_rd1)
     rd2dt = subset(alndt, is_rd2)
@@ -163,8 +164,8 @@ selAlnByMateMaxNDup <- function(alns, max_uni_ndup, max_mul_ndup) {
     sel_mul_matedt = subset(mul_matedt, dupi <= max_mul_ndup)
 
     alndt[, rdid := paste0(qname, '_', HI)]
-    sel_alndt = subset(alndt, rdid %in% c( sel_uni_matedt[, rdid],
-                                           sel_mul_matedt[, rdid] ))
+    sel_alndt = subset(
+        alndt, rdid %in% c( sel_uni_matedt[, rdid], sel_mul_matedt[, rdid] ))
 
     return(sel_alndt)
 }
@@ -175,8 +176,8 @@ selAlnByMateMaxNDup <- function(alns, max_uni_ndup, max_mul_ndup) {
 #' @importFrom  GenomicAlignments  readGAlignments
 #'
 selAlnInGRanges <- function(iggrs, finbam, flag_mate) {
-    bamprm = ScanBamParam(flag=flag_mate, tag=c('HI'), what=c('flag', 'qname'),
-                          which=iggrs)
+    bamprm = ScanBamParam(
+        flag=flag_mate, tag=c('HI'), what=c('flag', 'qname'), which=iggrs)
     alns = readGAlignments(finbam, use.names=FALSE, param=bamprm)
     olalns = subsetByOverlaps(alns, iggrs, type='within', ignore.strand=TRUE)
 
