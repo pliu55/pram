@@ -1,3 +1,5 @@
+Meta
+doc
 # History files
 .Rhistory
 .Rapp.history
@@ -24,6 +26,4 @@ vignettes/*.html
 *.utf8.md
 *.knit.md
 inst/doc/
-
-
 *.bam.bai
