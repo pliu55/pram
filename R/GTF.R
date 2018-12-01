@@ -1,11 +1,13 @@
 #' @import methods
 #' @import data.table
 #'
-GTF = setClass( 'GTF',
-                slots = list( fgtf     = 'character',
-                              origin   = 'character',
-                              infokeys = 'vector',
-                              grangedt = 'data.table' )
+GTF = setClass( 
+    'GTF',
+    slots = list( 
+        fgtf     = 'character',
+        origin   = 'character',
+        infokeys = 'vector',
+        grangedt = 'data.table' )
 )
 
 
@@ -13,13 +15,13 @@ setGeneric('fgtf',     function(x) standardGeneric('fgtf'))
 setGeneric('origin',   function(x) standardGeneric('origin'))
 setGeneric('infokeys', function(x) standardGeneric('infokeys'))
 setGeneric('grangedt', function(x) standardGeneric('grangedt'))
-setGeneric('writeGTF',
-           function(x, fout, append) standardGeneric('writeGTF'))
+setGeneric(
+    'writeGTF', function(x, fout, append) standardGeneric('writeGTF'))
 setGeneric(
     'initFromGTFFile',
         function(obj, fgtf, infokeys, ...) standardGeneric('initFromGTFFile'))
-setGeneric('initFromGRanges',
-           function(obj, grs) standardGeneric('initFromGRanges'))
+setGeneric(
+    'initFromGRanges', function(obj, grs) standardGeneric('initFromGRanges'))
 setGeneric('initFromDataTable', function(obj, dt, infokeys, ...)
                                     standardGeneric('initFromDataTable'))
 
@@ -167,9 +169,10 @@ setMethod('writeGTF',
                 outdt[, feature := 'unknown']
             }
             ori_field = ifelse(length(origin(x)) == 0, 'UNKNOWN', origin(x))
-            outdt[, `:=`( source = ori_field,
-                          score  = '.',
-                          frame  = '.'     ) ]
+            outdt[, `:=`( 
+                source = ori_field,
+                score  = '.',
+                frame  = '.'     ) ]
 
             info_keys = infokeys(x)
             for ( infokey in info_keys ) {
@@ -177,10 +180,11 @@ setMethod('writeGTF',
                                                 '"')]
             }
             outdt[, irow := .I]
-            outdt[, attr := paste0(paste0(.SD, collapse='; '), ';'),
-                  by=irow, .SDcols=info_keys]
+            outdt[, 
+                attr := paste0(paste0(.SD, collapse='; '), ';'),
+                by=irow, .SDcols=info_keys]
             outdt = outdt[, list(chrom, source, feature, start, end, score,
-                                 strand, frame, attr)]
+                strand, frame, attr)]
         } else {
             warning(paste0('emptry GRange in ', fgtf(x), "\n"))
         }
