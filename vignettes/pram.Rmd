@@ -3,28 +3,28 @@ title: "Pooling RNA-seq and Assembling Models"
 author: "Peng Liu, Colin N. Dewey, and Sündüz Keleş"
 date: "`r Sys.Date()`"
 output: 
-  # rmarkdown::html_vignette:
-  #     toc: true
-  #     fig_caption: yes
-  ## GitHub no longer renders Rmd file, I have to use PDF to show vignette
+    #rmarkdown::html_vignette:
+    #    toc: true
+    #    fig_caption: yes
+    # GitHub no longer renders Rmd file, I have to use PDF to show vignette
     BiocStyle::pdf_document:
         toc: true
         toc_depth: 2
         number_sections: true
         fig_caption: yes
-      # highlight: tango
+        # highlight: tango
 urlcolor: blue
 linkcolor: blue
 vignette: >
-  %\VignetteIndexEntry{Pooling RNA-seq and Assembling Models}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+    %\VignetteIndexEntry{Pooling RNA-seq and Assembling Models}
+    %\VignetteEngine{knitr::rmarkdown}
+    %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+    collapse = TRUE,
+    comment = "#>"
 )
 ```
 
@@ -70,13 +70,13 @@ models in intergenic genomic regions:
 runPRAM(in_gtf, in_bamv, out_gtf)
 ```
 
-- `in_gtf`:  an input GTF file defining genomic coordinates of existing genes. 
-             Required to have an attribute of __gene_id__ in the ninth column.
-- `in_bamv`:  a vector of input BAM file(s) containing RNA-seq alignments. 
-              Currently,
-              PRAM only supports strand-specific paired-end RNA-seq with the 
-              first mate on the right-most of transcript coordinate, i.e., 
-              'fr-firststrand' by Cufflinks definition.
+- `in_gtf`: an input GTF file defining genomic coordinates of existing genes. 
+            Required to have an attribute of __gene_id__ in the ninth column.
+- `in_bamv`: a vector of input BAM file(s) containing RNA-seq alignments. 
+            Currently,
+            PRAM only supports strand-specific paired-end RNA-seq with the 
+            first mate on the right-most of transcript coordinate, i.e., 
+            'fr-firststrand' by Cufflinks definition.
 - `out_gtf`:  an output GTF file of predicted transcript models
 
 <!--
@@ -90,12 +90,12 @@ runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
 ```
 
 - `in_gtf`, `in_bamv`, and `out_gtf` are the same as described
-   [above](#predict-transcript-models-only)
+    [above](#predict-transcript-models-only)
 - `in_bedv`:  A vector of BED file(s) containing ChIP-seq alignments.
 - `training_tpms`:  A vector of RSEM quantification results for known
                     transcripts
-- `training_gtf`:  A GTF file defining genomic coordinates of known
-                   transcripts 
+- `training_gtf`:   A GTF file defining genomic coordinates of known
+                    transcripts 
 -->
 
 ## Examples
@@ -131,8 +131,8 @@ Below shows usage of `runPRAM()` with example input files:
 ```R
 in_gtf = system.file('extdata/demo/in.gtf', package='pram')
 
-in_bamv = c( system.file('extdata/demo/SZP.bam', package='pram'),
-             system.file('extdata/demo/TLC.bam', package='pram') )
+in_bamv = c(system.file('extdata/demo/SZP.bam', package='pram'),
+            system.file('extdata/demo/TLC.bam', package='pram') )
 
 pred_out_gtf = tempfile(fileext='.gtf')
 
@@ -143,11 +143,12 @@ runPRAM(in_gtf, in_bamv, pred_out_gtf)
 ##
 ## Predict transcript models and screen them by ChIP-seq data
 ##
-in_bedv = c( system.file('extdata/demo/H3K79me2.bed.gz', package='pram'),
-             system.file('extdata/demo/POLR2.bed.gz',    package='pram') )
+in_bedv = c(system.file('extdata/demo/H3K79me2.bed.gz', package='pram'),
+            system.file('extdata/demo/POLR2.bed.gz',    package='pram') )
 
-training_tpms = c( system.file('extdata/demo/AED1.isoforms.results', package='pram'),
-                   system.file('extdata/demo/AED2.isoforms.results', package='pram') )
+training_tpms = c( 
+    system.file('extdata/demo/AED1.isoforms.results', package='pram'),
+    system.file('extdata/demo/AED2.isoforms.results', package='pram') )
 
 training_gtf = system.file('extdata/demo/training.gtf', package='pram')
 
@@ -171,17 +172,17 @@ You can provide one of the following arguments:
 
 - `chromgrs`: a GRanges object, or
 - `genome`: a genome name, currently supported ones are: 
-  __hg19__, __hg38__, __mm9__, and __mm10__, or
+    __hg19__, __hg38__, __mm9__, and __mm10__, or
 - `fchromsize`: a UCSC genome browser-style size file, e.g.
-  [hg19](http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/chromInfo.txt.gz).
+    [hg19](http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/chromInfo.txt.gz).
 
 By default, `defIgRanges()` will define intergenic ranges as regions 10 kb away
 from any known genes.  You can change it by the `radius` argument.
 
 ## Example
 ```R
-defIgRanges( system.file('extdata/gtf/defIgRanges_in.gtf', package='pram'),
-             genome = 'hg38' )
+defIgRanges(system.file('extdata/gtf/defIgRanges_in.gtf', package='pram'),
+            genome = 'hg38' )
 ```
 
 
@@ -194,16 +195,16 @@ RNA-seq alignments, model prediction will run faster.
 Three input arguments are required by `prepIgBam()`: 
 
 - `finbam`: an input RNA-seq BAM file sorted by genomic coordinate. Currently, 
-  we only support strand-specific
-  paired-end RNA-seq data with the first mate on the right-most of transcript
-  coordinate, i.e. 'fr-firststrand' by Cufflinks's definition.
+    we only support strand-specific
+    paired-end RNA-seq data with the first mate on the right-most of transcript
+    coordinate, i.e. 'fr-firststrand' by Cufflinks's definition.
 - `iggrs`: a GRanges object to define intergenic regions.
 - `foutbam`: an output BAM file.
 
 ## Example
 ```R
-finbam = system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam', 
-                     package='pram')
+finbam =system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam', 
+                    package='pram')
 
 iggrs = GenomicRanges::GRanges('chr10:77236000-77247000:+')
 
@@ -268,10 +269,10 @@ Table: `buildModel()`-required software and recommended version
 
 ## Example
 ```R
-fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam', 
-                       package='pram'),
-           system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam', 
-                       package='pram') )
+fbams = c(  system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam', 
+                        package='pram'),
+            system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam', 
+                        package='pram') )
 
 foutgtf = tempfile(fileext='.gtf')
 
@@ -287,9 +288,9 @@ total length of exons and introns.
 
 `selModel()` requires two arguments:
 
-- `fin_gtf`: input GTF file containing to-be-selected transcript models. This
-             file is required to have __transcript_id__ attribute in the ninth
-             column.
+- `fin_gtf`:input GTF file containing to-be-selected transcript models. This
+            file is required to have __transcript_id__ attribute in the ninth
+            column.
 - `fout_gtf`: output GTF file containing selected transcript models.
 
 
@@ -314,16 +315,16 @@ that share similar epigenetic signature with known transcripts.
 
 This function requires five arguments:
 
-- `in_bedv`: a vector of BED file(s) of histone marks and/or RNA Pol II 
-             ChIP-seq alignments. 
-- `training_tpms`: a vector of [RSEM](https://deweylab.github.io/RSEM/) 
-                   isoform quantification result file(s) to define the 
-                   expression levels of known transcripts in the cell/tissue 
-                   type you interested.
-- `training_gtf`: a GTF file defining the genomic coordinates of known
-                  transcripts.
-- `testing_gtf`: a GTF file defining the genomic coordinates of novel
-                 transcripts that you would like to screen
+- `in_bedv`:a vector of BED file(s) of histone marks and/or RNA Pol II 
+            ChIP-seq alignments. 
+- `training_tpms`:  a vector of [RSEM](https://deweylab.github.io/RSEM/) 
+                    isoform quantification result file(s) to define the 
+                    expression levels of known transcripts in the cell/tissue 
+                    type you interested.
+- `training_gtf`:   a GTF file defining the genomic coordinates of known
+                    transcripts.
+- `testing_gtf`:    a GTF file defining the genomic coordinates of novel
+                    transcripts that you would like to screen
 - `out_gtf`: output GTF file of screened novel transcripts.
 
 `screenModel()` will label known transcripts as 'real' and 
@@ -345,11 +346,15 @@ argument and four files will be saved in that folder:
 
 ### Example
 ```
-fbeds = c( system.file('extdata/bed/GM12878POLR2AphosphoS5Rep1.bed', package='pram'),
-           system.file('extdata/bed/GM12878POLR2AphosphoS5Rep2.bed', package='pram') )
+fbeds = c(  system.file('extdata/bed/GM12878POLR2AphosphoS5Rep1.bed', 
+            package='pram'),
+            system.file('extdata/bed/GM12878POLR2AphosphoS5Rep2.bed', 
+            package='pram') )
 
-ftpms = c( system.file('extdata/rsem/GM12878Rep1_training.isoforms.results', package='pram'),
-           system.file('extdata/rsem/GM12878Rep2_training.isoforms.results', package='pram') )
+ftpms = c(  system.file('extdata/rsem/GM12878Rep1_training.isoforms.results', 
+            package='pram'),
+            system.file('extdata/rsem/GM12878Rep2_training.isoforms.results', 
+            package='pram') )
 
 fgtf_training = system.file('extdata/gtf/rf_training.gtf', package='pram')
 fgtf_testing  = system.file('extdata/gtf/rf_testing.gtf',  package='pram')
