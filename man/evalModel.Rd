@@ -34,17 +34,20 @@ splice junctions, and splice patterns by comparing them to transcript targets
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{model_exons = GRanges,target_exons = GRanges}: Both \strong{model_exons} and \strong{target_exons}
+\item \code{model_exons = GRanges,target_exons = GRanges}: Both 
+\strong{model_exons} and \strong{target_exons}
 are GRanges objects
 to define genomic coordinates of exons. Required to
 have a meta-data column named 'trid' to define each
 exon's transcript ID.
 
-\item \code{model_exons = character,target_exons = character}: Both \strong{model_exons} and \strong{target_exons}
+\item \code{model_exons = character,target_exons = character}: Both 
+\strong{model_exons} and \strong{target_exons}
 are GTF files with full names. Each GTF file is
 required to have a 'transcript_id' tag in column 9.
 
-\item \code{model_exons = data.table,target_exons = data.table}: Both \strong{model_exons} and \strong{target_exons}
+\item \code{model_exons = data.table,target_exons = data.table}: Both 
+\strong{model_exons} and \strong{target_exons}
 are data.table objects to define exon genomic
 coordinatess. Required to have the following columns:
 \itemize{
@@ -55,7 +58,8 @@ coordinatess. Required to have the following columns:
     \item trid:    exon's transcript ID
 }
 
-\item \code{model_exons = character,target_exons = data.table}: \strong{model_exons} is a GTF file with full
+\item \code{model_exons = character,target_exons = data.table}: The
+\strong{model_exons} is a GTF file with full
 name and \strong{target_exons} is a data.table object.
 Requirements for GTF and data.table are the same as
 above

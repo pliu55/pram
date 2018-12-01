@@ -16,7 +16,8 @@ setGeneric(
     function(model_exons, target_exons) standardGeneric('evalModel'))
 
 
-#' @describeIn evalModel  Both \strong{model_exons} and \strong{target_exons}
+#' @describeIn evalModel  Both 
+#'                        \strong{model_exons} and \strong{target_exons}
 #'                        are GRanges objects
 #'                        to define genomic coordinates of exons. Required to
 #'                        have a meta-data column named 'trid' to define each
@@ -36,7 +37,8 @@ setMethod(
 )
 
 
-#' @describeIn evalModel  Both \strong{model_exons} and \strong{target_exons}
+#' @describeIn evalModel  Both 
+#'                        \strong{model_exons} and \strong{target_exons}
 #'                        are GTF files with full names. Each GTF file is
 #'                        required to have a 'transcript_id' tag in column 9.
 setMethod( 
@@ -58,7 +60,8 @@ setMethod(
 )
 
 
-#' @describeIn evalModel  Both \strong{model_exons} and \strong{target_exons}
+#' @describeIn evalModel  Both 
+#'                        \strong{model_exons} and \strong{target_exons}
 #'                        are data.table objects to define exon genomic
 #'                        coordinatess. Required to have the following columns:
 #'                        \itemize{
@@ -80,7 +83,8 @@ setMethod(
 )
 
 
-#' @describeIn evalModel  \strong{model_exons} is a GTF file with full
+#' @describeIn evalModel  The
+#'                        \strong{model_exons} is a GTF file with full
 #'                        name and \strong{target_exons} is a data.table object.
 #'                        Requirements for GTF and data.table are the same as
 #'                        above
