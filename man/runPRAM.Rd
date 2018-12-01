@@ -30,8 +30,8 @@ Predict intergenic transcript models from RNA-seq
 
 in_gtf = system.file('extdata/demo/in.gtf', package='pram')
 
-in_bamv = c( system.file('extdata/demo/SZP.bam', package='pram'),
-             system.file('extdata/demo/TLC.bam', package='pram') )
+in_bamv = c(system.file('extdata/demo/SZP.bam', package='pram'),
+            system.file('extdata/demo/TLC.bam', package='pram') )
 
 pred_out_gtf = tempfile(fileext='.gtf')
 

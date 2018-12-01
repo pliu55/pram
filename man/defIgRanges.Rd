@@ -35,8 +35,8 @@ goldenpath/hg19/database/chromInfo.txt.gz
 Required to have at least two tab-delimited columns
 without any header:
 \enumerate{
-   \item chromosome name, e.g. chr1
-   \item chromosome length, e.g. 249250621
+    \item chromosome name, e.g. chr1
+    \item chromosome length, e.g. 249250621
 }
 Both uncompressed and gzipped files are supported.
 Default: NULL}

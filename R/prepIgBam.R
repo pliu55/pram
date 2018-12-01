@@ -26,7 +26,7 @@
 #' @examples
 #'
 #' finbam = system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam',
-#'                      package='pram')
+#'                     package='pram')
 #'
 #' iggrs = GenomicRanges::GRanges('chr10:77236000-77247000:+')
 #'
