@@ -71,13 +71,15 @@ defIgRanges <- function(in_gtf, chromgrs, genome=NULL, fchromsize=NULL,
     if ( ! is.null(chroms) ) {
         seldt = seldt[ chrom %in% chroms ]
     }
-    gndt = seldt[, list( chrom    = unique(chrom),
-                         gn_start = min(start),
-                         gn_end   = max(end) ), by=gene_id]
+    gndt = seldt[, list( 
+        chrom    = unique(chrom),
+        gn_start = min(start),
+        gn_end   = max(end) ), by=gene_id]
 
-    gndt[, `:=`( start  = gn_start - radius,
-                 end    = gn_end + radius,
-                 strand = '*' )]
+    gndt[, `:=`( 
+        start  = gn_start - radius,
+        end    = gn_end + radius,
+        strand = '*' )]
 
     gngrs = makeGRangesFromDataFrame(gndt, keep.extra.columns=FALSE)
     gngrs = reduce(gngrs)
@@ -98,13 +100,13 @@ getChromGRanges <- function(genome, fchromsize, chroms) {
     } else if ( ! is.null(genome) ) {
         genome = tolower(genome)
         if ( genome %in% avail_genomes ) {
-            fin = system.file(paste0('extdata/chromsize/', genome, '.tsv.gz'),
-                              package='pram')
+            fin = system.file(
+                paste0('extdata/chromsize/', genome, '.tsv.gz'), package='pram')
             chromdt = readChromSize(fin)
         } else  {
             msg = paste0('defIg: genome ', genome, " is not implemented.\n",
-                         "Supported genomes are ",
-                         paste(avail_genomes, collapse=','), "\n")
+                "Supported genomes are ",
+                paste(avail_genomes, collapse=','), "\n")
             stop(msg)
         }
     } else if ( is.null(genome) & (! is.null(fchromsize)) ) {
