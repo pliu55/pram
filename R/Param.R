@@ -57,26 +57,26 @@ Param = setClass('Param',
     prototype = list(
         OS2CUFFLINKS_URL = list(
             'LINUX' = paste0('http://cole-trapnell-lab.github.io/cufflinks/',
-                      'assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz'),
+                'assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz'),
 
             'OSX' = paste0('http://cole-trapnell-lab.github.io/cufflinks/',
-                      'assets/downloads/cufflinks-2.1.1.OSX_x86_64.tar.gz') 
+                'assets/downloads/cufflinks-2.1.1.OSX_x86_64.tar.gz') 
         ),
 
         OS2STRINGTIE_URL = list(
             'LINUX' = paste0('http://ccb.jhu.edu/software/stringtie/dl/',
-                             'stringtie-1.3.3b.Linux_x86_64.tar.gz'),
+                'stringtie-1.3.3b.Linux_x86_64.tar.gz'),
 
             'OSX' = paste0('http://ccb.jhu.edu/software/stringtie/dl/', 
-                           'stringtie-1.3.3b.OSX_x86_64.tar.gz')
+                'stringtie-1.3.3b.OSX_x86_64.tar.gz')
         ),
 
         OS2TACO_URL = list(
             'LINUX' = paste0('https://github.com/tacorna/taco/releases/',
-                            'download/v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz'),
+                'download/v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz'),
 
             'OSX' = paste0('https://github.com/tacorna/taco/releases/', 
-                           'download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz') 
+                'download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz') 
         ),
 
 
@@ -183,26 +183,27 @@ setGeneric('gtfinfokeys',    function(x) standardGeneric('gtfinfokeys'))
 setGeneric('nthreads',       function(x) standardGeneric('nthreads'))
 setGeneric('maxunindupaln',  function(x) standardGeneric('maxunindupaln'))
 setGeneric('maxmulndupaln',  function(x) standardGeneric('maxmulndupaln'))
-setGeneric('fr1ststrand2mate2flag',
-           function(x) standardGeneric('fr1ststrand2mate2flag'))
+setGeneric(
+    'fr1ststrand2mate2flag',
+    function(x) standardGeneric('fr1ststrand2mate2flag'))
 setGeneric('cufflinkslibtype', function(x) standardGeneric('cufflinkslibtype'))
 setGeneric('stringtielibtype', function(x) standardGeneric('stringtielibtype'))
-setGeneric('minisoformfraction',
-           function(x) standardGeneric('minisoformfraction'))
-setGeneric('maxmultireadfraction',
-           function(x) standardGeneric('maxmultireadfraction'))
-setGeneric('minfragspertransfrag',
-           function(x) standardGeneric('minfragspertransfrag'))
-setGeneric('mintrfpkmtoinclude',
-           function(x) standardGeneric('mintrfpkmtoinclude'))
-setGeneric('mintrtpmtoinclude',
-           function(x) standardGeneric('mintrtpmtoinclude'))
+setGeneric(
+    'minisoformfraction', function(x) standardGeneric('minisoformfraction'))
+setGeneric(
+    'maxmultireadfraction', function(x) standardGeneric('maxmultireadfraction'))
+setGeneric(
+    'minfragspertransfrag', function(x) standardGeneric('minfragspertransfrag'))
+setGeneric(
+    'mintrfpkmtoinclude', function(x) standardGeneric('mintrfpkmtoinclude'))
+setGeneric(
+    'mintrtpmtoinclude', function(x) standardGeneric('mintrtpmtoinclude'))
 setGeneric('os2cufflinks_url', function(x) standardGeneric('os2cufflinks_url'))
 setGeneric('os2stringtie_url', function(x) standardGeneric('os2stringtie_url'))
 setGeneric('os2taco_url',      function(x) standardGeneric('os2taco_url'))
 setGeneric('exprmintpm',       function(x) standardGeneric('exprmintpm'))
-setGeneric('chipseqmaxndupaln',
-           function(x) standardGeneric('chipseqmaxndupaln'))
+setGeneric(
+    'chipseqmaxndupaln', function(x) standardGeneric('chipseqmaxndupaln'))
 setGeneric('tsstesextwidth',   function(x) standardGeneric('tsstesextwidth'))
 setGeneric('cvnfolds',         function(x) standardGeneric('cvnfolds'))
 
@@ -212,25 +213,26 @@ setReplaceMethod('iggrs',     'Param', function(x, value) {x@IGGRS=value; x})
 setReplaceMethod('mode',      'Param', function(x, value) {x@MODE=value; x})
 setReplaceMethod('foutgtf',   'Param', function(x, value) {x@FOUTGTF=value; x})
 setReplaceMethod('tmpdir',    'Param', function(x, value) {x@TMP_DIR=value; x})
-setReplaceMethod('cufflinksreffa', 'Param', function(x, value) {x@CUFFLINKS_REF_FA=value; x})
+setReplaceMethod('cufflinksreffa', 'Param', 
+    function(x, value) {x@CUFFLINKS_REF_FA=value; x})
 setReplaceMethod('managerdt', 'Param',
-                 function(x, value) {x@MANAGER_DT=value; x})
+    function(x, value) {x@MANAGER_DT=value; x})
 setReplaceMethod('chromoridt', 'Param',
-                 function(x, value) {x@CHROM_ORI_DT=value; x})
+    function(x, value) {x@CHROM_ORI_DT=value; x})
 setReplaceMethod('cufflinks', 'Param',
-                 function(x, value) {x@CUFFLINKS_BIN=value; x})
+    function(x, value) {x@CUFFLINKS_BIN=value; x})
 setReplaceMethod('stringtie', 'Param',
-                 function(x, value) {x@STRINGTIE_BIN=value; x})
+    function(x, value) {x@STRINGTIE_BIN=value; x})
 setReplaceMethod('taco',       'Param',
-                 function(x, value) {x@TACO_BIN=value; x})
+    function(x, value) {x@TACO_BIN=value; x})
 setReplaceMethod('exprmintpm', 'Param',
-                 function(x, value) {x@EXPR_MIN_TPM=value; x})
+    function(x, value) {x@EXPR_MIN_TPM=value; x})
 setReplaceMethod('cvnfolds', 'Param',
-                 function(x, value) {x@CV_N_FOLDS=value; x})
+    function(x, value) {x@CV_N_FOLDS=value; x})
 setReplaceMethod('maxunindupaln', 'Param',
-                 function(x, value) {x@MAX_UNI_N_DUP_ALN=value; x})
+    function(x, value) {x@MAX_UNI_N_DUP_ALN=value; x})
 setReplaceMethod('maxmulndupaln', 'Param',
-                 function(x, value) {x@MAX_MUL_N_DUP_ALN=value; x})
+    function(x, value) {x@MAX_MUL_N_DUP_ALN=value; x})
 
 setMethod('cufflinks',      'Param', function(x) x@CUFFLINKS_BIN)
 setMethod('stringtie',      'Param', function(x) x@STRINGTIE_BIN)
@@ -251,16 +253,16 @@ setMethod('nthreads',       'Param', function(x) x@NTHREADS)
 setMethod('maxunindupaln',  'Param', function(x) x@MAX_UNI_N_DUP_ALN)
 setMethod('maxmulndupaln',  'Param', function(x) x@MAX_MUL_N_DUP_ALN)
 setMethod('fr1ststrand2mate2flag', 'Param',
-          function(x) x@FR1STSTRAND2MATE2FLAG)
+    function(x) x@FR1STSTRAND2MATE2FLAG)
 setMethod('cufflinkslibtype',     'Param', function(x) x@CUFFLINKS_LIB_TYPE)
 setMethod('stringtielibtype',     'Param', function(x) x@STRINGTIE_LIB_TYPE)
 setMethod('minisoformfraction',   'Param', function(x) x@MIN_ISOFORM_FRACTION)
 setMethod('maxmultireadfraction', 'Param',
-          function(x) x@MAX_MULTIREAD_FRACTION)
+    function(x) x@MAX_MULTIREAD_FRACTION)
 setMethod('minfragspertransfrag', 'Param',
-          function(x) x@MIN_FRAGS_PER_TRANSFRAG)
+    function(x) x@MIN_FRAGS_PER_TRANSFRAG)
 setMethod('mintrfpkmtoinclude',   'Param',
-          function(x) x@MIN_TR_FPKM_TO_INCLUDE)
+    function(x) x@MIN_TR_FPKM_TO_INCLUDE)
 setMethod('mintrtpmtoinclude', 'Param', function(x) x@MIN_TR_TPM_TO_INCLUDE)
 setMethod('os2cufflinks_url',  'Param', function(x) x@OS2CUFFLINKS_URL)
 setMethod('os2stringtie_url',  'Param', function(x) x@OS2STRINGTIE_URL)
@@ -282,7 +284,7 @@ setMethod('initialize',
 
 
 setGeneric('checkCufflinksBin',
-           function(prm) standardGeneric('checkCufflinksBin'))
+    function(prm) standardGeneric('checkCufflinksBin'))
 
 setMethod('checkCufflinksBin', 'Param',
     function(prm) {
@@ -309,7 +311,7 @@ setMethod('checkCufflinksBin', 'Param',
 
 
 setGeneric('checkCuffmergeRequiredBins',
-           function(prm) standardGeneric('checkCuffmergeRequiredBins'))
+    function(prm) standardGeneric('checkCuffmergeRequiredBins'))
 
 setMethod('checkCuffmergeRequiredBins', 'Param',
     function(prm) {
@@ -321,9 +323,9 @@ setMethod('checkCuffmergeRequiredBins', 'Param',
             cuffcompare_bin = paste0(cufflinksdir, 'cuffcompare')
             gtftosam_bin    = paste0(cufflinksdir, 'gtf_to_sam')
 
-            if ( ( ! isFileExisted(cuffmerge_bin)   ) |
-                 ( ! isFileExisted(cuffcompare_bin) ) |
-                 ( ! isFileExisted(gtftosam_bin)    ) ) {
+            if (( ! isFileExisted(cuffmerge_bin)   ) |
+                ( ! isFileExisted(cuffcompare_bin) ) |
+                ( ! isFileExisted(gtftosam_bin)    ) ) {
                     to_dl = T
             }
         } else {
@@ -344,7 +346,7 @@ setMethod('checkCuffmergeRequiredBins', 'Param',
 
 
 setGeneric('checkStringTieBin',
-           function(prm) standardGeneric('checkStringTieBin'))
+    function(prm) standardGeneric('checkStringTieBin'))
 
 setMethod('checkStringTieBin', 'Param',
     function(prm) {
@@ -370,7 +372,7 @@ setMethod('checkStringTieBin', 'Param',
 
 
 setGeneric('checkTacoBin',
-           function(prm) standardGeneric('checkTacoBin'))
+    function(prm) standardGeneric('checkTacoBin'))
 
 setMethod('checkTacoBin', 'Param',
     function(prm) {
@@ -378,9 +380,9 @@ setMethod('checkTacoBin', 'Param',
         if ( ! isFileExisted(taco_bin) ) {
             url = os2taco_url(prm)[[getOS()]]
             ## check if bin exists in tempdir()
-            temp_taco_bin = paste0(tempdir(), '/',
-                                   gsub('.tar.gz', '', basename(url)), '/',
-                                   'taco_run')
+            temp_taco_bin = paste0(
+                tempdir(), '/', gsub('.tar.gz', '', basename(url)), '/',
+                'taco_run')
             if ( ! file.exists(temp_taco_bin) ) {
                 cat("\nTACO not found: ", taco_bin, "\n",
                     'Downloading it from ', url, "\n")
