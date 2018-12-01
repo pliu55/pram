@@ -67,8 +67,8 @@ setMethod('initialize', 'Transcript',
             setnames(exondt, 'seqnames', 'chrom')
         }
 
-        if ( (! 'trid' %in% names(exondt)) &
-             ('transcript_id' %in% names(exondt))) {
+        if ((! 'trid' %in% names(exondt)) &
+            ('transcript_id' %in% names(exondt))) {
             setnames(exondt, 'transcript_id', 'trid')
         }
 
@@ -109,23 +109,26 @@ setMethod('getTr',   'Transcript', function(x) x@tr)
 getTrJncFromExon <- function(exondt) {
     trid = chrom = NULL
     ## gaps() cannot be applied to GRangesList, have to use IRangesList instead
-    exonirs = IRanges( start = exondt[, start],
-                       end   = exondt[, end],
-                       names = exondt[, trid] )
+    exonirs = IRanges( 
+        start = exondt[, start],
+        end   = exondt[, end],
+        names = exondt[, trid] )
     exonirsl = split(exonirs, names(exonirs))
     jncirs = unlist(gaps(exonirsl))
-    jncdt = data.table( trid  = names(jncirs),
-                        start = start(jncirs),
-                        end   = end(jncirs) )
+    jncdt = data.table( 
+        trid  = names(jncirs),
+        start = start(jncirs),
+        end   = end(jncirs) )
     jncdt[, `:=`( ijnc = seq_along(.I),
                   njnc = .N ), by=trid]
-    strdt = data.table( chrom  = exondt[, chrom],
-                        strand = exondt[, strand],
-                        trid   = exondt[, trid] )
+    strdt = data.table( 
+        chrom  = exondt[, chrom],
+        strand = exondt[, strand],
+        trid   = exondt[, trid] )
     uni_strdt = unique(strdt, by=c('strand', 'trid'))
     outdt = merge(jncdt, uni_strdt, by='trid', all.x=TRUE)
-    setcolorder(outdt, c('chrom', 'start', 'end', 'strand', 'trid', 'njnc',
-                         'ijnc'))
+    setcolorder(outdt, 
+        c('chrom', 'start', 'end', 'strand', 'trid', 'njnc', 'ijnc'))
     return(outdt)
 }
 
@@ -141,11 +144,12 @@ getTrJncFromExon <- function(exondt) {
 #
 getTrFromExon <- function(exondt, id_col_name='trid') {
     chrom = NULL
-    trdt = exondt[, list( chrom  = last(chrom),
-                          start  = min(start),
-                          end    = max(end),
-                          strand = last(strand),
-                          nexon  = .N ), by=id_col_name]
+    trdt = exondt[, list( 
+        chrom  = last(chrom),
+        start  = min(start),
+        end    = max(end),
+        strand = last(strand),
+        nexon  = .N ), by=id_col_name]
     return(trdt)
 }
 
