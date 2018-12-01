@@ -119,8 +119,9 @@ getTrJncFromExon <- function(exondt) {
         trid  = names(jncirs),
         start = start(jncirs),
         end   = end(jncirs) )
-    jncdt[, `:=`( ijnc = seq_along(.I),
-                  njnc = .N ), by=trid]
+    jncdt[, `:=`( 
+        ijnc = seq_along(.I),
+        njnc = .N ), by=trid]
     strdt = data.table( 
         chrom  = exondt[, chrom],
         strand = exondt[, strand],
