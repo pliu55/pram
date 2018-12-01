@@ -157,13 +157,16 @@ setGeneric('iggrs<-',       function(x, value) standardGeneric('iggrs<-'))
 setGeneric('mode<-',        function(x, value) standardGeneric('mode<-'))
 setGeneric('foutgtf<-',     function(x, value) standardGeneric('foutgtf<-'))
 setGeneric('tmpdir<-',      function(x, value) standardGeneric('tmpdir<-'))
-setGeneric('cufflinksreffa<-', function(x, value) standardGeneric('cufflinksreffa<-'))
+setGeneric('cufflinksreffa<-', 
+    function(x, value) standardGeneric('cufflinksreffa<-'))
 setGeneric('managerdt<-',   function(x, value) standardGeneric('managerdt<-'))
 setGeneric('chromoridt<-',  function(x, value) standardGeneric('chromoridt<-'))
 setGeneric('exprmintpm<-',  function(x, value) standardGeneric('exprmintpm<-'))
 setGeneric('cvnfolds<-',    function(x, value) standardGeneric('cvnfolds<-'))
-setGeneric('maxunindupaln<-', function(x, value) standardGeneric('maxunindupaln<-'))
-setGeneric('maxmulndupaln<-', function(x, value) standardGeneric('maxmulndupaln<-'))
+setGeneric('maxunindupaln<-', 
+    function(x, value) standardGeneric('maxunindupaln<-'))
+setGeneric('maxmulndupaln<-', 
+    function(x, value) standardGeneric('maxmulndupaln<-'))
 
 setGeneric('cufflinks',      function(x) standardGeneric('cufflinks'))
 setGeneric('stringtie',      function(x) standardGeneric('stringtie'))
