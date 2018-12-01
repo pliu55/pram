@@ -38,9 +38,10 @@ steps.  Figure 1 shows each step with function name and associated key
 parameters.  In the later
 sections of this vignette, we will describe each function in details.
 
-```{r, fig.cap='PRAM workflow', fig.align='center', out.width='237px', out.height='233px', echo=F}
+```{r, fig.cap='PRAM workflow', out.width='237px', out.height='233px', echo=F}
 knitr::include_graphics("workflow_noScreen.jpg")
 ```
+
 
 
 # Installation
@@ -170,11 +171,17 @@ In addition to gene annotation, `defIgRanges()` also requires user to provide
 chromosome sizes so that it would know the maximum genomic ranges.
 You can provide one of the following arguments:
 
+```{r echo=F}
+url_hg19_chromsize=
+'http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/chromInfo.txt.gz'
+```
+
 - `chromgrs`: a GRanges object, or
 - `genome`: a genome name, currently supported ones are: 
     __hg19__, __hg38__, __mm9__, and __mm10__, or
 - `fchromsize`: a UCSC genome browser-style size file, e.g.
-    [hg19](http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/chromInfo.txt.gz).
+[hg19](`r url_hg19_chromsize`)
+
 
 By default, `defIgRanges()` will define intergenic ranges as regions 10 kb away
 from any known genes.  You can change it by the `radius` argument.
@@ -234,7 +241,8 @@ default, `buildModel()` uses __plcf__ to predict transcript models.
 
 Table: Prediction steps of the seven `buildModel()` methods
 
-| method | meta-assembly | preparing RNA-seq input  | building transcripts | assembling transcripts |
+| method | meta-assembly | preparing RNA-seq input  | building transcripts | \
+assembling transcripts |
 |:--------:|:---:|:------------------:|:---------------:|:-----------------:|
 | __plcf__ | yes | pooling alignments | Cufflinks       | no                |
 | __plst__ | yes | pooling alignments | StringTie       | no                |
@@ -258,13 +266,52 @@ for __macOS__, pre-compiled Cufflinks binary
 versions 2.2.1 and 2.2.0 appear to have an issue on processing BAM files, 
 therefore we recommend to use version 2.1.1 instead.
 
+
+```{r echo=F}
+url_cf_web = paste0('[Cufflinks, Cuffmerge]',
+'(http://cole-trapnell-lab.github.io/cufflinks/)')
+
+url_cf_lnx = paste0('[v2.2.1]',
+'(http://cole-trapnell-lab.github.io/cufflinks/assets/',
+'downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz)')
+
+url_cf_mac = paste0('[v2.1.1]',
+'(http://cole-trapnell-lab.github.io/cufflinks/assets/',
+'downloads/cufflinks-2.1.1.OSX_x86_64.tar.gz)')
+
+cf_methods = '__plcf__, __cfmg__, __cftc__, and __cf__'
+
+url_st_web = paste0('[StringTie, StringTie-merge]',
+'(https://ccb.jhu.edu/software/stringtie/)')
+
+url_st_lnx = paste0('[v1.3.3b]', 
+'(http://ccb.jhu.edu/software/stringtie/dl/',
+'stringtie-1.3.3b.Linux_x86_64.tar.gz)')
+
+url_st_mac = paste0('[v1.3.3b]', 
+'(http://ccb.jhu.edu/software/stringtie/dl/',
+'stringtie-1.3.3b.OSX_x86_64.tar.gz)')
+
+st_methods = '__plst__, __stmg__, and __st__'
+
+url_tc_web = '[TACO](https://tacorna.github.io)'
+
+url_tc_lnx = paste0('[v0.7.0]', 
+'(https://github.com/tacorna/taco/releases/download/',
+'v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz)')
+
+url_tc_mac = paste0('[v0.7.0]',
+'(https://github.com/tacorna/taco/releases/download/',
+'v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz)')
+```
+
 Table: `buildModel()`-required software and recommended version
 
 | software | Linux binary | macOS binary | required by |
 |:--------:|:------------:|:------------:|:-----------:|
-| [Cufflinks, Cuffmerge](http://cole-trapnell-lab.github.io/cufflinks/) | [v2.2.1](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz)  | [v2.1.1](http://cole-trapnell-lab.github.io/cufflinks/assets/downloads/cufflinks-2.1.1.OSX_x86_64.tar.gz) | __plcf__, __cfmg__, __cftc__, and __cf__ |
-| [StringTie, StringTie-merge](https://ccb.jhu.edu/software/stringtie/) | [v1.3.3b](http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.Linux_x86_64.tar.gz)  | [v1.3.3b](http://ccb.jhu.edu/software/stringtie/dl/stringtie-1.3.3b.OSX_x86_64.tar.gz) | __plst__, __stmg__, and __st__ |
-| [TACO](https://tacorna.github.io) | [v0.7.0](https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz)  | [v0.7.0](https://github.com/tacorna/taco/releases/download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz) | __cftc__ |
+| `r url_cf_web` | `r url_cf_lnx` | `r url_cf_mac` | `r cf_methods` |
+| `r url_st_web` | `r url_st_lnx` | `r url_st_mac` | `r st_methods` |
+| `r url_tc_web` | `r url_tc_lnx` | `r url_tc_mac` | __cftc__       |
 
 
 ## Example
@@ -295,8 +342,8 @@ total length of exons and introns.
 
 
 By default: `selModel()` will select transcript models with $\ge$ 2 exons and 
-$\ge$ 200 bp total length of exons and introns.  You can change the default using 
-the `min_n_exon` and `min_tr_len` arguments.
+$\ge$ 200 bp total length of exons and introns.  You can change the default 
+using the `min_n_exon` and `min_tr_len` arguments.
 
 ## Example
 ```R
