@@ -67,15 +67,9 @@ runPRAM <- function(in_gtf, in_bamv, out_gtf) {
     buildModel(bamdt$foutbam, fgtf_all_mdl)
 
     selModel(fgtf_all_mdl, fgtf_sel_mdl, min_n_exon=2, min_tr_len=200,
-             info_keys = c('transcript_id'))
+        info_keys = c('transcript_id'))
 
     file.copy(fgtf_sel_mdl, out_gtf, overwrite=TRUE)
-
-  # if ( missing(in_bedv) | missing(training_tpms) | missing(training_gtf) ) {
-  #     file.copy(fgtf_sel_mdl, out_gtf, overwrite=T)
-  # } else {
-  #     screenModel(in_bedv, training_tpms, training_gtf, fgtf_sel_mdl, out_gtf)
-  # }
 }
 
 
