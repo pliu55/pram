@@ -65,3 +65,14 @@ Requirements for GTF and data.table are the same as
 above
 }}
 
+\examples{
+
+fmdl = system.file('extdata/benchmark/plcf.tsv.gz', package='pram')
+ftgt = system.file('extdata/benchmark/tgt.tsv.gz', package='pram')
+
+mdldt = data.table(read.table(fmdl, header=TRUE, sep="\\t"))
+tgtdt = data.table(read.table(ftgt, header=TRUE, sep="\\t"))
+
+evalModel(mdldt, tgtdt)
+
+}
