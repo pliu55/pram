@@ -474,9 +474,13 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
         setwd(mrgdir)
     }
 
-    sel = sapply(fmdlgtfs, 
-        function(x) 
-            length(grep('^#', readLines(x), perl=TRUE, invert=TRUE)) > 0)
+    #sel = sapply(fmdlgtfs, 
+    #    function(x) 
+    #        length(grep('^#', readLines(x), perl=TRUE, invert=TRUE)) > 0)
+
+    sel = vapply(fmdlgtfs,
+        function(x) length(grep('^#', readLines(x), perl=TRUE, invert=TRUE)),
+        FUN.VALUE=c(0) ) > 0
 
     fsel_mdlgtfs = fmdlgtfs[sel]
 
