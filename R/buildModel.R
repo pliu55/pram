@@ -154,9 +154,12 @@ splitUserBams <- function(prm) {
     managerdt = managerdt(prm)
 
     if ( nthr == 1 ) {
-        lapply(1:nrow(managerdt), splitUserBamByChromOri, prm)
+        # lapply(1:nrow(managerdt), splitUserBamByChromOri, prm)
+        lapply(seq_len(nrow(managerdt)), splitUserBamByChromOri, prm)
     } else if ( nthr > 1 ) {
-        mclapply(1:nrow(managerdt), splitUserBamByChromOri, prm, mc.cores=nthr)
+        #mclapply(1:nrow(managerdt), splitUserBamByChromOri, prm, mc.cores=nthr)
+        mclapply(seq_len(nrow(managerdt)), splitUserBamByChromOri, prm, 
+                 mc.cores=nthr)
     }
 }
 
