@@ -206,7 +206,6 @@ setMethod('writeGTF',
 #'
 #' @return a data.table object
 #'
-#' @export
 #'
 readGTF <- function(fgtf, info_keys=c('transcript_id', 'gene_id')) {
     gtf = new('GTF')
