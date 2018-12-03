@@ -1,3 +1,7 @@
+<!--
+[![Build Status](https://travis-ci.org/pliu55/pram.svg)](https://travis-ci.org/pliu55/pram)
+-->
+
 PRAM: Pooling RNA-seq and Assembling Models
 ===========================================
 
