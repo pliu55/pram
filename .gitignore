@@ -28,4 +28,4 @@ vignettes/*.html
 inst/doc/
 *.bam.bai
 
-\.Rproj$
+*.Rproj$
