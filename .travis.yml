@@ -9,8 +9,8 @@ bioc_check: true
 
 r:
 - release
-- devel
-- bioc-devel
+# - devel
+# - bioc-devel
 
 r-packages:
 - Rcpp
