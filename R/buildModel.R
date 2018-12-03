@@ -95,9 +95,7 @@ buildModel <- function(
     cufflinksreffa(prm) = cufflinks_ref_fa
 
     tmpdir(prm) = createTmpdir(tmpdir, mode)
-
     prm = checkArgs(prm)
-
     if ( mode %in% c('plcf', 'plst') ) {
         prm = def1StepManager(prm)
     } else if ( mode %in% c('cfmg', 'stmg', 'cftc') ) {
@@ -107,7 +105,6 @@ buildModel <- function(
     }
 
     splitUserBams(prm)
-
     mode2func = list( 
         'plcf' = modelByPoolingCufflinks,
         'plst' = modelByPoolingStringTie,
@@ -126,9 +123,7 @@ buildModel <- function(
     ## - strand does not match the one where bam was derived
     outputCorrectStrandModel(prm)
 
-    if ( ! keep_tmpdir ) {
-        unlink(tmpdir(prm), recursive=TRUE, force=TRUE)
-    }
+    if ( ! keep_tmpdir ) unlink(tmpdir(prm), recursive=TRUE, force=TRUE)
 }
 
 
@@ -519,16 +514,13 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
         setwd(mrgdir)
     }
 
-    #sel = sapply(fmdlgtfs, 
-    #    function(x) 
+    #sel = sapply(fmdlgtfs, function(x) 
     #        length(grep('^#', readLines(x), perl=TRUE, invert=TRUE)) > 0)
-
     sel = vapply(fmdlgtfs,
         function(x) length(grep('^#', readLines(x), perl=TRUE, invert=TRUE)),
         FUN.VALUE=c(0) ) > 0
 
     fsel_mdlgtfs = fmdlgtfs[sel]
-
     if ( length(fsel_mdlgtfs) > 0 ) {
         write(paste0(fsel_mdlgtfs, collapse="\n"), fmrglist)
 
@@ -547,7 +539,6 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
 
         ## rename trid and geneid by chrom, strand, and id
         renameGTFTrGeneID(fmrggtf, foutgtf, prm)
-
     } else {
         write('no model was build from bam', fmrglist)
     }
