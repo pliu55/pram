@@ -12,8 +12,8 @@ r:
 # - devel
 # - bioc-devel
 
-r-packages:
-- Rcpp
+#r-packages:
+#- Rcpp
 
 r_check_args: --no-build-vignettes --no-vignettes
 
