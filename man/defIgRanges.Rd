@@ -5,7 +5,7 @@
 \title{Define intergenic genomic regions}
 \usage{
 defIgRanges(in_gtf, chromgrs, genome = NULL, fchromsize = NULL,
-  radius = 10000, feat = "exon", chroms = NULL)
+    radius = 10000, feat = "exon", chroms = NULL)
 }
 \arguments{
 \item{in_gtf}{An input GTF file for defining genomic coordinates of

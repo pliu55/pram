@@ -5,7 +5,7 @@
 \title{Extract alignments in intergenic regions from BAM files}
 \usage{
 prepIgBam(finbam, iggrs, foutbam, max_uni_n_dup_aln = 10,
-  max_mul_n_dup_aln = 10)
+    max_mul_n_dup_aln = 10)
 }
 \arguments{
 \item{finbam}{Full name of an input RNA-seq BAM file.

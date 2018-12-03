@@ -5,7 +5,7 @@
 \title{Select transcript models}
 \usage{
 selModel(fin_gtf, fout_gtf, min_n_exon = 2, min_tr_len = 200,
-  info_keys = c("transcript_id"))
+    info_keys = c("transcript_id"))
 }
 \arguments{
 \item{fin_gtf}{Character of an input GTF file that contains
