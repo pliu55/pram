@@ -1,5 +1,7 @@
 library(data.table)
+library(parallel)
 suppressMessages(library(GenomicRanges))
+suppressMessages(library(BiocParallel))
 
 main <- function() {
     context('evalModel')
@@ -24,11 +26,23 @@ testBenchmark <- function() {
 
     nthr = 4
 
-    mdldtlist = mclapply(names(mode2results), readModel, mc.cores=nthr)
+    if ( Sys.info()[["sysname"]] == "Windows" ){
+        snow = SnowParam(workers = nthr, type = "SOCK")
+        mdldtlist = bplapply(names(mode2results), readModel, BPPARAM=snow)
+    } else {
+        mdldtlist = mclapply(names(mode2results), readModel, mc.cores=nthr)
+    }
+
     names(mdldtlist) = names(mode2results)
 
-    mclapply(names(mode2results), testEvalModelByDT, mode2results,
-             mdldtlist, tgtdt, mc.cores=nthr)
+    if ( Sys.info()[["sysname"]] == "Windows" ){
+        snow = SnowParam(workers = nthr, type = "SOCK")
+        bplapply(names(mode2results), testEvalModelByDT, mode2results,
+                mdldtlist, tgtdt, BPPARAM=snow)
+    } else {
+        mclapply(names(mode2results), testEvalModelByDT, mode2results,
+                mdldtlist, tgtdt, mc.cores=nthr)
+    }
 
     testEvalModelByGR('plcf', mode2results, mdldtlist, tgtdt)
 
