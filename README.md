@@ -21,7 +21,7 @@ Pooling RNA-seq and Assembling Models (__PRAM__) is an __R__ package that
 utilizes multiple RNA-seq datasets to predict transcript models. The workflow 
 of PRAM contains four steps, which is shown in 
 the figure below with function names and associated key parameters.  PRAM has a
-[vignette](inst/doc/pram.pdf) that describes each function in details.
+[vignette](inst/extdata/vignettes/pram.pdf) that describes each function in details.
 
 <!--
 GitHub no longer renders Rmd file, I have to use PDF to show vignette
