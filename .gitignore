@@ -27,3 +27,5 @@ vignettes/*.html
 *.knit.md
 inst/doc/
 *.bam.bai
+
+.Rproj
