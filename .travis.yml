@@ -1,6 +1,6 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
-language: R
+language: r
 sudo: required
 cache: packages
 
@@ -11,3 +11,8 @@ r:
 - release
 - devel
 - bioc-devel
+
+r_check_args: --no-build-vignettes --no-vignettes
+
+after_success:
+  - Rscript -e 'library(covr);codecov()'
