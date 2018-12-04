@@ -70,9 +70,11 @@
 #'
 #' foutgtf = tempfile(fileext='.gtf')
 #'
-#' \donttest{
-#' buildModel(fbams, foutgtf, method='plst')
-#' }
+#' ## if you are on Linux or MacOS, run the following, otherwise, the 
+#' ## `cufflinks` or `stringtie` binary need to be provided:
+#' # buildModel(fbams, foutgtf, method='plst')
+#'
+#'
 #'
 #'
 buildModel <- function(
@@ -514,6 +516,7 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
         setwd(mrgdir)
     }
 
+    #browser()
     #sel = sapply(fmdlgtfs, function(x) 
     #        length(grep('^#', readLines(x), perl=TRUE, invert=TRUE)) > 0)
     sel = vapply(fmdlgtfs,

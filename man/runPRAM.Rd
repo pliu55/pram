@@ -35,9 +35,8 @@ in_bamv = c(system.file('extdata/demo/SZP.bam', package='pram'),
 
 pred_out_gtf = tempfile(fileext='.gtf')
 
-\donttest{
-runPRAM(in_gtf, in_bamv, pred_out_gtf)
-}
+## if you are on Linux or MacOS, run the following:
+# runPRAM(in_gtf, in_bamv, pred_out_gtf)
 
 
 }

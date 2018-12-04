@@ -25,9 +25,8 @@
 #'
 #' pred_out_gtf = tempfile(fileext='.gtf')
 #'
-#' \donttest{
-#' runPRAM(in_gtf, in_bamv, pred_out_gtf)
-#' }
+#' ## if you are on Linux or MacOS, run the following:
+#' # runPRAM(in_gtf, in_bamv, pred_out_gtf)
 #'
 #'
 ## in_bedv = c( system.file('extdata/demo/H3K79me2.bed.gz', package='pram'),
@@ -42,10 +41,8 @@
 ##
 ## screen_out_gtf = tempfile(fileext='.gtf')
 ##
-## \donttest{
 ## runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms,
 ##         training_gtf)
-## }
 ##
 ##
 #runPRAM <- function(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms,

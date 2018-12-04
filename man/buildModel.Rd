@@ -81,9 +81,11 @@ fbams = c(  system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam',
 
 foutgtf = tempfile(fileext='.gtf')
 
-\donttest{
-buildModel(fbams, foutgtf, method='plst')
-}
+## if you are on Linux or MacOS, run the following, otherwise, the 
+## `cufflinks` or `stringtie` binary need to be provided:
+# buildModel(fbams, foutgtf, method='plst')
+
+
 
 
 }
