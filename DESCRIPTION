@@ -10,7 +10,7 @@ Description: Pooling aligned RNA-seq fragments to assemble transcript models.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.5)
+Depends: R
 Imports: methods, 
          parallel, 
          BiocParallel,
