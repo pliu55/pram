@@ -21,7 +21,12 @@ main <- function() {
 
   # training_gtf = system.file('extdata/demo/training.gtf', package='pram')
 
-    testPred(in_gtf, in_bamv, pred_out_gtf)
+    if ( ( grepl('biostat.wisc.edu', Sys.info()[['nodename']], fixed=TRUE) &
+           ( Sys.info()[['user']] == 'pliu' ) ) |
+         ( ( Sys.info()[['sysname']] == 'Darwin' ) & 
+           ( Sys.info()[['user']] == 'peng' ) ) ) {
+        testPred(in_gtf, in_bamv, pred_out_gtf)
+    }
 
   # testPredScreen(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms,
   #                training_gtf)
