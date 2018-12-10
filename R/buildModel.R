@@ -211,7 +211,8 @@ filterBamByChromOri <- function(fuserbam, fchromoribam, chrom, strand, prm) {
     }
 
     filter_rules = FilterRules(list(tmp=filter_func))
-    inbam = BamFile(fuserbam, yieldSize=maxyieldsize(prm))
+    #inbam = BamFile(fuserbam, yieldSize=maxyieldsize(prm))
+    inbam = BamFile(fuserbam)
     filterBam(inbam, fchromoribam, filter=filter_rules,
         param=ScanBamParam(what=c('qname'), tag=c('HI'), which=grs))
 }
