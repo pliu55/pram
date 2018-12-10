@@ -10,7 +10,14 @@ main <- function() {
     testFilterBamByChromOri('chr10', 'plus',  outdir, prm)
     testFilterBamByChromOri('chr12', 'minus', outdir, prm)
 
+    if ( grepl('biostat.wisc.edu', Sys.info()[['nodename']], fixed=T) &
+         grepl('(pliu|peng)',      Sys.info()[['user']],     perl=T) ) {
+        testBuild(prm, outdir)
+    }
+}
 
+
+testBuild <- function(prm, outdir) {
     fbams = c( system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam',
                            package='pram'),
                system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam',
@@ -30,6 +37,7 @@ main <- function() {
     testBinTC(prm)
 
     nthr = 4
+    #nthr = 1
     fout_cf_gtfs = paste0(outdir, 'CMPRep', 1:2, '.sortedByCoord.clean_cf.gtf')
     fout_st_gtfs = paste0(outdir, 'CMPRep', 1:2, '.sortedByCoord.clean_st.gtf')
 
@@ -37,11 +45,6 @@ main <- function() {
     cufflinks = cufflinks(prm)
     stringtie = stringtie(prm)
     taco      = taco(prm)
-   #cufflinks = '/ua/pliu/local/cufflinks-2.2.1/cufflinks'
-   #stringtie = '/ua/pliu/local/stringtie-1.3.3/stringtie'
-   #taco      = '/ua/pliu/local/taco-0.7.0/taco_run'
-   #fgnmfa    = '/tier2/deweylab/pliu/genome/cufflinks_mm10_male/genome.fa'
-   #if ( file.exists(cufflinks) ) {
 
     for ( i in 1:length(fbams) ) {
         testBuildByCF(fbams[i], fout_cf_gtfs[i], nthr, cufflinks)
