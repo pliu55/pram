@@ -25,6 +25,7 @@ testExtractIgBam <- function(rnaseqid, iggrs, outdir) {
     prepIgBam(finbam, iggrs, foutbam)
 
     bamprm = ScanBamParam(what=c('flag', 'qname'), which=iggrs)
+    indexBam(fcmpbam)
     cmp_alns = readGAlignments(fcmpbam, use.names=FALSE, param=bamprm)
     out_alns = readGAlignments(foutbam, use.names=FALSE, param=bamprm)
 
