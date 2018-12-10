@@ -10,8 +10,10 @@ main <- function() {
     testFilterBamByChromOri('chr10', 'plus',  outdir, prm)
     testFilterBamByChromOri('chr12', 'minus', outdir, prm)
 
-    if ( grepl('biostat.wisc.edu', Sys.info()[['nodename']], fixed=T) &
-         grepl('(pliu|peng)',      Sys.info()[['user']],     perl=T) ) {
+    if ( ( grepl('biostat.wisc.edu', Sys.info()[['nodename']], fixed=TRUE) &
+           ( Sys.info()[['user']] == 'pliu' ) ) |
+         ( ( Sys.info()[['sysname']] == 'Darwin' ) & 
+           ( Sys.info()[['user']] == 'peng' ) ) ) {
         testBuild(prm, outdir)
     }
 }
@@ -36,8 +38,8 @@ testBuild <- function(prm, outdir) {
     prm = checkTacoBin(prm)
     testBinTC(prm)
 
-    nthr = 4
-    #nthr = 1
+    #nthr = 4
+    nthr = 1
     fout_cf_gtfs = paste0(outdir, 'CMPRep', 1:2, '.sortedByCoord.clean_cf.gtf')
     fout_st_gtfs = paste0(outdir, 'CMPRep', 1:2, '.sortedByCoord.clean_st.gtf')
 
