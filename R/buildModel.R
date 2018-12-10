@@ -121,8 +121,7 @@ buildModel <- function(
     func(prm)
 
     ## model will be removed if:
-    ## - strand is not '+' or '-'
-    ## - strand does not match the one where bam was derived
+    ## - strand is not '+' or '-' or not match the one where bam was derived
     outputCorrectStrandModel(prm)
 
     if ( ! keep_tmpdir ) unlink(tmpdir(prm), recursive=TRUE, force=TRUE)
