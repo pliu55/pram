@@ -1,6 +1,6 @@
 Package: pram
 Title: Pooling RNA-seq for Assembling Models
-Version: 0.99.0
+Version: 0.99.1
 Authors@R: c(
     person( given="Peng",     family="Liu", email = "pliu55@wisc.edu", 
             role = c("aut", "cre")),
