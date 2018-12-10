@@ -9,11 +9,8 @@ bioc_check: true
 
 r:
 - release
-# - devel
-# - bioc-devel
-
-#r-packages:
-#- Rcpp
+- devel
+- bioc-devel
 
 r_check_args: --no-build-vignettes --no-vignettes
 
