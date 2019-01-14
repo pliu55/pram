@@ -292,7 +292,7 @@ setGeneric('checkCufflinksBin',
 setMethod('checkCufflinksBin', 'Param',
     function(prm) {
         cufflinks_bin = cufflinks(prm)
-        if ( ! isFileExisted(cufflinks_bin) ) {
+        if ( ! fileExists(cufflinks_bin) ) {
             url = os2cufflinks_url(prm)[[getOS()]]
 
             ## check if bin exists in tempdir()
@@ -320,15 +320,15 @@ setMethod('checkCuffmergeRequiredBins', 'Param',
     function(prm) {
         prm = checkCufflinksBin(prm)
         to_dl = F
-        if ( isFileExisted( dirname(cufflinks(prm)) ) ) {
+        if ( fileExists( dirname(cufflinks(prm)) ) ) {
             cufflinksdir = paste0(dirname(cufflinks(prm)), '/')
             cuffmerge_bin   = paste0(cufflinksdir, 'cuffmerge')
             cuffcompare_bin = paste0(cufflinksdir, 'cuffcompare')
             gtftosam_bin    = paste0(cufflinksdir, 'gtf_to_sam')
 
-            if (( ! isFileExisted(cuffmerge_bin)   ) |
-                ( ! isFileExisted(cuffcompare_bin) ) |
-                ( ! isFileExisted(gtftosam_bin)    ) ) {
+            if (( ! fileExists(cuffmerge_bin)   ) |
+                ( ! fileExists(cuffcompare_bin) ) |
+                ( ! fileExists(gtftosam_bin)    ) ) {
                     to_dl = T
             }
         } else {
@@ -354,7 +354,7 @@ setGeneric('checkStringTieBin',
 setMethod('checkStringTieBin', 'Param',
     function(prm) {
         stringtie_bin = stringtie(prm)
-        if ( ! isFileExisted(stringtie_bin) ) {
+        if ( ! fileExists(stringtie_bin) ) {
             url = os2stringtie_url(prm)[[getOS()]]
             ## check if bin exists in tempdir()
             temp_stringtie_bin = paste0(tempdir(), '/',
@@ -380,7 +380,7 @@ setGeneric('checkTacoBin',
 setMethod('checkTacoBin', 'Param',
     function(prm) {
         taco_bin = taco(prm)
-        if ( ! isFileExisted(taco_bin) ) {
+        if ( ! fileExists(taco_bin) ) {
             url = os2taco_url(prm)[[getOS()]]
             ## check if bin exists in tempdir()
             temp_taco_bin = paste0(

@@ -81,7 +81,7 @@ downloadAndUntar <- function(url, dldir) {
 
 
 ## file.exists cannot give T/F for character(0)
-isFileExisted <- function(file) {
+fileExists <- function(file) {
     is_existed = ifelse( identical(file, character(0)), FALSE,
         ifelse( ! file.exists(file), FALSE, TRUE))
     return(is_existed)
