@@ -52,3 +52,7 @@ Collate: 'GTF.R'
          'util.R'
 VignetteBuilder: knitr
 biocViews: Software, Technology, Sequencing, RNASeq
+SystemsRequirements: buildModel() and runPRAM() functions require external 
+    software Cufflinks, StringTie, and/or TACO. For details, please see the 
+    'Required external software' section in vignette's 
+    'Building transcript models: buildModel()'.
