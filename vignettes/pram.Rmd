@@ -48,22 +48,22 @@ knitr::include_graphics("workflow_noScreen.jpg")
 
 ## From GitHub
 
-Use the following __R__ command:
+Start __R__ and enter:
 
 ```{r installFromGitHub, eval=FALSE}
 devtools::install_github('pliu55/pram')
 ```
 
 ## From Bioconductor
-To install this package, start R (version "3.6") and enter:
+Start __R__ and enter:
 
 ```{r installFromBioconductor, eval=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("GenomicRanges", version = "3.9")
+BiocManager::install("pram")
 ```
 
-For older versions of R, please refer to the appropriate 
+For different versions of R, please refer to the appropriate 
 [Bioconductor release](https://bioconductor.org/about/release-announcements/).
 
 
@@ -404,11 +404,11 @@ Table: `evalModel()` output rows
 
 ## Example
 ```{r evalModel}
-fmdl = system.file('extdata/benchmark/plcf.tsv.gz', package='pram')
-ftgt = system.file('extdata/benchmark/tgt.tsv.gz',  package='pram')
+fmdl = system.file('extdata/benchmark/plcf.tsv', package='pram')
+ftgt = system.file('extdata/benchmark/tgt.tsv',  package='pram')
 
-mdldt = data.table::data.table(read.table(fmdl, header=TRUE, sep="\t"))
-tgtdt = data.table::data.table(read.table(ftgt, header=TRUE, sep="\t"))
+mdldt = data.table::fread(fmdl, header=TRUE, sep="\t")
+tgtdt = data.table::fread(ftgt, header=TRUE, sep="\t")
 
 pram::evalModel(mdldt, tgtdt)
 ```
