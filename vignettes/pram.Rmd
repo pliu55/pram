@@ -1,5 +1,5 @@
 ---
-title: "Pooling RNA-seq and Assembling Models"
+title: "PRAM: Pooling RNA-seq and Assembling Models"
 author: "Peng Liu, Colin N. Dewey, and Sündüz Keleş"
 date: "`r Sys.Date()`"
 output: 
@@ -32,72 +32,75 @@ knitr::opts_chunk$set(
 # Introduction
 
 Pooling RNA-seq and Assembling Models (__PRAM__) is an __R__ package that 
-utilizes multiple RNA-seq 
-datasets to predict transcript models.  The workflow of PRAM contains four
-steps.  Figure 1 shows each step with function name and associated key 
-parameters.  In the later
-sections of this vignette, we will describe each function in details.
+utilizes multiple RNA-seq datasets to predict transcript models.  The workflow 
+of PRAM contains four steps.  Figure 1 shows each step with function name and 
+associated key parameters.  In addition, we provide a function named 
+`evalModel()` to evaluate prediction accuracy by comparing transcript models 
+with true transcripts.  In the later sections of this vignette, we will 
+describe each function in details.  
 
 ```{r, fig.cap='PRAM workflow', out.width='237px', out.height='233px', echo=F}
 knitr::include_graphics("workflow_noScreen.jpg")
 ```
 
 
-
 # Installation
 
-Use the following __R__ command on __Linux__ or __macOS__
+## From GitHub
 
-<!--
-Cufflinks MacOS binary seems to have some issues
-it will report segmentation fault for the same bam file, which Linux Cufflinks
-runs ok
--->
+Use the following __R__ command:
 
-```R
+```{r installFromGitHub, eval=FALSE}
 devtools::install_github('pliu55/pram')
 ```
 
-# Quick start
-PRAM provides a function `runPRAM()` to let you run through the whole workflow.
+## From Bioconductor
+To install this package, start R (version "3.6") and enter:
 
-<!--
-### Predict transcript models only
--->
+```{r installFromBioconductor, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("GenomicRanges", version = "3.9")
+```
+
+For older versions of R, please refer to the appropriate 
+[Bioconductor release](https://bioconductor.org/about/release-announcements/).
+
+
+# Quick start
+
+## Description
+PRAM provides a function named `runPRAM()` to let you conveniently run through 
+the whole workflow.
+
 For a given gene annotation and RNA-seq alignments, you can predict transcript
 models in intergenic genomic regions:
 
-```R
-runPRAM(in_gtf, in_bamv, out_gtf)
+```{r runQuickPRAM, eval=FALSE}
+##
+## assuming the stringtie binary is in folder /usr/local/stringtie-1.3.3/
+##
+pram::runPRAM(  in_gtf, in_bamv, out_gtf, method='plst',
+                stringtie='/usr/loca/stringtie-1.3.3/stringtie')
 ```
 
 - `in_gtf`: an input GTF file defining genomic coordinates of existing genes. 
             Required to have an attribute of __gene_id__ in the ninth column.
-- `in_bamv`: a vector of input BAM file(s) containing RNA-seq alignments. 
+- `in_bamv`: a vector of input BAM file(s) containing RNA-seq alignments.
             Currently,
             PRAM only supports strand-specific paired-end RNA-seq with the 
             first mate on the right-most of transcript coordinate, i.e., 
             'fr-firststrand' by Cufflinks definition.
-- `out_gtf`:  an output GTF file of predicted transcript models
+- `out_gtf`: an output GTF file of predicted transcript models.
+- `method`: prediction method.  For the command above, we were using pooling
+            RNA-seq datasets and building models by __stringtie__. For a list 
+            of available PRAM methods, please check Table \@ref(tab:methods)
+            below.
+- `stringtie`:  location of the __stringtie__ binary. PRAM's model-building step
+                depends on external software. For more information on this 
+                topic, please see Section \@ref(id:required-external-software) 
+                below.
 
-<!--
-### Predict transcript models and screen them by ChIP-seq
-If you are interested to predict intergenic transcripts for a particular cell
-or tissue type, you can use epigenetic ChIP-seq 
-data together with known transcripts and their expression levels to further 
-screen intergenic transcript models:
-```
-runPRAM(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms, training_gtf)
-```
-
-- `in_gtf`, `in_bamv`, and `out_gtf` are the same as described
-    [above](#predict-transcript-models-only)
-- `in_bedv`:  A vector of BED file(s) containing ChIP-seq alignments.
-- `training_tpms`:  A vector of RSEM quantification results for known
-                    transcripts
-- `training_gtf`:   A GTF file defining genomic coordinates of known
-                    transcripts 
--->
 
 ## Examples
 PRAM has included input examples files in its `extdata/demo/` 
@@ -109,27 +112,17 @@ Table: `runPRAM()`'s input example files.
 |:--------------:|:------------:|
 | `in_gtf`       | in.gtf       |
 | `in_bamv`      | SZP.bam, TLC.bam   |
-<!--
-| `in_bedv`      | H3K79me2.bed.gz, POLR2.bed.gz   |
-| `training_tpms`| AED1.isoforms.results, AED2.isoforms.results   |
-| `training_gtf` | training.gtf |
--->
 
 You can access example files by `system.file()` in __R__, e.g. for the 
 argument `in_gtf`, you can access its example file by
 
-```R
+```{r accessExample}
 system.file('extdata/demo/in.gtf', package='pram')
 ```
 
-Below shows usage of `runPRAM()` with example input files: 
-<!--
-##
-## Predict transcript models only
-##
--->
+Below shows the usage of `runPRAM()` with example input files: 
 
-```R
+```{r runPRAM, eval=FALSE}
 in_gtf = system.file('extdata/demo/in.gtf', package='pram')
 
 in_bamv = c(system.file('extdata/demo/SZP.bam', package='pram'),
@@ -137,29 +130,17 @@ in_bamv = c(system.file('extdata/demo/SZP.bam', package='pram'),
 
 pred_out_gtf = tempfile(fileext='.gtf')
 
-runPRAM(in_gtf, in_bamv, pred_out_gtf)
+##
+## assuming the stringtie binary is in folder /usr/local/stringtie-1.3.3/
+##
+pram::runPRAM(  in_gtf, in_bamv, pred_out_gtf, method='plst',
+                stringtie='/usr/loca/stringtie-1.3.3/stringtie')
 ```
-
-<!--
-##
-## Predict transcript models and screen them by ChIP-seq data
-##
-in_bedv = c(system.file('extdata/demo/H3K79me2.bed.gz', package='pram'),
-            system.file('extdata/demo/POLR2.bed.gz',    package='pram') )
-
-training_tpms = c( 
-    system.file('extdata/demo/AED1.isoforms.results', package='pram'),
-    system.file('extdata/demo/AED2.isoforms.results', package='pram') )
-
-training_gtf = system.file('extdata/demo/training.gtf', package='pram')
-
-screen_out_gtf = tempfile(fileext='.gtf')
-
-runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms, training_gtf)
--->
 
 
 # Define intergenic genomic ranges: `defIgRanges()`
+
+## Description
 To predict intergenic transcripts, we must first define
 intergenic regions by `defIgRanges()`.  This function requires a GTF file 
 containing known gene annotation supplied for its `in_gtf` argument. This GTF 
@@ -187,13 +168,15 @@ By default, `defIgRanges()` will define intergenic ranges as regions 10 kb away
 from any known genes.  You can change it by the `radius` argument.
 
 ## Example
-```R
-defIgRanges(system.file('extdata/gtf/defIgRanges_in.gtf', package='pram'),
-            genome = 'hg38' )
+```{r defIgRanges, warning=FALSE}
+pram::defIgRanges(system.file('extdata/gtf/defIgRanges_in.gtf', package='pram'),
+                genome = 'hg38')
 ```
 
 
 # Prepare input RNA-seq alignments: `prepIgBam()`
+
+## Description
 Once intergenic regions were defined, `prepIgBam()` will extract corresponding
 RNA-seq alignments from input BAM files.  In this way, transcript models 
 predicted at later stage will solely from intergenic regions.  Also, with fewer
@@ -209,7 +192,7 @@ Three input arguments are required by `prepIgBam()`:
 - `foutbam`: an output BAM file.
 
 ## Example
-```R
+```{r prepIgBam}
 finbam =system.file('extdata/bam/CMPRep2.sortedByCoord.raw.bam', 
                     package='pram')
 
@@ -217,10 +200,12 @@ iggrs = GenomicRanges::GRanges('chr10:77236000-77247000:+')
 
 foutbam = tempfile(fileext='.bam')
 
-prepIgBam(finbam, iggrs, foutbam)
+pram::prepIgBam(finbam, iggrs, foutbam)
 ```
 
 # Build transcript models: `buildModel()`
+
+## Description
 `buildModel()` predict transcript models from RNA-seq BAM file(s).
 This function requires two arguments:
 
@@ -239,7 +224,7 @@ methods that predict transcript models from a single RNA-seq dataset.
 The table below compares prediction steps for these seven methods.  By 
 default, `buildModel()` uses __plcf__ to predict transcript models.  
 
-Table: Prediction steps of the seven `buildModel()` methods
+Table: (\#tab:methods)Prediction steps of the seven `buildModel()` methods
 
 | method | meta-assembly | preparing RNA-seq input  | building transcripts | \
 assembling transcripts |
@@ -253,7 +238,7 @@ assembling transcripts |
 | __st__   | no  | no                 | StringTie       | no                |
 
 
-## Required external software
+## Required external software {#id:required-external-software} 
 Depending on your specified prediction method, `buildModel()` requires 
 external software: Cufflinks, StringTie and/or TACO, to build and/or assemble 
 transcript 
@@ -305,7 +290,7 @@ url_tc_mac = paste0('[v0.7.0]',
 'v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz)')
 ```
 
-Table: `buildModel()`-required software and recommended version
+Table: (\#tab:software)`buildModel()`-required software and recommended version
 
 | software | Linux binary | macOS binary | required by |
 |:--------:|:------------:|:------------:|:-----------:|
@@ -315,7 +300,7 @@ Table: `buildModel()`-required software and recommended version
 
 
 ## Example
-```R
+```{r buildModel, eval=FALSE}
 fbams = c(  system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam', 
                         package='pram'),
             system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam', 
@@ -323,11 +308,17 @@ fbams = c(  system.file('extdata/bam/CMPRep1.sortedByCoord.clean.bam',
 
 foutgtf = tempfile(fileext='.gtf')
 
-buildModel(fbams, foutgtf, method='plst')
+##
+## assuming the stringtie binary is in folder /usr/local/stringtie-1.3.3/
+##
+pram::buildModel(fbams, foutgtf, method='plst',
+                stringtie='/usr/loca/stringtie-1.3.3/stringtie')
 ```
 
 
 # Select transcript models: `selModel()`
+
+## Description
 Once transcript models were built, you may want to select a subset of them by
 their genomic features. `selModel()` was developed for this purpose. 
 It allows you to select transcript models by their total number of exons and 
@@ -346,68 +337,87 @@ $\ge$ 200 bp total length of exons and introns.  You can change the default
 using the `min_n_exon` and `min_tr_len` arguments.
 
 ## Example
-```R
+```{r selModel}
 fin_gtf = system.file('extdata/gtf/selModel_in.gtf', package='pram')
 
 fout_gtf = tempfile(fileext='.gtf')
 
-selModel(fin_gtf, fout_gtf)
+pram::selModel(fin_gtf, fout_gtf)
 ```
 
-<!--
-## Screen transcript models: `screenModel()`
-If you were interested in identifying novel transcripts for a particular cell
-or tissue type, `screenModel()` will let you achieve it by screening models
-that share similar epigenetic signature with known transcripts. 
 
-This function requires five arguments:
+# Evaluate transcript models: `evalModel()`
 
-- `in_bedv`:a vector of BED file(s) of histone marks and/or RNA Pol II 
-            ChIP-seq alignments. 
-- `training_tpms`:  a vector of [RSEM](https://deweylab.github.io/RSEM/) 
-                    isoform quantification result file(s) to define the 
-                    expression levels of known transcripts in the cell/tissue 
-                    type you interested.
-- `training_gtf`:   a GTF file defining the genomic coordinates of known
-                    transcripts.
-- `testing_gtf`:    a GTF file defining the genomic coordinates of novel
-                    transcripts that you would like to screen
-- `out_gtf`: output GTF file of screened novel transcripts.
+## Motivation
+After PRAM has predicted a number of transcript models, you may wonder how 
+accurate these models are. To answer this question, you can compare PRAM 
+models with real transcripts (i.e., positive controls) that you know should be 
+predicted. PRAM's `evalModel()` function will help you to make such comparison.
+It will calculate precision and recall rates on three features of a transcript: 
+exon nucleotides, individual splice junctions, and transcript structure (i.e.,
+whether all splice junctions within a transcript were constructed in a model).
 
-`screenModel()` will label known transcripts as 'real' and 
-'unreal' by their expression levels. Then, it will use their ChIP-seq profiles 
-as features to perform a 10-fold cross-validation to train a random forest 
-classifer.  This classifier will help you to screen transcript models.  
+## Input
+`evalModel()` requires two arguments:
 
-By default, a training transcript with TPM ≥ 1 will be labeled as 'real' and 
-TPM < 1 as 'unreal'.  You can change this cutoff by the `expr_min_tpm` argument.
-If you would like to know more about training and testing details of the 
-random forest classifier, you can specify a folder through the `tmpdir` 
-argument and four files will be saved in that folder:
+- `model_exons`: genomic coordinates of transcript model exons.
+- `target_exons`: genomic coordinates of real transcript exons. 
 
-- `rf.rda`: an R object of the random forest classifier
-- `roc_pr.pdf`: ROC and precision-recall curves from cross-validation
-- `cv.tsv`: predicted probabilities of being 'real' on known transcripts from 
-            cross-validation
-- `pred.tsv`: predicted probabilities of being 'real' on novel transcripts
+The two arguments can be in multiple formats:
 
-### Example
+- both are `GRanges` objects
+- both are `character` objects denoting names of GTF files 
+- both are `data.table` objects containing the following five columns for each
+    exon:
+    - __chrom__: chromosome name
+    - __start__: starting coordinate
+    - __end__: ending coordinate
+    - __strand__: strand information, either '+' or '-'
+    - __trid__: transcript ID
+- `model_exons` is the name of a GTF file and `target_exons` is a `data.table`
+    object.
+
+## Output
+The output of `evalModel()` is a `data.table` object, where columns are 
+evaluation results and each row is three transcript features. 
+
+Table: `evalModel()` output columns
+
+| column name   | representation                       |
+|:-------------:|:------------------------------------:|
+| __feat__      | transcript feature                   |
+| __ntp__       | number of true positives (TP)        |
+| __nfn__       | number of false negatives (FN)       |
+| __nfp__       | number of false positives (FP)       |
+| __precision__ | precision rate: $\frac{TP}{(TP+FP)}$ |
+| __recall__    | recall rate: $\frac{TP}{(TP+FN)}$    |
+
+
+Table: `evalModel()` output rows
+
+| feature name | representation             |
+|:------------:|:--------------------------:|
+| __exon_nuc__ | exon nucleotide            |
+| __indi_jnc__ | individual splice junction |
+| __tr_jnc__   | transcript structure       |
+
+
+## Example
+```{r evalModel}
+fmdl = system.file('extdata/benchmark/plcf.tsv.gz', package='pram')
+ftgt = system.file('extdata/benchmark/tgt.tsv.gz',  package='pram')
+
+mdldt = data.table::data.table(read.table(fmdl, header=TRUE, sep="\t"))
+tgtdt = data.table::data.table(read.table(ftgt, header=TRUE, sep="\t"))
+
+pram::evalModel(mdldt, tgtdt)
 ```
-fbeds = c(  system.file('extdata/bed/GM12878POLR2AphosphoS5Rep1.bed', 
-            package='pram'),
-            system.file('extdata/bed/GM12878POLR2AphosphoS5Rep2.bed', 
-            package='pram') )
 
-ftpms = c(  system.file('extdata/rsem/GM12878Rep1_training.isoforms.results', 
-            package='pram'),
-            system.file('extdata/rsem/GM12878Rep2_training.isoforms.results', 
-            package='pram') )
 
-fgtf_training = system.file('extdata/gtf/rf_training.gtf', package='pram')
-fgtf_testing  = system.file('extdata/gtf/rf_testing.gtf',  package='pram')
+# Session Info
+Below is the output of `sessionInfo()` on the system on which this document 
+was compiled.
 
-fgtf_out = tempfile(fileext='.gtf')
-
-screenModel(fbeds, ftpms, fgtf_training, fgtf_testing, fgtf_out)
+``` {r sessionInfo, echo=FALSE}
+sessionInfo()
 ```
--->
