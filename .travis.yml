@@ -2,7 +2,7 @@
 
 language: r
 cache: packages 
-sudo: false  ## probably need to set it to 'true' for R-3.6
+sudo: true  ## probably need to set it to 'true' for R-3.6
 
 warning_are_errors: true
 bioc_check: true
