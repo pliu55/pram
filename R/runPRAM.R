@@ -5,7 +5,8 @@
 ##                to inherit `in_gtf`
 #'
 #' @inheritParams buildModel
-##                to inherit `in_bamv`, `out_gtf`
+##                to inherit `in_bamv`, `out_gtf`, `method`, `cufflinks`, 
+##                `stringtie`, `taco`
 #'
 ## @inheritParams screenModel
 ##                to inherit `in_bedv`, `training_gtf`, and `training_tpms`
@@ -25,10 +26,14 @@
 #'
 #' pred_out_gtf = tempfile(fileext='.gtf')
 #'
-#' ## if you are on Linux or MacOS, run the following:
-#' # runPRAM(in_gtf, in_bamv, pred_out_gtf)
+#' ## assuming the stringtie binary is in folder /usr/local/stringtie-1.3.3/
+#' ## you can run runPRAM() by the following example
+#' ##
+#' # runPRAM(in_gtf, in_bamv, pred_out_gtf, method='plst',
+#' #         stringtie='/usr/local/stringtie-1.3.3/stringtie')
 #'
-#'
+##
+##
 ## in_bedv = c( system.file('extdata/demo/H3K79me2.bed.gz', package='pram'),
 ##              system.file('extdata/demo/POLR2.bed.gz',    package='pram') )
 ##
@@ -47,7 +52,8 @@
 ##
 #runPRAM <- function(in_gtf, in_bamv, out_gtf, in_bedv, training_tpms,
 #                    training_gtf) {
-runPRAM <- function(in_gtf, in_bamv, out_gtf) {
+runPRAM <- function(in_gtf, in_bamv, out_gtf, method, cufflinks='', 
+    stringtie='', taco='') {
     foutbam = finbam = NULL
     chromgrs = getMaxChromGRangesFromBams(in_bamv)
 
@@ -61,7 +67,8 @@ runPRAM <- function(in_gtf, in_bamv, out_gtf) {
     fgtf_all_mdl = tempfile(pattern='pram_all_mdl.', fileext='.gtf')
     fgtf_sel_mdl = tempfile(pattern='pram_sel_mdl.', fileext='.gtf')
 
-    buildModel(bamdt$foutbam, fgtf_all_mdl)
+    buildModel(in_bamv=bamdt$foutbam, out_gtf=fgtf_all_mdl, method=method,
+        cufflinks=cufflinks, stringtie=stringtie, taco=taco)
 
     selModel(fgtf_all_mdl, fgtf_sel_mdl, min_n_exon=2, min_tr_len=200,
         info_keys = c('transcript_id'))

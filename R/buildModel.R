@@ -41,14 +41,30 @@
 #'                    assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz}
 #'                    and MacOS \url{http://cole-trapnell-lab.github.io/
 #'                    cufflinks/assets/downloads/
-#'                    cufflinks-2.2.1.OSX_x86_64.tar.gz}
+#'                    cufflinks-2.1.1.OSX_x86_64.tar.gz}. 
+#'                    Souce code can be obtained from 
+#'                    \url{http://cole-trapnell-lab.github.io/cufflinks/}. 
 #'                    Default: ''
 #'
 #' @param  stringtie  StringTie executable file.  Required by mode
 #'                    'plst', 'stmg', and 'st'.
+#'                    Executable can be downloaded for Linux 
+#'                    \url{http://ccb.jhu.edu/software/stringtie/dl/
+#'                    stringtie-1.3.3b.Linux_x86_64.tar.gz} and MacOS
+#'                    \url{http://ccb.jhu.edu/software/stringtie/dl/
+#'                    stringtie-1.3.3b.OSX_x86_64.tar.gz}.
+#'                    Souce code can be obtained from 
+#'                    \url{https://ccb.jhu.edu/software/stringtie/}. 
 #'                    Default: ''
 #'
 #' @param  taco       TACO executable file. Required by mode 'cftc'.
+#'                    Executable can be downloaded for Linux
+#'                    \url{https://github.com/tacorna/taco/releases/
+#'                    download/v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz} and MacOS
+#'                    \url{https://github.com/tacorna/taco/releases/
+#'                    download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz}.
+#'                    Souce code can be obtained from 
+#'                    \url{https://tacorna.github.io}. 
 #'                    Default: ''
 #'
 #' @param  cufflinks_ref_fa  Genome reference fasta file for Cufflinks. If
@@ -70,17 +86,15 @@
 #'
 #' foutgtf = tempfile(fileext='.gtf')
 #'
-#' ## if you are on Linux or MacOS, run the following, otherwise, the 
-#' ## `cufflinks` or `stringtie` binary need to be provided:
-#' # buildModel(fbams, foutgtf, method='plst')
-#'
-#'
-#'
+#' ## assuming the stringtie binary is in folder /usr/local/stringtie-1.3.3/
+#' ## you can run buildModel() by the following example
+#' ##
+#' # buildModel(fbams, foutgtf, method='plst', 
+#' #            stringtie='/usr/local/stringtie-1.3.3/stringtie')
 #'
 buildModel <- function(
-    in_bamv, out_gtf, method='plcf', nthreads=1, tmpdir=NULL,
-    keep_tmpdir=FALSE, cufflinks='', stringtie='', taco='',
-    cufflinks_ref_fa='') {
+    in_bamv, out_gtf, method='plcf', nthreads=1, tmpdir=NULL, keep_tmpdir=FALSE,
+    cufflinks='', stringtie='', taco='', cufflinks_ref_fa='') {
 
     finbamv = in_bamv
     foutgtf = out_gtf
@@ -125,6 +139,7 @@ buildModel <- function(
     outputCorrectStrandModel(prm)
 
     if ( ! keep_tmpdir ) unlink(tmpdir(prm), recursive=TRUE, force=TRUE)
+    cat("Transcript models are saved in the following file:\n", out_gtf, "\n")
 }
 
 

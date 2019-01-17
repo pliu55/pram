@@ -60,7 +60,9 @@ Param = setClass('Param',
                 'assets/downloads/cufflinks-2.2.1.Linux_x86_64.tar.gz'),
 
             'OSX' = paste0('http://cole-trapnell-lab.github.io/cufflinks/',
-                'assets/downloads/cufflinks-2.1.1.OSX_x86_64.tar.gz') 
+                'assets/downloads/cufflinks-2.1.1.OSX_x86_64.tar.gz'),
+
+            'WINDOWS' = 'http://cole-trapnell-lab.github.io/cufflinks/'
         ),
 
         OS2STRINGTIE_URL = list(
@@ -68,7 +70,9 @@ Param = setClass('Param',
                 'stringtie-1.3.3b.Linux_x86_64.tar.gz'),
 
             'OSX' = paste0('http://ccb.jhu.edu/software/stringtie/dl/', 
-                'stringtie-1.3.3b.OSX_x86_64.tar.gz')
+                'stringtie-1.3.3b.OSX_x86_64.tar.gz'),
+
+            'WINDOWS' = 'https://ccb.jhu.edu/software/stringtie/'
         ),
 
         OS2TACO_URL = list(
@@ -76,7 +80,9 @@ Param = setClass('Param',
                 'download/v0.7.0/taco-v0.7.0.Linux_x86_64.tar.gz'),
 
             'OSX' = paste0('https://github.com/tacorna/taco/releases/', 
-                'download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz') 
+                'download/v0.7.0/taco-v0.7.0.OSX_x86_64.tar.gz'),
+
+            'WINDOWS' = 'https://tacorna.github.io'
         ),
 
 
@@ -300,10 +306,12 @@ setMethod('checkCufflinksBin', 'Param',
                                         gsub('.tar.gz', '', basename(url)), '/',
                                         'cufflinks')
             if ( ! file.exists(temp_cufflinks_bin) ) {
-                cat("\nCufflinks not found: ", cufflinks_bin, "\n",
-                    'Downloading it from ', url, "\n")
-                ex_dir = downloadAndUntar(url, tempdir())
-                cufflinks(prm) = paste0(ex_dir, '/cufflinks')
+                stop(paste0("\nCufflinks not found. You may download it from ",
+                    url, "\n"))
+                #cat("\nCufflinks not found: ", cufflinks_bin, "\n",
+                #    'Downloading it from ', url, "\n")
+                #ex_dir = downloadAndUntar(url, tempdir())
+                #cufflinks(prm) = paste0(ex_dir, '/cufflinks')
             } else {
                 cufflinks(prm) = temp_cufflinks_bin
             }
@@ -337,10 +345,12 @@ setMethod('checkCuffmergeRequiredBins', 'Param',
 
         if ( to_dl ) {
             url = os2cufflinks_url(prm)[[getOS()]]
-            cat("\nNot found: Cuffmerge\n",
-                'Downloading it from ', url, "\n")
-            ex_dir = downloadAndUntar(url, tempdir())
-            cufflinks(prm) = paste0(ex_dir, '/cufflinks')
+            stop(paste0("\nCuffmerge not found. You may download it from ",
+                url, "\n"))
+            #cat("\nNot found: Cuffmerge\n",
+            #    'Downloading it from ', url, "\n")
+            #ex_dir = downloadAndUntar(url, tempdir())
+            #cufflinks(prm) = paste0(ex_dir, '/cufflinks')
         }
 
         return(prm)
@@ -361,10 +371,12 @@ setMethod('checkStringTieBin', 'Param',
                                         gsub('.tar.gz', '', basename(url)), '/',
                                         'stringtie')
             if ( ! file.exists(temp_stringtie_bin) ) {
-                cat("\nStringTie not found: ", stringtie_bin, "\n",
-                    'Downloading it from ', url, "\n")
-                ex_dir = downloadAndUntar(url, tempdir())
-                stringtie(prm) = paste0(ex_dir, '/stringtie')
+                stop(paste0("\nStringTie not found. You may download it from ",
+                    url, "\n"))
+                #cat("\nStringTie not found: ", stringtie_bin, "\n",
+                #    'Downloading it from ', url, "\n")
+                #ex_dir = downloadAndUntar(url, tempdir())
+                #stringtie(prm) = paste0(ex_dir, '/stringtie')
             } else {
                 stringtie(prm) = temp_stringtie_bin
             }
@@ -387,10 +399,12 @@ setMethod('checkTacoBin', 'Param',
                 tempdir(), '/', gsub('.tar.gz', '', basename(url)), '/',
                 'taco_run')
             if ( ! file.exists(temp_taco_bin) ) {
-                cat("\nTACO not found: ", taco_bin, "\n",
-                    'Downloading it from ', url, "\n")
-                ex_dir = downloadAndUntar(url, tempdir())
-                taco(prm) = paste0(ex_dir, '/taco_run')
+                stop(paste0("\nTACO not found. You may download it from ", url,
+                    "\n"))
+                #cat("\nTACO not found: ", taco_bin, "\n",
+                #    'Downloading it from ', url, "\n")
+                #ex_dir = downloadAndUntar(url, tempdir())
+                #taco(prm) = paste0(ex_dir, '/taco_run')
             } else {
                 taco(prm) = temp_taco_bin
             }
