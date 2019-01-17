@@ -38,6 +38,7 @@ Param = setClass('Param',
         MIN_TR_TPM_TO_INCLUDE   = 'numeric',
 
         MAX_YIELD_SIZE = 'numeric',
+        MAX_CHROM_LEN  = 'numeric',
 
         MAX_UNI_N_DUP_ALN = 'numeric',
         MAX_MUL_N_DUP_ALN = 'numeric',
