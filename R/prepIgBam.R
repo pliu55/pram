@@ -45,6 +45,7 @@ prepIgBam <- function(finbam, iggrs, foutbam,
     ori_iggrs = addOri(iggrs)
 
     extractBam(finbam, ori_iggrs, foutbam, prm)
+    cat("RNA-seq alignments are saved in the following file:\n", foutbam, "\n")
 }
 
 

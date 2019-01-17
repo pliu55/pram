@@ -55,4 +55,5 @@ selModel <- function(fin_gtf, fout_gtf, min_n_exon=2, min_tr_len=200,
     grangedt(out_gtf) = sel_grdt
 
     writeGTF(out_gtf, fout_gtf, append=FALSE)
+    cat('Transcript models are saved in the following file:\n', fout_gtf, "\n")
 }
