@@ -9,17 +9,17 @@ main <- function() {
 
 
 testBenchmark <- function() {
-    ftgt = system.file('extdata/benchmark/tgt.tsv.gz', package='pram')
-    tgtdt = data.table(read.table(ftgt, header=TRUE, sep="\t"))
+    ftgt = system.file('extdata/benchmark/tgt.tsv', package='pram')
+    tgtdt = fread(ftgt, header=TRUE, sep="\t")
 
     mode2results = list(
                   ##--- indi jnc ---##--- tr jnc ---##-------- nuc --------##
                   ## TP    FN   FP  ## TP   FN   FP ##   TP       FN     FP
-        'plcf' = c( 2889, 162, 192,  1138, 118, 252,  1723581, 109337, 8424 ),
-        'plst' = c( 2864, 187,   0,  1098, 158,  70,  1748793,  84125,   35 ),
-        'cfmg' = c( 2637, 414, 549,   969, 287, 530,  1549929, 282989, 6929 ),
-        'stmg' = c( 2739, 312,   0,  1005, 251,  89,  1735326,  97592,  505 ),
-        'cftc' = c( 2723, 328, 251,  1038, 218, 417,  1533130, 299788, 9128 )
+        'plcf' = c( 2889, 162, 192,  1138, 118, 252,  1723581, 109337, 8424 )
+      # 'plst' = c( 2864, 187,   0,  1098, 158,  70,  1748793,  84125,   35 ),
+      # 'cfmg' = c( 2637, 414, 549,   969, 287, 530,  1549929, 282989, 6929 ),
+      # 'stmg' = c( 2739, 312,   0,  1005, 251,  89,  1735326,  97592,  505 ),
+      # 'cftc' = c( 2723, 328, 251,  1038, 218, 417,  1533130, 299788, 9128 )
     )
 
     #nthr = 4
@@ -45,7 +45,7 @@ testBenchmark <- function() {
 
     testEvalModelByGR('plcf', mode2results, mdldtlist, tgtdt)
 
-    testEvalModelByGTF('stmg', mode2results, mdldtlist, tgtdt)
+    testEvalModelByGTF('plcf', mode2results, mdldtlist, tgtdt)
 }
 
 
@@ -100,9 +100,9 @@ testEvalModelByDT <- function(mode, mode2results, mdldtlist, tgtdt) {
 
 
 readModel <- function(mode) {
-    fmdl = system.file(paste0('extdata/benchmark/', mode, '.tsv.gz'),
+    fmdl = system.file(paste0('extdata/benchmark/', mode, '.tsv'),
                        package='pram')
-    mdldt = data.table(read.table(fmdl, header=TRUE, sep="\t"))
+    mdldt = fread(fmdl, header=TRUE, sep="\t")
 
     return(mdldt)
 }

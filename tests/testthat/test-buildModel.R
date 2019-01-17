@@ -8,7 +8,7 @@ main <- function() {
     outdir = paste0(tempdir(), '/')
 
     testFilterBamByChromOri('chr10', 'plus',  outdir, prm)
-    testFilterBamByChromOri('chr12', 'minus', outdir, prm)
+    #testFilterBamByChromOri('chr12', 'minus', outdir, prm)
 
     if ( ( grepl('biostat.wisc.edu', Sys.info()[['nodename']], fixed=TRUE) &
            ( Sys.info()[['user']] == 'pliu' ) ) |

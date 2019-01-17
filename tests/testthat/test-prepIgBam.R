@@ -3,7 +3,8 @@ suppressMessages(library(GenomicAlignments))
 main <- function() {
     context('prepIgBam')
 
-    rnaseqids = c('CMPRep1', 'CMPRep2')
+    #rnaseqids = c('CMPRep1', 'CMPRep2')
+    rnaseqids = c('CMPRep2')
     seqinfo = Seqinfo( c('chr10', 'chr12') )
     iggrs = c( GRanges( 'chr10:77236000-77247000:+', seqinfo = seqinfo ),
                GRanges( 'chr12:32095000-32125000:-', seqinfo = seqinfo ),

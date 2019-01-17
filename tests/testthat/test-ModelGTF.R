@@ -1,13 +1,13 @@
 main <- function() {
     context('ModelGTF')
 
-    testSTMG()
-    testSTPL()
+    #testSTMG()
+    #testSTPL()
 
-    testCFMG()
+    #testCFMG()
     testCFPL()
 
-    testTACO()
+    #testTACO()
 }
 
 testSTMG <- function() {
