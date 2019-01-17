@@ -13,7 +13,8 @@ main <- function() {
     if ( ( grepl('biostat.wisc.edu', Sys.info()[['nodename']], fixed=TRUE) &
            ( Sys.info()[['user']] == 'pliu' ) ) |
          ( ( Sys.info()[['sysname']] == 'Darwin' ) & 
-           ( Sys.info()[['user']] == 'peng' ) ) ) {
+           ( Sys.info()[['user']] == 'peng' ) &
+           ( file.exists('/ua/pliu/repe/pram') ) ) ) {
         testBuild(prm, outdir)
     }
 }
@@ -24,6 +25,16 @@ testBuild <- function(prm, outdir) {
                            package='pram'),
                system.file('extdata/bam/CMPRep2.sortedByCoord.clean.bam',
                            package='pram') )
+
+    if ( getOS() == 'LINUX' ) {
+        cufflinks(prm) = '/ua/pliu/local/cufflinks-2.2.1/cufflinks'
+        stringtie(prm) = '/ua/pliu/local/stringtie-1.3.3/stringtie'
+        taco(prm)      = '/ua/pliu/local/taco-0.7.0/taco_run'
+    } else if ( getOS() == 'OSX' ) {
+        cufflinks(prm) = '/ua/pliu/local/osx/cufflinks-2.1.1/cufflinks'
+        stringtie(prm) = '/ua/pliu/local/osx/stringtie-1.3.3b/stringtie'
+        taco(prm)      = '/ua/pliu/local/osx/taco-v0.7.0/taco_run'
+    }
 
     ## test Cufflinks, StringTie, or TACO and define them in `prm`
     prm = checkCufflinksBin(prm)
