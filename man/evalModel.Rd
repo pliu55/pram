@@ -67,12 +67,14 @@ above
 
 \examples{
 
-fmdl = system.file('extdata/benchmark/plcf.tsv.gz', package='pram')
-ftgt = system.file('extdata/benchmark/tgt.tsv.gz', package='pram')
+fmdl = system.file('extdata/benchmark/plcf.tsv', package='pram')
+ftgt = system.file('extdata/benchmark/tgt.tsv',  package='pram')
 
-mdldt = data.table::data.table(read.table(fmdl, header=TRUE, sep="\\t"))
-tgtdt = data.table::data.table(read.table(ftgt, header=TRUE, sep="\\t"))
+mdldt = data.table::fread(fmdl, header=TRUE, sep="\\t")
+tgtdt = data.table::fread(ftgt, header=TRUE, sep="\\t")
 
+\donttest{
 evalModel(mdldt, tgtdt)
+}
 
 }

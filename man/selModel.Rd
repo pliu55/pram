@@ -40,6 +40,8 @@ fin_gtf = system.file('extdata/gtf/selModel_in.gtf', package='pram')
 
 fout_gtf = tempfile(fileext='.gtf')
 
+\donttest{
 selModel(fin_gtf, fout_gtf)
+}
 
 }

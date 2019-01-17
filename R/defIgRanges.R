@@ -54,7 +54,9 @@
 #' @examples
 #' fgtf = system.file('extdata/gtf/defIgRanges_in.gtf', package='pram')
 #'
+#' \donttest{
 #' defIgRanges(fgtf, genome='hg38')
+#' }
 #'
 defIgRanges <- function(in_gtf, chromgrs, genome=NULL, fchromsize=NULL,
                         radius=1e+4, feat='exon', chroms=NULL){

@@ -30,7 +30,9 @@
 #'
 #' fout_gtf = tempfile(fileext='.gtf')
 #'
+#' \donttest{
 #' selModel(fin_gtf, fout_gtf)
+#' }
 #'
 selModel <- function(fin_gtf, fout_gtf, min_n_exon=2, min_tr_len=200,
     info_keys = c('transcript_id') ) {

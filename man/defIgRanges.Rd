@@ -62,6 +62,8 @@ Define intergenic genomic regions
 \examples{
 fgtf = system.file('extdata/gtf/defIgRanges_in.gtf', package='pram')
 
+\donttest{
 defIgRanges(fgtf, genome='hg38')
+}
 
 }

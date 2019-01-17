@@ -32,7 +32,9 @@
 #'
 #' foutbam = tempfile(fileext='.bam')
 #'
+#' \donttest{
 #' prepIgBam(finbam, iggrs, foutbam)
+#' }
 #'
 #'
 prepIgBam <- function(finbam, iggrs, foutbam,

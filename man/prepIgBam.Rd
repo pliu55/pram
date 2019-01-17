@@ -42,7 +42,9 @@ iggrs = GenomicRanges::GRanges('chr10:77236000-77247000:+')
 
 foutbam = tempfile(fileext='.bam')
 
+\donttest{
 prepIgBam(finbam, iggrs, foutbam)
+}
 
 
 }
