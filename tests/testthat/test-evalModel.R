@@ -22,26 +22,11 @@ testBenchmark <- function() {
       # 'cftc' = c( 2723, 328, 251,  1038, 218, 417,  1533130, 299788, 9128 )
     )
 
-    #nthr = 4
-    #if ( Sys.info()[["sysname"]] == "Windows" ){
-    #    snow = SnowParam(workers = nthr, type = "SOCK")
-    #    mdldtlist = bplapply(names(mode2results), readModel, BPPARAM=snow)
-    #} else {
-    #    mdldtlist = mclapply(names(mode2results), readModel, mc.cores=nthr)
-    #}
     mdldtlist = lapply(names(mode2results), readModel)
     names(mdldtlist) = names(mode2results)
 
-    #if ( Sys.info()[["sysname"]] == "Windows" ){
-    #    snow = SnowParam(workers = nthr, type = "SOCK")
-    #    bplapply(names(mode2results), testEvalModelByDT, mode2results,
-    #            mdldtlist, tgtdt, BPPARAM=snow)
-    #} else {
-    #    mclapply(names(mode2results), testEvalModelByDT, mode2results,
-    #            mdldtlist, tgtdt, mc.cores=nthr)
-    #}
-     lapply(names(mode2results), testEvalModelByDT, mode2results,
-            mdldtlist, tgtdt)
+    lapply(names(mode2results), testEvalModelByDT, mode2results,
+           mdldtlist, tgtdt)
 
     testEvalModelByGR('plcf', mode2results, mdldtlist, tgtdt)
 
