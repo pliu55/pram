@@ -158,7 +158,6 @@ createTmpdir <- function(tmpdir, mode) {
 }
 
 
-#' @importFrom  parallel  mclapply
 #' @importFrom  BiocParallel  SnowParam bplapply
 #'
 splitUserBams <- function(prm) {
@@ -166,18 +165,12 @@ splitUserBams <- function(prm) {
     managerdt = managerdt(prm)
 
     if ( nthr == 1 ) {
-        # lapply(1:nrow(managerdt), splitUserBamByChromOri, prm)
         lapply(seq_len(nrow(managerdt)), splitUserBamByChromOri, prm)
     } else if ( nthr > 1 ) {
         #mclapply(1:nrow(managerdt), splitUserBamByChromOri, prm, mc.cores=nthr)
-        if ( Sys.info()[["sysname"]] == "Windows" ){
-            snow = SnowParam(workers = nthr, type = "SOCK")
-            bplapply(seq_len(nrow(managerdt)), splitUserBamByChromOri, prm, 
-                    BPPARAM=snow)
-        } else {
-            mclapply(seq_len(nrow(managerdt)), splitUserBamByChromOri, prm, 
-                    mc.cores=nthr)
-        }
+        sys_type = ifelse(Sys.info()[["sysname"]]=="Windows", 'SOCK', 'FORK')
+        bplapply(seq_len(nrow(managerdt)), splitUserBamByChromOri, prm, 
+                BPPARAM=SnowParam(workers=nthr, type=sys_type))
     }
 }
 
@@ -272,12 +265,15 @@ defCSManager <- function(prm) {
     if ( nthr == 1 ) {
         dt = rbindlist(lapply(fuserbams, genBamChromOri))
     } else if ( nthr > 1 ) {
-        if ( Sys.info()[["sysname"]] == "Windows" ){
-            snow = SnowParam(workers = nthr, type = "SOCK")
-            dt = rbindlist(bplapply(fuserbams, genBamChromOri, BPPARAM=snow))
-        } else {
-            dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
-        }
+        sys_type = ifelse(Sys.info()[["sysname"]]=='Windows', 'SOCK', 'FORK')
+        dt = rbindlist(bplapply(fuserbams, genBamChromOri, 
+            BPPARAM=SnowParam(workers=nthr, type=sys_type)))
+        #if ( Sys.info()[["sysname"]] == "Windows" ){
+        #    snow = SnowParam(workers = nthr, type = "SOCK")
+        #    dt = rbindlist(bplapply(fuserbams, genBamChromOri, BPPARAM=snow))
+        #} else {
+        #    dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
+        #}
     }
 
     dt[, `:=`( 
@@ -314,12 +310,15 @@ def1StepManager <- function(prm) {
     if ( nthr == 1 ) {
         dt = rbindlist(lapply(fuserbams, genBamChromOri))
     } else if ( nthr > 1 ) {
-        if ( Sys.info()[["sysname"]] == "Windows" ){
-            snow = SnowParam(workers = nthr, type = "SOCK")
-            dt = rbindlist(bplapply(fuserbams, genBamChromOri, BPPARAM=snow))
-        } else {
-            dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
-        }
+        sys_type = ifelse(Sys.info()[["sysname"]]=='Windows', 'SOCK', 'FORK')
+        dt = rbindlist(bplapply(fuserbams, genBamChromOri, 
+            BPPARAM=SnowParam(workers=nthr, type=sys_type)))
+        #if ( Sys.info()[["sysname"]] == "Windows" ){
+        #    snow = SnowParam(workers = nthr, type = "SOCK")
+        #    dt = rbindlist(bplapply(fuserbams, genBamChromOri, BPPARAM=snow))
+        #} else {
+        #    dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
+        #}
     }
 
     dt[, mode := mode(prm) ]
@@ -356,12 +355,15 @@ def2StepManager <- function(prm) {
     if ( nthr == 1 ) {
         dt = rbindlist(lapply(fuserbams, genBamChromOri))
     } else if ( nthr > 1 ) {
-        if ( Sys.info()[["sysname"]] == "Windows" ){
-            snow = SnowParam(workers = nthr, type = "SOCK")
-            dt = rbindlist(bplapply(fuserbams, genBamChromOri, BPPARAM=snow))
-        } else {
-            dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
-        }
+        sys_type = ifelse(Sys.info()[["sysname"]]=='Windows', 'SOCK', 'FORK')
+        dt = rbindlist(bplapply(fuserbams, genBamChromOri, 
+            BPPARAM=SnowParam(workers=nthr, type=sys_type)))
+        #if ( Sys.info()[["sysname"]] == "Windows" ){
+        #    snow = SnowParam(workers = nthr, type = "SOCK")
+        #    dt = rbindlist(bplapply(fuserbams, genBamChromOri, BPPARAM=snow))
+        #} else {
+        #    dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
+        #}
     }
 
     dt[, mode := mode(prm) ]
@@ -414,14 +416,19 @@ outputCorrectStrandModel <- function(prm) {
         grdt = rbindlist(lapply(stranddt$foutgtf, getCorrectStrandExon,
             stranddt, info_keys, mode))
     } else if ( nthr > 1 ) {
-        if ( Sys.info()[["sysname"]] == "Windows" ){
-            snow = SnowParam(workers = nthr, type = "SOCK")
-            grdt = rbindlist(bplapply(stranddt$foutgtf, getCorrectStrandExon,
-                            stranddt, info_keys, mode, BPPARAM=snow))
-        } else {
-            grdt = rbindlist(mclapply(stranddt$foutgtf, getCorrectStrandExon,
-                            stranddt, info_keys, mode, mc.cores=nthr))
-        }
+        sys_type = ifelse(Sys.info()[["sysname"]]=='Windows', 'SOCK', 'FORK')
+        grdt = rbindlist(bplapply(stranddt$foutgtf, getCorrectStrandExon,
+                        stranddt, info_keys, mode, 
+                        BPPARAM=SnowParam(workers=nthr, type=sys_type)))
+
+        #if ( Sys.info()[["sysname"]] == "Windows" ){
+        #    snow = SnowParam(workers = nthr, type = "SOCK")
+        #    grdt = rbindlist(bplapply(stranddt$foutgtf, getCorrectStrandExon,
+        #                    stranddt, info_keys, mode, BPPARAM=snow))
+        #} else {
+        #    grdt = rbindlist(mclapply(stranddt$foutgtf, getCorrectStrandExon,
+        #                    stranddt, info_keys, mode, mc.cores=nthr))
+        #}
     }
 
     gtf = new('GTF')
@@ -489,7 +496,6 @@ modelByStringTie <- function(prm) {
 }
 
 
-#' @importFrom  parallel       mcmapply
 #' @importFrom  BiocParallel SnowParam bpmapply
 #'
 mergeModels <- function(method, prm) {
@@ -500,14 +506,18 @@ mergeModels <- function(method, prm) {
         mapply(mergeModelsByChromOri, dt$chrom, dt$ori,
             MoreArgs=list(method=method, prm=prm))
     } else {
-        if ( Sys.info()[["sysname"]] == "Windows" ){
-            snow = SnowParam(workers = nthr, type = "SOCK")
-            bpmapply(mergeModelsByChromOri, dt$chrom, dt$ori,
-                    MoreArgs=list(method=method, prm=prm), BPPARAM=snow)
-        } else {
-            mcmapply(mergeModelsByChromOri, dt$chrom, dt$ori,
-                    MoreArgs=list(method=method, prm=prm), mc.cores=nthr)
-        }
+        sys_type = ifelse(Sys.info()[["sysname"]]=='Windows', 'SOCK', 'FORK')
+        bpmapply(mergeModelsByChromOri, dt$chrom, dt$ori,
+                MoreArgs=list(method=method, prm=prm), 
+                BPPARAM=SnowParam(workers=nthr, type=sys_type))
+        #if ( Sys.info()[["sysname"]] == "Windows" ){
+        #    snow = SnowParam(workers = nthr, type = "SOCK")
+        #    bpmapply(mergeModelsByChromOri, dt$chrom, dt$ori,
+        #            MoreArgs=list(method=method, prm=prm), BPPARAM=snow)
+        #} else {
+        #    mcmapply(mergeModelsByChromOri, dt$chrom, dt$ori,
+        #            MoreArgs=list(method=method, prm=prm), mc.cores=nthr)
+        #}
     }
 }
 
@@ -601,7 +611,6 @@ renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
 }
 
 
-#' @importFrom  parallel     mclapply mcmapply
 #' @importFrom  BiocParallel SnowParam bplapply bpmapply
 #'
 modelByPoolingBams <- function(method, prm) {
@@ -617,16 +626,22 @@ modelByPoolingBams <- function(method, prm) {
         mapply(poolBamByChromOri, dt$chrom, dt$ori, MoreArgs=list(prm=prm))
         lapply(dt$fmdlbam, modelByChromOriBam, method, prm)
     } else if ( nthr > 1 ) {
-        if ( Sys.info()[["sysname"]] == "Windows" ){
-            snow = SnowParam(workers = nthr, type = "SOCK")
-            bpmapply(poolBamByChromOri, dt$chrom, dt$ori, 
-                    MoreArgs=list(prm=prm), BPPARAM=snow)
-            bplapply(dt$fmdlbam, modelByChromOriBam, method, prm, BPPARAM=snow)
-        } else {
-            mcmapply(poolBamByChromOri, dt$chrom, dt$ori, 
-                    MoreArgs=list(prm=prm), mc.cores=nthr)
-            mclapply(dt$fmdlbam, modelByChromOriBam, method, prm, mc.cores=nthr)
-        }
+        sys_type = ifelse(Sys.info()[["sysname"]]=='Windows', 'SOCK', 'FORK')
+        snow = SnowParam(workers=nthr, type=sys_type)
+        bpmapply(poolBamByChromOri, dt$chrom, dt$ori, 
+                MoreArgs=list(prm=prm), BPPARAM=snow)
+        bplapply(dt$fmdlbam, modelByChromOriBam, method, prm, BPPARAM=snow)
+
+        #if ( Sys.info()[["sysname"]] == "Windows" ){
+        #    snow = SnowParam(workers = nthr, type = "SOCK")
+        #    bpmapply(poolBamByChromOri, dt$chrom, dt$ori, 
+        #            MoreArgs=list(prm=prm), BPPARAM=snow)
+        #    bplapply(dt$fmdlbam, modelByChromOriBam, method, prm, BPPARAM=snow)
+        #} else {
+        #    mcmapply(poolBamByChromOri, dt$chrom, dt$ori, 
+        #            MoreArgs=list(prm=prm), mc.cores=nthr)
+        #    mclapply(dt$fmdlbam, modelByChromOriBam, method, prm,mc.cores=nthr)
+        #}
     }
 }
 
@@ -646,7 +661,6 @@ poolBamByChromOri <- function(in_chrom, in_ori, prm) {
 }
 
 
-#' @importFrom  parallel  mclapply
 #' @importFrom  BiocParallel SnowParam bplapply
 #'
 modelByMethod <- function(method, prm) {
@@ -655,12 +669,15 @@ modelByMethod <- function(method, prm) {
     if ( nthr == 1 ) {
         lapply(dt$fmdlbam, modelByChromOriBam, method, prm)
     } else if ( nthr > 1 ) {
-        if ( Sys.info()[["sysname"]] == "Windows" ){
-            snow = SnowParam(workers = nthr, type = "SOCK")
-            bplapply(dt$fmdlbam, modelByChromOriBam, method, prm, BPPARAM=snow)
-        } else {
-            mclapply(dt$fmdlbam, modelByChromOriBam, method, prm, mc.cores=nthr)
-        }
+        sys_type = ifelse(Sys.info()[["sysname"]]=='Windows', 'SOCK', 'FORK')
+        bplapply(dt$fmdlbam, modelByChromOriBam, method, prm, 
+            BPPARAM=SnowParam(workers=nthr, type=sys_type))
+        #if ( Sys.info()[["sysname"]] == "Windows" ){
+        #    snow = SnowParam(workers = nthr, type = "SOCK")
+        #    bplapply(dt$fmdlbam, modelByChromOriBam, method, prm, BPPARAM=snow)
+        #} else {
+        #    mclapply(dt$fmdlbam, modelByChromOriBam, method, prm,mc.cores=nthr)
+        #}
     }
 }
 
