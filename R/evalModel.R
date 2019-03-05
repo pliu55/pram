@@ -111,7 +111,7 @@ setMethod(
         info_keys = c('transcript_id')
         #mdlgtf = initFromGTFFile(mdlgtf, model_exons,  info_keys)
         #mdldt = grangedt(mdlgtf)[feature == 'exon']
-        mdldt = getDTFromGTFFile(eodel_exons, tags=info_keys)[feature=='exon']
+        mdldt = getDTFromGTFFile(model_exons, tags=info_keys)[feature=='exon']
 
         tgtdt = target_exons
 
