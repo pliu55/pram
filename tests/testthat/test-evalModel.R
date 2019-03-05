@@ -36,8 +36,8 @@ testBenchmark <- function() {
 
 testEvalModelByGTF <- function(mode, mode2results, mdldtlist, tgtdt) {
     mdldt = mdldtlist[[mode]]
-    mdlgtf = new('GTF')
-    tgtgtf = new('GTF')
+    #mdlgtf = new('GTF')
+    #tgtgtf = new('GTF')
 
     if ( ! 'transcript_id' %in% names(mdldt) ) {
         setnames(mdldt, 'trid', 'transcript_id')
@@ -49,12 +49,14 @@ testEvalModelByGTF <- function(mode, mode2results, mdldtlist, tgtdt) {
 
     mdldt[, feature := 'exon']
     tgtdt[, feature := 'exon']
-    mdlgtf = initFromDataTable(mdlgtf, mdldt, c('transcript_id'))
-    tgtgtf = initFromDataTable(tgtgtf, tgtdt, c('transcript_id'))
+    #mdlgtf = initFromDataTable(mdlgtf, mdldt, c('transcript_id'))
+    #tgtgtf = initFromDataTable(tgtgtf, tgtdt, c('transcript_id'))
     fmdlgtf = paste0(tempdir(), '/', mode, '_mdl.gtf')
     ftgtgtf = paste0(tempdir(), '/', mode, '_tgt.gtf')
-    writeGTF(mdlgtf, fmdlgtf, append=FALSE)
-    writeGTF(tgtgtf, ftgtgtf, append=FALSE)
+    #writeGTF(mdlgtf, fmdlgtf, append=FALSE)
+    #writeGTF(tgtgtf, ftgtgtf, append=FALSE)
+    writeDT2GTFFile(mdldt, fmdlgtf, tags=c('transcript_id'), append=FALSE)
+    writeDT2GTFFile(tgtdt, ftgtgtf, tags=c('transcript_id'), append=FALSE)
 
     evaldt = evalModel(fmdlgtf, ftgtgtf)
 

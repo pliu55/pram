@@ -66,9 +66,11 @@ defIgRanges <- function(in_gtf, chromgrs, genome=NULL, fchromsize=NULL,
         chromgrs = getChromGRanges(genome, fchromsize, chroms)
     }
 
-    gtf = new('GTF')
-    gtf = initFromGTFFile(gtf, fgtf, infokeys=c('gene_id'))
-    grdt = grangedt(gtf)
+    #gtf = new('GTF')
+    #gtf = initFromGTFFile(gtf, fgtf, infokeys=c('gene_id'))
+    #grdt = grangedt(gtf)
+    grdt = getDTFromGTFFile(fgtf, tags=c('gene_id'))
+
     seldt = grdt[ feature == feat ]
     if ( ! is.null(chroms) ) {
         seldt = seldt[ chrom %in% chroms ]

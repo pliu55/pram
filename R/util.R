@@ -90,3 +90,55 @@ fileExists <- function(file) {
         ifelse( ! file.exists(file), FALSE, TRUE))
     return(is_existed)
 }
+
+
+#' @importFrom rtracklayer readGFF
+#' @importFrom data.table data.table
+#'
+getDTFromGTFFile <- function(fgtf, tags) {
+    dt = data.table(readGFF(
+        filepath = fgtf,
+        columns  = c('seqid', 'source', 'type', 'start', 'end', 'strand'),
+        tags     = tags ))
+    setnames(dt, c('seqid', 'type'), c('chrom', 'feature'))
+
+    return(dt)
+}
+
+
+#' @importFrom utils write.table
+#'
+writeDT2GTFFile <- function(grdt, fout, tags=NULL, append=FALSE) {
+    feature = irow = chrom = score = frame = NULL
+    outdt = data.table()
+    if ( nrow(grdt) > 0 ) {
+        outdt = copy(grdt)
+        if ( ! ('feature' %in% names(outdt)) ) {
+            outdt[, feature := 'unknown']
+        }
+        ori_field = ifelse('source' %in% names(grdt), grdt$source[1], 'UNKNOWN')
+        outdt[, `:=`(   source = ori_field,
+                        score  = '.',
+                        frame  = '.'     ) ]
+
+        if ( is.null(tags) ) {
+            tags = setdiff(names(outdt), c('chrom', 'source', 'feature', 
+                'start', 'end', 'score', 'strand', 'frame'))
+        }
+        for ( infokey in tags ) {
+            outdt[, eval(infokey) := paste0(infokey, ' "', get(infokey), '"')]
+        }
+        outdt[, irow := .I]
+        outdt[, attr := paste0(paste0(.SD, collapse='; '), ';'),
+                by=irow, .SDcols=tags]
+        outdt = outdt[, list(chrom, source, feature, start, end, score,
+                            strand, frame, attr)]
+    } else {
+        warning("empty data.table to write to GTF file\n")
+    }
+
+    outdir = dirname(fout)
+    if ( ! file.exists(outdir) ) dir.create(outdir, recursive=TRUE)
+    write.table(outdt, fout, quote=FALSE, sep="\t", col.names=FALSE, 
+                row.names=FALSE, append=append)
+}

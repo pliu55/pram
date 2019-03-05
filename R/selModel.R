@@ -37,12 +37,13 @@
 selModel <- function(fin_gtf, fout_gtf, min_n_exon=2, min_tr_len=200,
     info_keys = c('transcript_id') ) {
     feature = transcript_id = n_exon = tr_len = NULL
-    in_gtf  = new('GTF')
-    out_gtf = new('GTF')
+    #in_gtf  = new('GTF')
+    #out_gtf = new('GTF')
     out_infokeys = unique(c('transcript_id', info_keys))
-
-    in_gtf = initFromGTFFile(in_gtf, fin_gtf, infokeys=out_infokeys)
-    grdt = grangedt(in_gtf)
+    #
+    #in_gtf = initFromGTFFile(in_gtf, fin_gtf, infokeys=out_infokeys)
+    #grdt = grangedt(in_gtf)
+    grdt = getDTFromGTFFile(fin_gtf, tags=out_infokeys)
 
     exondt = grdt[ feature == 'exon' ]
     dt = exondt[, list( n_exon = .N,
@@ -52,10 +53,12 @@ selModel <- function(fin_gtf, fout_gtf, min_n_exon=2, min_tr_len=200,
                     ( tr_len >= min_tr_len ) ]$transcript_id
     sel_grdt = grdt[ transcript_id %in% sel_trids ]
 
-    origin(out_gtf)   = origin(in_gtf)
-    infokeys(out_gtf) = out_infokeys
-    grangedt(out_gtf) = sel_grdt
-
-    writeGTF(out_gtf, fout_gtf, append=FALSE)
+    #origin(out_gtf)   = origin(in_gtf)
+    #infokeys(out_gtf) = out_infokeys
+    #grangedt(out_gtf) = sel_grdt
+    #
+    #writeGTF(out_gtf, fout_gtf, append=FALSE)
+    sel_grdt[, source := unique(grdt$source)]
+    writeDT2GTFFile(sel_grdt, fout_gtf, tags=out_infokeys)
     cat('Transcript models are saved in the following file:\n', fout_gtf, "\n")
 }

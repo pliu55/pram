@@ -39,8 +39,7 @@ Suggests: testthat,
           BiocStyle,
           knitr,
           rmarkdown
-Collate: 'GTF.R'
-         'Param.R'
+Collate: 'Param.R'
          'Transcript.R'
          'buildModel.R'
          'defIgRanges.R'

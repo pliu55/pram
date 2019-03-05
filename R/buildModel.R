@@ -420,24 +420,17 @@ outputCorrectStrandModel <- function(prm) {
         grdt = rbindlist(bplapply(stranddt$foutgtf, getCorrectStrandExon,
                         stranddt, info_keys, mode, 
                         BPPARAM=SnowParam(workers=nthr, type=sys_type)))
-
-        #if ( Sys.info()[["sysname"]] == "Windows" ){
-        #    snow = SnowParam(workers = nthr, type = "SOCK")
-        #    grdt = rbindlist(bplapply(stranddt$foutgtf, getCorrectStrandExon,
-        #                    stranddt, info_keys, mode, BPPARAM=snow))
-        #} else {
-        #    grdt = rbindlist(mclapply(stranddt$foutgtf, getCorrectStrandExon,
-        #                    stranddt, info_keys, mode, mc.cores=nthr))
-        #}
     }
 
-    gtf = new('GTF')
-    fgtf(gtf)     = foutgtf
-    origin(gtf)   = mode
-    infokeys(gtf) = info_keys
-    grangedt(gtf) = grdt
-
-    writeGTF(gtf, foutgtf, append=FALSE)
+    #gtf = new('GTF')
+    #fgtf(gtf)     = foutgtf
+    #origin(gtf)   = mode
+    #infokeys(gtf) = info_keys
+    #grangedt(gtf) = grdt
+    #
+    #writeGTF(gtf, foutgtf, append=FALSE)
+    grdt[, source := mode]
+    writeDT2GTFFile(grdt, foutgtf, tags=info_keys, append=FALSE)
 }
 
 
@@ -446,9 +439,11 @@ getCorrectStrandExon <- function(fgtf, stranddt, info_keys, mode) {
     ori = stranddt[ foutgtf == fgtf ]$ori
     outdt = data.table()
     if ( file.exists(fgtf) ) {
-        gtf = new('GTF')
-        gtf = initFromGTFFile(gtf, fgtf, info_keys, origin=mode)
-        grdt = grangedt(gtf)
+        #gtf = new('GTF')
+        #gtf = initFromGTFFile(gtf, fgtf, info_keys, origin=mode)
+        #grdt = grangedt(gtf)
+        grdt = getDTFromGTFFile(fgtf, tags=info_keys)
+        grdt[, source := mode]
         if ( nrow(grdt) > 0 ) {
             outdt = grdt[ (feature == 'exon') & (strand == ori) ]
         }
@@ -573,11 +568,13 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
 renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
     feature = strand_label = runid = chrom = transcript_id = gene_id = NULL
     ign = itr = NULL
-    gtf = new('GTF')
+    #gtf = new('GTF')
     info_keys = gtfinfokeys(prm)
     mode = mode(prm)
-    gtf = initFromGTFFile(gtf, fingtf, info_keys, origin=mode)
-    grdt = grangedt(gtf)[ feature == 'exon' ]
+    #gtf = initFromGTFFile(gtf, fingtf, info_keys, origin=mode)
+    #grdt = grangedt(gtf)[ feature == 'exon' ]
+    grdt = getDTFromGTFFile(fingtf, tags=info_keys)[ feature == 'exon']
+    grdt[, source := mode]
 
     grdt[, strand_label := 
         ifelse(strand == '+', 'plus', ifelse(strand == '-', 'minus', NA))]
@@ -605,9 +602,10 @@ renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
         'ign') := NULL]
     setnames(grdt, c('trid', 'gnid'), c('transcript_id', 'gene_id'))
 
-    outgtf = new('GTF')
-    outgtf = initFromDataTable(outgtf, grdt, info_keys, origin=mode)
-    writeGTF(outgtf, foutgtf, append=FALSE)
+    #outgtf = new('GTF')
+    #outgtf = initFromDataTable(outgtf, grdt, info_keys, origin=mode)
+    #writeGTF(outgtf, foutgtf, append=FALSE)
+    writeDT2GTFFile(grdt, foutgtf, tags=info_keys, append=FALSE)
 }
 
 
