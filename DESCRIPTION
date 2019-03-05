@@ -21,7 +21,6 @@ Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.6)
 Imports: methods, 
-         parallel, 
          BiocParallel,
          tools,
          utils,
