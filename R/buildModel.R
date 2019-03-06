@@ -358,12 +358,6 @@ def2StepManager <- function(prm) {
         sys_type = ifelse(Sys.info()[["sysname"]]=='Windows', 'SOCK', 'FORK')
         dt = rbindlist(bplapply(fuserbams, genBamChromOri, 
             BPPARAM=SnowParam(workers=nthr, type=sys_type)))
-        #if ( Sys.info()[["sysname"]] == "Windows" ){
-        #    snow = SnowParam(workers = nthr, type = "SOCK")
-        #    dt = rbindlist(bplapply(fuserbams, genBamChromOri, BPPARAM=snow))
-        #} else {
-        #    dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
-        #}
     }
 
     dt[, mode := mode(prm) ]
