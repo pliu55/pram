@@ -309,10 +309,6 @@ setMethod('checkCufflinksBin', 'Param',
             if ( ! file.exists(temp_cufflinks_bin) ) {
                 stop(paste0("\nCufflinks not found. You may download it from ",
                     url, "\n"))
-                #cat("\nCufflinks not found: ", cufflinks_bin, "\n",
-                #    'Downloading it from ', url, "\n")
-                #ex_dir = downloadAndUntar(url, tempdir())
-                #cufflinks(prm) = paste0(ex_dir, '/cufflinks')
             } else {
                 cufflinks(prm) = temp_cufflinks_bin
             }
@@ -348,10 +344,6 @@ setMethod('checkCuffmergeRequiredBins', 'Param',
             url = os2cufflinks_url(prm)[[getOS()]]
             stop(paste0("\nCuffmerge not found. You may download it from ",
                 url, "\n"))
-            #cat("\nNot found: Cuffmerge\n",
-            #    'Downloading it from ', url, "\n")
-            #ex_dir = downloadAndUntar(url, tempdir())
-            #cufflinks(prm) = paste0(ex_dir, '/cufflinks')
         }
 
         return(prm)
@@ -374,10 +366,6 @@ setMethod('checkStringTieBin', 'Param',
             if ( ! file.exists(temp_stringtie_bin) ) {
                 stop(paste0("\nStringTie not found. You may download it from ",
                     url, "\n"))
-                #cat("\nStringTie not found: ", stringtie_bin, "\n",
-                #    'Downloading it from ', url, "\n")
-                #ex_dir = downloadAndUntar(url, tempdir())
-                #stringtie(prm) = paste0(ex_dir, '/stringtie')
             } else {
                 stringtie(prm) = temp_stringtie_bin
             }
@@ -402,10 +390,6 @@ setMethod('checkTacoBin', 'Param',
             if ( ! file.exists(temp_taco_bin) ) {
                 stop(paste0("\nTACO not found. You may download it from ", url,
                     "\n"))
-                #cat("\nTACO not found: ", taco_bin, "\n",
-                #    'Downloading it from ', url, "\n")
-                #ex_dir = downloadAndUntar(url, tempdir())
-                #taco(prm) = paste0(ex_dir, '/taco_run')
             } else {
                 taco(prm) = temp_taco_bin
             }

@@ -58,14 +58,7 @@ setMethod(
     c('character', 'character'),
     function(model_exons, target_exons) {
         feature = NULL
-        #mdlgtf = new('GTF')
-        #tgtgtf = new('GTF')
         info_keys = c('transcript_id')
-        #mdlgtf = initFromGTFFile(mdlgtf, model_exons,  info_keys)
-        #tgtgtf = initFromGTFFile(tgtgtf, target_exons, info_keys)
-        #
-        #mdldt = grangedt(mdlgtf)[feature == 'exon']
-        #tgtdt = grangedt(tgtgtf)[feature == 'exon']
         mdldt = getDTFromGTFFile(model_exons,  tags=info_keys)[feature=='exon']
         tgtdt = getDTFromGTFFile(target_exons, tags=info_keys)[feature=='exon']
 
@@ -107,10 +100,7 @@ setMethod(
     c('character', 'data.table'),
     function(model_exons, target_exons) {
         feature = NULL
-        #mdlgtf = new('GTF')
         info_keys = c('transcript_id')
-        #mdlgtf = initFromGTFFile(mdlgtf, model_exons,  info_keys)
-        #mdldt = grangedt(mdlgtf)[feature == 'exon']
         mdldt = getDTFromGTFFile(model_exons, tags=info_keys)[feature=='exon']
 
         tgtdt = target_exons

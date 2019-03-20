@@ -70,20 +70,6 @@ getUniChromOriDt <- function(grs) {
 }
 
 
-#' @importFrom  utils download.file untar
-#'
-#downloadAndUntar <- function(url, dldir) {
-#   tgz_name = basename(url)
-#   ftgz_dest = paste0(dldir, '/', tgz_name)
-#   download.file(url, ftgz_dest, quiet=FALSE)
-
-#   untar(ftgz_dest, exdir=dldir)
-#   ex_dir = paste0(dldir, '/', gsub('.tar.gz', '', tgz_name, fixed=TRUE))
-
-#   return(ex_dir)
-#}
-
-
 ## file.exists cannot give T/F for character(0)
 fileExists <- function(file) {
     is_existed = ifelse( identical(file, character(0)), FALSE,

@@ -8,7 +8,6 @@ main <- function() {
     outdir = paste0(tempdir(), '/')
 
     testFilterBamByChromOri('chr10', 'plus',  outdir, prm)
-    #testFilterBamByChromOri('chr12', 'minus', outdir, prm)
 
     if ( ( grepl('biostat.wisc.edu', Sys.info()[['nodename']], fixed=TRUE) &
            ( Sys.info()[['user']] == 'pliu' ) ) |
@@ -49,7 +48,6 @@ testBuild <- function(prm, outdir) {
     prm = checkTacoBin(prm)
     testBinTC(prm)
 
-    #nthr = 4
     nthr = 1
     fout_cf_gtfs = paste0(outdir, 'CMPRep', 1:2, '.sortedByCoord.clean_cf.gtf')
     fout_st_gtfs = paste0(outdir, 'CMPRep', 1:2, '.sortedByCoord.clean_st.gtf')

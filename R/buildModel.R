@@ -167,7 +167,6 @@ splitUserBams <- function(prm) {
     if ( nthr == 1 ) {
         lapply(seq_len(nrow(managerdt)), splitUserBamByChromOri, prm)
     } else if ( nthr > 1 ) {
-        #mclapply(1:nrow(managerdt), splitUserBamByChromOri, prm, mc.cores=nthr)
         sys_type = ifelse(Sys.info()[["sysname"]]=="Windows", 'SOCK', 'FORK')
         bplapply(seq_len(nrow(managerdt)), splitUserBamByChromOri, prm, 
                 BPPARAM=SnowParam(workers=nthr, type=sys_type))
@@ -219,7 +218,6 @@ filterBamByChromOri <- function(fuserbam, fchromoribam, chrom, strand, prm) {
     }
 
     filter_rules = FilterRules(list(tmp=filter_func))
-    #inbam = BamFile(fuserbam, yieldSize=maxyieldsize(prm))
     inbam = BamFile(fuserbam)
     filterBam(inbam, fchromoribam, filter=filter_rules,
         param=ScanBamParam(what=c('qname'), tag=c('HI'), which=grs))
@@ -268,12 +266,6 @@ defCSManager <- function(prm) {
         sys_type = ifelse(Sys.info()[["sysname"]]=='Windows', 'SOCK', 'FORK')
         dt = rbindlist(bplapply(fuserbams, genBamChromOri, 
             BPPARAM=SnowParam(workers=nthr, type=sys_type)))
-        #if ( Sys.info()[["sysname"]] == "Windows" ){
-        #    snow = SnowParam(workers = nthr, type = "SOCK")
-        #    dt = rbindlist(bplapply(fuserbams, genBamChromOri, BPPARAM=snow))
-        #} else {
-        #    dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
-        #}
     }
 
     dt[, `:=`( 
@@ -313,12 +305,6 @@ def1StepManager <- function(prm) {
         sys_type = ifelse(Sys.info()[["sysname"]]=='Windows', 'SOCK', 'FORK')
         dt = rbindlist(bplapply(fuserbams, genBamChromOri, 
             BPPARAM=SnowParam(workers=nthr, type=sys_type)))
-        #if ( Sys.info()[["sysname"]] == "Windows" ){
-        #    snow = SnowParam(workers = nthr, type = "SOCK")
-        #    dt = rbindlist(bplapply(fuserbams, genBamChromOri, BPPARAM=snow))
-        #} else {
-        #    dt = rbindlist(mclapply(fuserbams, genBamChromOri, mc.cores=nthr))
-        #}
     }
 
     dt[, mode := mode(prm) ]
@@ -416,13 +402,6 @@ outputCorrectStrandModel <- function(prm) {
                         BPPARAM=SnowParam(workers=nthr, type=sys_type)))
     }
 
-    #gtf = new('GTF')
-    #fgtf(gtf)     = foutgtf
-    #origin(gtf)   = mode
-    #infokeys(gtf) = info_keys
-    #grangedt(gtf) = grdt
-    #
-    #writeGTF(gtf, foutgtf, append=FALSE)
     grdt[, source := mode]
     writeDT2GTFFile(grdt, foutgtf, tags=info_keys, append=FALSE)
 }
@@ -433,9 +412,6 @@ getCorrectStrandExon <- function(fgtf, stranddt, info_keys, mode) {
     ori = stranddt[ foutgtf == fgtf ]$ori
     outdt = data.table()
     if ( file.exists(fgtf) ) {
-        #gtf = new('GTF')
-        #gtf = initFromGTFFile(gtf, fgtf, info_keys, origin=mode)
-        #grdt = grangedt(gtf)
         grdt = getDTFromGTFFile(fgtf, tags=info_keys)
         grdt[, source := mode]
         if ( nrow(grdt) > 0 ) {
@@ -499,14 +475,6 @@ mergeModels <- function(method, prm) {
         bpmapply(mergeModelsByChromOri, dt$chrom, dt$ori,
                 MoreArgs=list(method=method, prm=prm), 
                 BPPARAM=SnowParam(workers=nthr, type=sys_type))
-        #if ( Sys.info()[["sysname"]] == "Windows" ){
-        #    snow = SnowParam(workers = nthr, type = "SOCK")
-        #    bpmapply(mergeModelsByChromOri, dt$chrom, dt$ori,
-        #            MoreArgs=list(method=method, prm=prm), BPPARAM=snow)
-        #} else {
-        #    mcmapply(mergeModelsByChromOri, dt$chrom, dt$ori,
-        #            MoreArgs=list(method=method, prm=prm), mc.cores=nthr)
-        #}
     }
 }
 
@@ -562,11 +530,8 @@ mergeModelsByChromOri <- function(in_chrom, in_ori, method, prm) {
 renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
     feature = strand_label = runid = chrom = transcript_id = gene_id = NULL
     ign = itr = NULL
-    #gtf = new('GTF')
     info_keys = gtfinfokeys(prm)
     mode = mode(prm)
-    #gtf = initFromGTFFile(gtf, fingtf, info_keys, origin=mode)
-    #grdt = grangedt(gtf)[ feature == 'exon' ]
     grdt = getDTFromGTFFile(fingtf, tags=info_keys)[ feature == 'exon']
     grdt[, source := mode]
 
@@ -596,9 +561,6 @@ renameGTFTrGeneID <- function(fingtf, foutgtf, prm) {
         'ign') := NULL]
     setnames(grdt, c('trid', 'gnid'), c('transcript_id', 'gene_id'))
 
-    #outgtf = new('GTF')
-    #outgtf = initFromDataTable(outgtf, grdt, info_keys, origin=mode)
-    #writeGTF(outgtf, foutgtf, append=FALSE)
     writeDT2GTFFile(grdt, foutgtf, tags=info_keys, append=FALSE)
 }
 
@@ -623,17 +585,6 @@ modelByPoolingBams <- function(method, prm) {
         bpmapply(poolBamByChromOri, dt$chrom, dt$ori, 
                 MoreArgs=list(prm=prm), BPPARAM=snow)
         bplapply(dt$fmdlbam, modelByChromOriBam, method, prm, BPPARAM=snow)
-
-        #if ( Sys.info()[["sysname"]] == "Windows" ){
-        #    snow = SnowParam(workers = nthr, type = "SOCK")
-        #    bpmapply(poolBamByChromOri, dt$chrom, dt$ori, 
-        #            MoreArgs=list(prm=prm), BPPARAM=snow)
-        #    bplapply(dt$fmdlbam, modelByChromOriBam, method, prm, BPPARAM=snow)
-        #} else {
-        #    mcmapply(poolBamByChromOri, dt$chrom, dt$ori, 
-        #            MoreArgs=list(prm=prm), mc.cores=nthr)
-        #    mclapply(dt$fmdlbam, modelByChromOriBam, method, prm,mc.cores=nthr)
-        #}
     }
 }
 
@@ -664,12 +615,6 @@ modelByMethod <- function(method, prm) {
         sys_type = ifelse(Sys.info()[["sysname"]]=='Windows', 'SOCK', 'FORK')
         bplapply(dt$fmdlbam, modelByChromOriBam, method, prm, 
             BPPARAM=SnowParam(workers=nthr, type=sys_type))
-        #if ( Sys.info()[["sysname"]] == "Windows" ){
-        #    snow = SnowParam(workers = nthr, type = "SOCK")
-        #    bplapply(dt$fmdlbam, modelByChromOriBam, method, prm, BPPARAM=snow)
-        #} else {
-        #    mclapply(dt$fmdlbam, modelByChromOriBam, method, prm,mc.cores=nthr)
-        #}
     }
 }
 

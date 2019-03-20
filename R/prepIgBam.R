@@ -113,7 +113,6 @@ extractBam <- function(finbam, iggrs, foutbam, prm) {
 
     filter_rules = FilterRules(list(tmp=filter_func))
 
-    #inbam = BamFile(finbam, yieldSize=maxyieldsize(prm))
     inbam = BamFile(finbam)
 
     filterBam(
