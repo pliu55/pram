@@ -20,6 +20,7 @@ License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/pliu55/pram
+BugReports: https://github.com/pliu55/pram/issues
 Depends: R (>= 3.6)
 Imports: methods, 
          BiocParallel,
