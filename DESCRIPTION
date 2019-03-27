@@ -19,6 +19,7 @@ Description: Publicly available RNA-seq data is routinely used for
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/pliu55/pram
 Depends: R (>= 3.6)
 Imports: methods, 
          BiocParallel,
