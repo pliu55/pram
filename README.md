@@ -150,7 +150,7 @@ runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms, training_gtf)
 
 ## <a name="Reference"></a> Reference
 
-PRAM: a novel pooling approach for discovering intergenic transcripts from large-scale RNA sequencing experiments. Peng Liu, Alexandra A. Soukup, Emery H. Bresnick, Colin N. Dewey, and Sündüz Keleş. _bioRxiv_, 2019. https://doi.org/10.1101/636282 
+__PRAM: a novel pooling approach for discovering intergenic transcripts from large-scale RNA sequencing experiments__. Peng Liu, Alexandra A. Soukup, Emery H. Bresnick, Colin N. Dewey, and Sündüz Keleş. _bioRxiv_, 2019. __doi__: https://doi.org/10.1101/636282 
 
 For key results reported in the PRAM manuscript and scripts for 
 reproducibility, please check out 
