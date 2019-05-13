@@ -150,7 +150,7 @@ runPRAM(in_gtf, in_bamv, screen_out_gtf, in_bedv, training_tpms, training_gtf)
 
 ## <a name="Reference"></a> Reference
 
-PRAM identifies novel hematopoietic transcripts. Peng Liu, Alexandra A. Soukup, Emery H. Bresnick, Colin N. Dewey, and Sündüz Keleş. Manuscript in preparation.
+PRAM: a novel pooling approach for discovering intergenic transcripts from large-scale RNA sequencing experiments. Peng Liu, Alexandra A. Soukup, Emery H. Bresnick, Colin N. Dewey, and Sündüz Keleş. _bioRxiv_, 2019. https://doi.org/10.1101/636282 
 
 For key results reported in the PRAM manuscript and scripts for 
 reproducibility, please check out 
@@ -160,6 +160,6 @@ reproducibility, please check out
 
 Got a question? Please report it at the [issues tab](https://github.com/pliu55/pram/issues) in this repository.
 
-## <a name="license"></a> License
+## <a name="License"></a> License
 
 PRAM is licensed under the [GNU General Public License v3](LICENSE).
