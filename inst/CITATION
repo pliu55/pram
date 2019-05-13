@@ -1,0 +1,13 @@
+citEntry(
+    entry  = "article",
+    title  = "PRAM: a novel pooling approach for discovering intergenic transcripts from large-scale RNA sequencing experiments",
+    author = personList( as.person("Peng Liu"),
+                         as.person("Alexandra A. Soukup"),
+                         as.person("Emery H. Bresnick"),
+                         as.person("Colin N. Dewey"),
+                         as.person("Sündüz Keleş") ),
+    year    = 2019,
+    journal = "bioRxiv",
+    doi     = "10.1101/636282",
+    textVersion = "PRAM: a novel pooling approach for discovering intergenic transcripts from large-scale RNA sequencing experiments. Peng Liu, Alexandra A. Soukup, Emery H. Bresnick, Colin N. Dewey, and Sündüz Keleş. bioRxiv, 2019. doi: https://doi.org/10.1101/636282"
+)
