@@ -54,6 +54,7 @@ runPRAM <- function(in_gtf, in_bamv, out_gtf, method, cufflinks='',
         info_keys = c('transcript_id'))
 
     file.copy(fgtf_sel_mdl, out_gtf, overwrite=TRUE)
+    cat("\nPRAM transcript models are saved in", out_gtf, "\n")
 }
 
 

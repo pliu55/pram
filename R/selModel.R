@@ -50,5 +50,5 @@ selModel <- function(fin_gtf, fout_gtf, min_n_exon=2, min_tr_len=200,
 
     sel_grdt[, source := unique(grdt$source)]
     writeDT2GTFFile(sel_grdt, fout_gtf, tags=out_infokeys)
-    cat('Transcript models are saved in the following file:\n', fout_gtf, "\n")
+    cat('Selected transcript models are saved in', fout_gtf, "\n")
 }

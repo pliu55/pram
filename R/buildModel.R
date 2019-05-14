@@ -139,7 +139,7 @@ buildModel <- function(
     outputCorrectStrandModel(prm)
 
     if ( ! keep_tmpdir ) unlink(tmpdir(prm), recursive=TRUE, force=TRUE)
-    cat("Transcript models are saved in the following file:\n", out_gtf, "\n")
+    cat("Predicted transcript models are saved in", out_gtf, "\n")
 }
 
 
